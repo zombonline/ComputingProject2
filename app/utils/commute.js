@@ -127,6 +127,9 @@ class Commute {
         data = await response.json();
         return await data["journeys"][0]["duration"];
     }
+    static async testFunctionForReactButton(){
+        console.log("CALLING FUNCTION FROM COMMUTE.JS FILE");
+    }
 }
 
 module.exports = Commute;
