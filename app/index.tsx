@@ -6,14 +6,16 @@ export default function Index() {
   return (
     <View
       style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
+      flex: 1,
+      justifyContent: "flex-end",
+      alignItems: "center",
+      backgroundColor: "#33333E",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-      <Button title="Hey guys, I'm a button." onPress ={testFunctionForReactButton}></Button>
-      //added a button just like we would in html
+    <View style={{ flexDirection: "row", width: "100%", justifyContent: "space-between", paddingHorizontal: 40, marginBottom: 40 }}>
+      <Button title="Login" onPress={testFunctionForReactButton} color={"#DC9F85"}/>
+      <Button title="Sign Up" onPress={testFunctionForReactButton} color={"#DC9F85"}/>
+      </View>
     </View>
   );
 }
