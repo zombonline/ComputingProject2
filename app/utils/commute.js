@@ -29,21 +29,21 @@ class Commute {
      */
     static buildJourneyID(journey) {
         id = "";
-        prevNaptainID = "";
+        prevNaptanID = "";
         journey.legs.forEach(leg => {
             depNaptanID = leg["departurePoint"]["naptanId"];
             arrNaptanID = leg["arrivalPoint"]["naptanId"];
             mode = leg["mode"]["id"];
-            if(depNaptanID != prevNaptainID && depNaptanID != undefined){
+            if(depNaptanID != prevNaptanID && depNaptanID != undefined){
                 id += depNaptanID
-                prevNaptainID = depNaptanID;
+                prevNaptanID = depNaptanID;
             }
             if(depNaptanID !=undefined && arrNaptanID != undefined){
                 id += mode;
             }
-            if(arrNaptanID != prevNaptainID && arrNaptanID != undefined){
+            if(arrNaptanID != prevNaptanID && arrNaptanID != undefined){
                 id += arrNaptanID
-                prevNaptainID = arrNaptanID;
+                prevNaptanID = arrNaptanID;
             }
         });
         const hash = CryptoJS.MD5(id).toString();
@@ -125,7 +125,7 @@ class Commute {
         });
         const response = await fetch(`https://api.tfl.gov.uk/Journey/JourneyResults/${origin}/to/${destination}?${params}`);
         data = await response.json();
-        return await data["journeys"][0]["duration"];
+        return await data["journeys"][0]["duration"]; //FIX HERE (WE SHOULDNT JUST BE CHECKING THE FIRST JOURNEY) (USE NAPTAN IDS)
     }
     static async testFunctionForReactButton(){
         console.log("CALLING FUNCTION FROM COMMUTE.JS FILE");
