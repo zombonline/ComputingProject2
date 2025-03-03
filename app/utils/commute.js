@@ -19,8 +19,6 @@ class Commute {
         this.duration;
         this.journeyID;
     }
-
-
     /**
      * Returns a journeyID using MD5 hash of the journey details. Journey Details are made up of
      * departure and arrival naptanIDs and modes of transport between them.
@@ -29,27 +27,26 @@ class Commute {
      */
     static buildJourneyID(journey) {
         id = "";
-        prevNaptanID = "";
+        prevNaptainID = "";
         journey.legs.forEach(leg => {
             depNaptanID = leg["departurePoint"]["naptanId"];
             arrNaptanID = leg["arrivalPoint"]["naptanId"];
             mode = leg["mode"]["id"];
-            if(depNaptanID != prevNaptanID && depNaptanID != undefined){
+            if(depNaptanID != prevNaptainID && depNaptanID != undefined){
                 id += depNaptanID
-                prevNaptanID = depNaptanID;
+                prevNaptainID = depNaptanID;
             }
             if(depNaptanID !=undefined && arrNaptanID != undefined){
                 id += mode;
             }
-            if(arrNaptanID != prevNaptanID && arrNaptanID != undefined){
+            if(arrNaptanID != prevNaptainID && arrNaptanID != undefined){
                 id += arrNaptanID
-                prevNaptanID = arrNaptanID;
+                prevNaptainID = arrNaptanID;
             }
         });
         const hash = CryptoJS.MD5(id).toString();
         return hash;
     }
-
     /**
      * Validates the arrival time. Arrival time must be a string of length 4, containing only numbers
      * and be between 0000 and 2359.
@@ -70,15 +67,20 @@ class Commute {
         });
         return true;
     }
-
-    static async validateLocation(location){
+    static async validateLocation(location) {
         location = encodeURIComponent(location);
-        console.log(`https://api.tfl.gov.uk/StopPoint/Search/${location}`);
-        const response = await fetch(`https://api.tfl.gov.uk/StopPoint/Search/${location}`);
-        data = await response.json();
-        return data["total"];
-    }
+        testPoints = ["HA04AP", "E16DB"];
+        for(let i = 0; i < testPoints.length; i++){
+            const url = `https://api.tfl.gov.uk/Journey/JourneyResults/${location}/to/${testPoints[i]}`;
+            console.log(url); // Debugging URL
+            const response = await fetch(url);
+            if (!response.ok) continue; // API call failed (invalid location)
+            const data = await response.json();
+            return data.journeys && data.journeys.length > 0; // True if journeys exist
 
+        }
+        return false;
+    }
     /**
      * Returns the standard commute duration between two locations at a given arrival time.
      * Standard commute duration is the median of the commute durations at the given time over a number of days.
@@ -109,6 +111,73 @@ class Commute {
     }
 
     /**
+     * Returns all unique commutes between two locations at a given arrival time that occur every day listed in daysList.
+     * 
+     * @param {string} origin - The origin
+     * @param {string} destination - The destination
+     * @param {string} arrivalTime - The arrival time (HHMM)
+     * @param {string} daysList - List of days of the week for the commute [0, 1, 4] would be Sunday, Monday, Thursday
+     * @returns {Array} - An array of unique commutes.
+     * @throws {Error} - If the API call fails.
+     **/
+    static async getAllUniqueCommutes(origin, destination, arrivalTime, daysList){
+        console.log("Getting all unique commutes");
+        daysList.sort();
+        promises = []
+        dateToCheck = new Date();
+        dateToCheck.setDate(dateToCheck.getDate() - dateToCheck.getDay()); //set to Sunday
+        uniqueJourneys = [];
+        uniqueJourneyIDs = [];
+        allJourneys = [];
+        for(let i = 0; i < 7; i++) {
+            if(daysList.includes(i)){
+                promises.push(Commute.getUniqueCommutes(origin, destination, arrivalTime, getDateYYYYMMDD(dateToCheck)));
+            }
+            dateToCheck.setDate(dateToCheck.getDate() + 1);
+        }
+        try{
+            const results = await Promise.allSettled(promises);        
+            for(let i = 0; i < results.length; i++){
+                if(results[i].status === "fulfilled"){
+                    allJourneys = allJourneys.concat(results[i].value);
+                }
+            }    
+        } catch (error) {
+            throw new Error(error);
+        }
+        for(let i = 0; i < allJourneys.length; i++){
+            const id = Commute.buildJourneyID(allJourneys[i]);
+            if(!uniqueJourneyIDs.includes(id)){
+                uniqueJourneyIDs.push(id);
+                uniqueJourneys.push(allJourneys[i]);
+            }
+        }
+
+        let tempinstructionsreturn = ""
+        for(let i = 0; i < uniqueJourneys.length; i++){
+            tempinstructionsreturn += "Journey " + i + "\n";
+            for(let j = 0; j < uniqueJourneys[i].legs.length; j++){
+                tempinstructionsreturn += uniqueJourneys[i].legs[j].instruction.summary + "\n";
+            }
+            tempinstructionsreturn += "\n";
+        }
+        console.log(tempinstructionsreturn);
+        return tempinstructionsreturn;
+    }
+    static async getUniqueCommutes(origin, destination, arrivalTime, date){
+        origin = encodeURIComponent(origin);
+        destination = encodeURIComponent(destination);
+        const params = new URLSearchParams({
+            time: arrivalTime,        
+            timeIs: "Arriving",
+            date: date,
+        });
+        const response = await fetch(`https://api.tfl.gov.uk/Journey/JourneyResults/${origin}/to/${destination}?${params}`);
+        data = await response.json();
+        return data["journeys"];
+    }
+
+    /**
      * Returns the commute duration between two locations at a given arrival time and date.
      * @param {string} origin - The origin
      * @param {string} destination - The destination
@@ -125,10 +194,7 @@ class Commute {
         });
         const response = await fetch(`https://api.tfl.gov.uk/Journey/JourneyResults/${origin}/to/${destination}?${params}`);
         data = await response.json();
-        return await data["journeys"][0]["duration"]; //FIX HERE (WE SHOULDNT JUST BE CHECKING THE FIRST JOURNEY) (USE NAPTAN IDS)
-    }
-    static async testFunctionForReactButton(){
-        console.log("CALLING FUNCTION FROM COMMUTE.JS FILE");
+        return await data["journeys"][0]["duration"];
     }
 }
 
