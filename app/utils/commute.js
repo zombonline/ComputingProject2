@@ -1,10 +1,7 @@
 import fetch from 'node-fetch';
 import { getDateYYYYMMDD } from './helperFunctions';
 import CryptoJS from "crypto-js";
-
 base_url = "https://api.tfl.gov.uk/Journey/JourneyResults"
-
-
 const Errors = {
     INVALID_ARRIVAL_TIME: "Invalid arrival time",
     INVALID_ORIGIN: "Invalid origin",
@@ -48,40 +45,6 @@ class Commute {
         return hash;
     }
     /**
-     * Validates the arrival time. Arrival time must be a string of length 4, containing only numbers
-     * and be between 0000 and 2359.
-     * @param {string} arrivalTime - The arrival time to validate.
-     * @throws {Error} - If the arrival time is invalid.
-     * @returns {boolean} - True if the arrival time is valid.
-     */
-    static validateArrivalTime(arrivalTime){
-        const checks = [
-            {condition: arrivalTime.length === 4, errorMessage: Errors.INVALID_ARRIVAL_TIME},
-            {condition: arrivalTime.match(/^[0-9]+$/), errorMessage: Errors.INVALID_ARRIVAL_TIME},
-            {condition: parseInt(arrivalTime) >= 0 && parseInt(arrivalTime) <= 2359, errorMessage: Errors.INVALID_ARRIVAL_TIME}
-        ];
-        checks.forEach(check => {
-            if (!check.condition) {
-                throw new Error(check.errorMessage);
-            }            
-        });
-        return true;
-    }
-    static async validateLocation(location) {
-        location = encodeURIComponent(location);
-        testPoints = ["HA04AP", "E16DB"];
-        for(let i = 0; i < testPoints.length; i++){
-            const url = `https://api.tfl.gov.uk/Journey/JourneyResults/${location}/to/${testPoints[i]}`;
-            console.log(url); // Debugging URL
-            const response = await fetch(url);
-            if (!response.ok) continue; // API call failed (invalid location)
-            const data = await response.json();
-            return data.journeys && data.journeys.length > 0; // True if journeys exist
-
-        }
-        return false;
-    }
-    /**
      * Returns the standard commute duration between two locations at a given arrival time.
      * Standard commute duration is the median of the commute durations at the given time over a number of days.
      * @param {string} origin - The origin
@@ -111,8 +74,7 @@ class Commute {
     }
 
     /**
-     * Returns all unique commutes between two locations at a given arrival time that occur every day listed in daysList.
-     * 
+     * Returns all unique commutes between two locations at a given arrival time that occur on days listed in daysList.
      * @param {string} origin - The origin
      * @param {string} destination - The destination
      * @param {string} arrivalTime - The arrival time (HHMM)
@@ -152,17 +114,7 @@ class Commute {
                 uniqueJourneys.push(allJourneys[i]);
             }
         }
-
-        let tempinstructionsreturn = ""
-        for(let i = 0; i < uniqueJourneys.length; i++){
-            tempinstructionsreturn += "Journey " + i + "\n";
-            for(let j = 0; j < uniqueJourneys[i].legs.length; j++){
-                tempinstructionsreturn += uniqueJourneys[i].legs[j].instruction.summary + "\n";
-            }
-            tempinstructionsreturn += "\n";
-        }
-        console.log(tempinstructionsreturn);
-        return tempinstructionsreturn;
+        return uniqueJourneys;
     }
     static async getUniqueCommutes(origin, destination, arrivalTime, date){
         origin = encodeURIComponent(origin);
@@ -186,11 +138,11 @@ class Commute {
      * @returns {number} - The commute duration in minutes.
      * @throws {Error} - If the API call fails. 
      */
-    static async getCommuteDuration(origin, destination, arrivalTime, arrivialDate){
+    static async getCommuteDuration(origin, destination, arrivalTime, arrivalDate){
         const params = new URLSearchParams({
             time: arrivalTime,        
             timeIs: "Arriving",
-            date: arrivialDate,
+            date: arrivalDate,
         });
         const response = await fetch(`https://api.tfl.gov.uk/Journey/JourneyResults/${origin}/to/${destination}?${params}`);
         data = await response.json();
