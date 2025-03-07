@@ -73,6 +73,21 @@ class Commute {
 
     }
 
+
+    static async getLatLong(location){
+        location = encodeURIComponent(location);
+        try{
+            const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${location}&format=json`);
+            console.log(response)
+            data = await response.json();
+            return data[0]["lat"] + "," + data[0]["lon"];
+        } catch (error) {
+            error.printStackTrace();
+            console.log("couldnt get anything from " + location);
+            return null;
+        }
+    }
+
     /**
      * Returns all unique commutes between two locations at a given arrival time that occur on days listed in daysList.
      * @param {string} origin - The origin
@@ -118,12 +133,14 @@ class Commute {
     }
     static async getUniqueCommutes(origin, destination, arrivalTime, date){
         origin = encodeURIComponent(origin);
+        console.log(destination)
         destination = encodeURIComponent(destination);
         const params = new URLSearchParams({
             time: arrivalTime,        
             timeIs: "Arriving",
             date: date,
         });
+        console.log(`https://api.tfl.gov.uk/Journey/JourneyResults/${origin}/to/${destination}?${params}`);
         const response = await fetch(`https://api.tfl.gov.uk/Journey/JourneyResults/${origin}/to/${destination}?${params}`);
         data = await response.json();
         return data["journeys"];

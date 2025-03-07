@@ -18,20 +18,4 @@ function validateArrivalTime(arrivalTime){
         });
         return true;
 }
-
-async function validateLocation(location) {
-    location = encodeURIComponent(location);
-    testPoints = ["HA04AP", "E16DB"];
-    for(let i = 0; i < testPoints.length; i++){
-        const url = `https://api.tfl.gov.uk/Journey/JourneyResults/${location}/to/${testPoints[i]}`;
-        console.log(url); // Debugging URL
-        const response = await fetch(url);
-        if (!response.ok) continue; // API call failed (invalid location)
-        const data = await response.json();
-        return data.journeys && data.journeys.length > 0; // True if journeys exist
-
-    }
-    return false;
-}
-
-module.exports = {validateArrivalTime, validateLocation};
+module.exports = {validateArrivalTime};

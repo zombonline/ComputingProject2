@@ -20,15 +20,40 @@ it('getAverageCommuteDuration works', async () => {
   expect(result).toBeLessThan(50);
 });
 
-//CHECK ARRIVAL TIMES
-it('Arrival Time out of 24hr range', () => {
-  expect(() => {Commute.validateArrivalTime("2400")}).toThrow("Invalid arrival time");
+it('get lat long', async () => {
+const result = extractFloatLatLong(await Commute.getLatLong("E16 2FD"));
+expect(parseFloat(values[0].toFixed(3))).toBeCloseTo(51.506);
+expect(parseFloat(values[1].toFixed(3))).toBeCloseTo(0.073);
 });
 
-//CHECK LOCATION
-it('Location found', async () => {
-  const result = await Commute.validateLocation("E162FD");
-  expect(result).toBeGreaterThan(0); 
+it('get lat long', async () => {
+const result = extractFloatLatLong(await Commute.getLatLong("east ferry road, e14"));
+expect(parseFloat(values[0].toFixed(3))).toBeCloseTo(51.493);
+expect(parseFloat(values[1].toFixed(3))).toBeCloseTo(-0.014);
 });
+
+it('get lat long', async () => {
+const result = extractFloatLatLong(await Commute.getLatLong("richard hoggart building"));
+expect(parseFloat(values[0].toFixed(3))).toBeCloseTo(51.474);
+expect(parseFloat(values[1].toFixed(3))).toBeCloseTo(-0.035);
+});
+
+it('get lat long', async () => {
+const result = extractFloatLatLong(await Commute.getLatLong("Wembley Central Station"));
+expect(parseFloat(values[0].toFixed(3))).toBeCloseTo(51.552);
+expect(parseFloat(values[1].toFixed(3))).toBeCloseTo(-0.297);
+});
+
+
+
+function extractFloatLatLong(str) {
+parts = str.split(",");
+values = [];
+parts.forEach(part => {
+  values.push(parseFloat(part))
+});
+return values;
+}
+
 
 
