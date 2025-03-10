@@ -9,7 +9,7 @@ const App = () => {
   useEffect(() => {  
     setTimeout(() => {
       router.replace('/home'); // Redirects to the Home screen after 6 seconds
-    }, 6000);
+    }, 1000);
   }, []);
 
   return (

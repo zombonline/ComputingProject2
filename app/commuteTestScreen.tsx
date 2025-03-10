@@ -1,7 +1,9 @@
 import { Text, View, Button, TextInput, ScrollView, Pressable, FlatList, StyleSheet } from "react-native";
 import { useState } from "react";
 import { Commute } from "./utils/commute";
-import { validateArrivalTime, getLatLong } from "./utils/input_validation";
+import { validateArrivalTime } from "./utils/input_validation";
+import { getLatLong } from "./utils/helperFunctions"
+import { commuteTestStyles } from "./style";
 
 export default function CommuteTestScreen() {
   const [origin, setOrigin] = useState("");
@@ -33,49 +35,47 @@ export default function CommuteTestScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <CustomInput
+    <View style={commuteTestStyles.container}>
+    <CustomInput
         placeholder="Where do you start?"
         value={origin}
         onChangeText={async (text) => {
             setOrigin(text);
             setOriginLatLong(await getLatLong(text));
         }}
-
       />
-      <Text style={styles.text}>{String(originLatLong)}</Text>
+      <Text style={{ color: "white" }}> {String(originLatLong)} </Text>
       <CustomInput
         placeholder="Where are you headed?"
         value={destination}
         onChangeText={async (text) => {
           setDestination(text);
-          const latLong = await getLatLong(text);
-          setDestinationLatLong(latLong);
+          setDestinationLatLong(await getLatLong(text));
         }}
       />
-      <Text style={styles.text}>{String(destinationLatLong)}</Text>
+      <Text style={{ color: "white" }}> {String(destinationLatLong)} </Text>
       <CustomInput
         placeholder="What time do you arrive?"
         value={arrivalTime}
-        onChangeText={async (text) => {
+        onChangeText={(text) => {
           setArrivalTime(text);
-          setArrivalTimeValid(await validateArrivalTime(text));
+          setArrivalTimeValid(validateArrivalTime(text));
         }}
       />
-      <Text style={styles.text}>{String(arrivalTimeValid)}</Text>
-      <Text style={styles.text}>{instructions}</Text>
+      <Text style={{ color: "white" }}>{String(arrivalTimeValid)}</Text>
+      <Text style={{ color: "white" }}>{instructions}</Text>
       <FlatList
         data={days}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <Pressable onPress={() => toggleItem(item.id)}>
-            <Text style={styles.text}>
+            <Text style={{color: "white"}}>
               {selectedDays.includes(item.id) ? "☑️" : "⬜"} {item.name}
             </Text>
           </Pressable>
         )}
       />
-      <ScrollView style={styles.scrollView}>
+      <ScrollView style={commuteTestStyles.scrollView}>
         <View style={{ alignItems: "center" }}>
           {journeys.map((journey, index) => (
             <JourneyButton key={index} journey={journey} setJourneyID={setJourneyID} />
@@ -85,7 +85,7 @@ export default function CommuteTestScreen() {
       <Button
         title="View Possible Journeys"
         onPress={async () => {
-          setJourneys(await getAllUniqueCommutes(originLatLong, destinationLatLong, arrivalTime, selectedDays));
+          setJourneys(await Commute.getAllUniqueCommutes(originLatLong, destinationLatLong, arrivalTime, selectedDays));
         }}
       />
       <Button
@@ -99,7 +99,7 @@ export default function CommuteTestScreen() {
 function CustomInput({ placeholder, value, onChangeText }) {
   return (
     <TextInput
-      style={styles.input}
+      style={commuteTestStyles.input}
       placeholder={placeholder}
       placeholderTextColor="grey"
       value={value}
@@ -110,58 +110,17 @@ function CustomInput({ placeholder, value, onChangeText }) {
 
 function JourneyButton({ journey, setJourneyID }) {
   return (
-    <View style={styles.buttonContainer}>
-      <Pressable
-        style={styles.button}
+       <View style={commuteTestStyles.journeyButton}>
+       <Pressable
         onPress={() => {
-          const newID = buildJourneyID(journey);
+          const newID = Commute.buildJourneyID(journey);
           setJourneyID(newID);
         }}
       >
-        <Text style={styles.buttonText}>
-          {journey.legs.map((leg) => leg.instruction.summary).join("\n")}
+       <Text style={commuteTestStyles.journeyButtonText}>
+        {journey.legs.map((leg) => leg.instruction.summary).join("\n")}
         </Text>
       </Pressable>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
-    backgroundColor: "#33333E",
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    width: "90%",
-    marginTop: 18,
-    borderColor: "grey",
-    color: "white",
-  },
-  text: {
-    color: "white",
-  },
-  scrollView: {
-    width: "90%",
-    margin: 20,
-    borderWidth: 1,
-  },
-  buttonContainer: {
-    borderRadius: 10,
-    backgroundColor: "red",
-    padding: 10,
-    width: "90%",
-    marginTop: 10,
-    borderColor: "grey",
-  },
-  button: {
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-  },
-});

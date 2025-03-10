@@ -2,12 +2,6 @@ import fetch from 'node-fetch';
 import { getDateYYYYMMDD } from './helperFunctions';
 import CryptoJS from "crypto-js";
 base_url = "https://api.tfl.gov.uk/Journey/JourneyResults"
-const Errors = {
-    INVALID_ARRIVAL_TIME: "Invalid arrival time",
-    INVALID_ORIGIN: "Invalid origin",
-    INVALID_DESTINATION: "Invalid destination",
-}
-
 export class Commute {
     constructor(origin, destination, arrivalTime, days, journeyID) {
         this.origin = origin;
