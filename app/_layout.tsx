@@ -7,6 +7,9 @@ const Layout = () => {
   const router = useRouter();
   const pathname = usePathname(); // Get current route
 
+  // Define pages where you want to hide the bottom nav
+  const excludedRoutes = ["/",];
+
   return (
     <View style={styles.container}>
       {/* Page Content */}
@@ -14,8 +17,8 @@ const Layout = () => {
         <Slot /> {/* This loads the current screen */}
       </View>
 
-      {/* Hide Bottom Nav on the Index Page ("/") */}
-      {pathname !== "/" && (
+      {/* Show bottom nav only if the page is NOT in excludedRoutes */}
+      {!excludedRoutes.includes(pathname) && (
         <View style={styles.bottomNav}>
           <TouchableOpacity onPress={() => router.push("/settings")}>
             <Ionicons
@@ -61,6 +64,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
   },
 });
 

@@ -119,7 +119,7 @@ export const settingsStyles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     margin: 20,
-    top: 450,
+    top: 600,
   },
   panelTitle: { fontSize: 18, fontWeight: "bold", color: "black", marginBottom: 10 },
 
@@ -162,7 +162,7 @@ export const subSettingStyles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     elevation: 3,
-    marginBottom: 20,
+    marginBottom: 570,
   },
   searchIcon: { marginRight: 10 },
   searchText: { fontSize: 16, color: "gray" },
