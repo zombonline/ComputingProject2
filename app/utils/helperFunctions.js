@@ -5,5 +5,20 @@ function getDateYYYYMMDD(inputDate){
 
     return `${yyyy}${mm}${dd}`;
 }
-
-module.exports = {getDateYYYYMMDD};
+async function getLatLong(location){
+    location = encodeURIComponent(location);
+    try{
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${location}&format=json`,
+        {
+            headers: {
+                'User-Agent': 'Commuty/0.1 bradleyj9834@hotmail.com'
+            }
+        });
+        data = await response.json();
+        return data[0]["lat"] + "," + data[0]["lon"];
+    } catch (error) {
+        console.log(error)
+        console.log("couldnt get anything from " + location);
+        return null;
+    }
+}

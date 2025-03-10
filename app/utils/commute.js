@@ -8,13 +8,15 @@ const Errors = {
     INVALID_DESTINATION: "Invalid destination",
 }
 
-class Commute {
-    constructor(origin, destination, arrivalTime) {
+export class Commute {
+    constructor(origin, destination, arrivalTime, days, journeyID) {
         this.origin = origin;
         this.destination = destination;
         this.arrivalTime = arrivalTime;
-        this.duration;
-        this.journeyID;
+        this.days = days;
+        this.duration = null;
+        this.journeyID = journeyID;
+        console.log("Commute created. " + origin + " to " + destination + " at " + arrivalTime + " on " + days + " with ID" + journeyID)
     }
     /**
      * Returns a journeyID using MD5 hash of the journey details. Journey Details are made up of
@@ -72,22 +74,6 @@ class Commute {
         }
 
     }
-
-
-    static async getLatLong(location){
-        location = encodeURIComponent(location);
-        try{
-            const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${location}&format=json`);
-            console.log(response)
-            data = await response.json();
-            return data[0]["lat"] + "," + data[0]["lon"];
-        } catch (error) {
-            error.printStackTrace();
-            console.log("couldnt get anything from " + location);
-            return null;
-        }
-    }
-
     /**
      * Returns all unique commutes between two locations at a given arrival time that occur on days listed in daysList.
      * @param {string} origin - The origin
@@ -166,5 +152,3 @@ class Commute {
         return await data["journeys"][0]["duration"];
     }
 }
-
-module.exports = Commute;
