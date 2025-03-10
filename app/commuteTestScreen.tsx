@@ -2,6 +2,7 @@ import { Text, View, Button, TextInput, ScrollView, Pressable, FlatList, StyleSh
 import { useState } from "react";
 import { getAllUniqueCommutes, getLatLong } from './utils/commute';
 import {validateArrivalTime} from './utils/input_validation';
+import { commuteTestStyles } from "./style"; // Import styles
 
 export default function CommuteTestScreen() {
   const [origin, setOrigin] = useState("");
@@ -32,31 +33,8 @@ export default function CommuteTestScreen() {
     );
   };
 
-    const styles = StyleSheet.create({
-      container: {
-        flex: 1,
-        justifyContent: "center",
-        alignContent: "center",
-        alignItems: "center",
-      },
-      input: {
-        borderWidth: 1,
-        borderRadius: 10,
-        padding: 10,
-        width: "90%",
-        marginTop: 18,
-        borderColor: "grey",
-      },
-    });
   return (
-    <View
-      style={{
-      flex: 1,
-      justifyContent: "flex-end",
-      alignItems: "center",
-      backgroundColor: "#33333E",
-      }}
-    >
+    <View style={commuteTestStyles.container}>
       <CustomInput placeholder="Where do you start?" value={origin} onChangeText={async (text) => 
       {
           setOrigin(text);
@@ -90,7 +68,7 @@ export default function CommuteTestScreen() {
       )}
       />
 
-      <ScrollView style={{ width: "90%", margin: 20, borderWidth: 1,}}>
+      <ScrollView style={commuteTestStyles.scrollView}>
         <View style={{ alignItems: "center" }}>
           {journeys.map((journey, index) => (
             <JourneyButton key={index} journey={journey} />
@@ -104,21 +82,9 @@ export default function CommuteTestScreen() {
 
 }
 function CustomInput({ placeholder, value, onChangeText }) {
-  const styles = StyleSheet.create({
-    input: {
-      borderWidth: 1,
-      borderRadius: 10,
-      padding: 10,
-      width: "90%",
-      marginTop: 18,
-      borderColor: "grey",
-      color: "white",
-    },
-  });
-
   return (
     <TextInput
-      style={styles.input}
+      style={commuteTestStyles.input}
       placeholder={placeholder}
       placeholderTextColor="grey"
       value={value}
@@ -128,23 +94,13 @@ function CustomInput({ placeholder, value, onChangeText }) {
 }
 
 function JourneyButton({journey}){
-    const styles = StyleSheet.create({
-        container: {
-          borderRadius: 10,
-          backgroundColor: "red",
-          padding: 10,
-          width: "90%",
-          marginTop: 10,
-          borderColor: "grey",
-        }});
     return (
-       <View style={styles.container}>
-             <Pressable style={styles.button} onPress={() => {}}>
-               <Text style={styles.buttonText}>
+       <View style={commuteTestStyles.journeyButton}>
+             <Pressable onPress={() => {}}>
+               <Text style={commuteTestStyles.journeyButtonText}>
                  {journey.legs.map(leg => leg.instruction.summary).join("\n")}
                </Text>
              </Pressable>
            </View>
      );
         }
-
