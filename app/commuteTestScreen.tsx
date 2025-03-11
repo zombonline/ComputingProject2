@@ -1,9 +1,10 @@
 import { Text, View, Button, TextInput, ScrollView, Pressable, FlatList, StyleSheet } from "react-native";
 import { useState } from "react";
-import { Commute } from "./utils/commute";
+import { getAllUniqueJourneys, buildJourneyID } from "./utils/commute";
 import { validateArrivalTime } from "./utils/input_validation";
 import { getLatLong } from "./utils/helperFunctions"
 import { commuteTestStyles } from "./style";
+import Commute from "./utils/commute";
 
 export default function CommuteTestScreen() {
   const [origin, setOrigin] = useState("");
@@ -36,6 +37,7 @@ export default function CommuteTestScreen() {
 
   return (
     <View style={commuteTestStyles.container}>
+    <ScrollView style={commuteTestStyles.scrollView}>
     <CustomInput
         placeholder="Where do you start?"
         value={origin}
@@ -85,13 +87,22 @@ export default function CommuteTestScreen() {
       <Button
         title="View Possible Journeys"
         onPress={async () => {
-          setJourneys(await Commute.getAllUniqueCommutes(originLatLong, destinationLatLong, arrivalTime, selectedDays));
+            console.log("i try")
+            const v = await Commute.getAllUniqueJourneys(originLatLong, destinationLatLong, arrivalTime, selectedDays);
+          console.log("Hello")
+          setJourneys(v);
         }}
       />
       <Button
         title="Submit"
-        onPress={() => setCommute(new Commute(originLatLong, destinationLatLong, arrivalTime, selectedDays, journeyID))}
+        onPress={() => {
+            const newCommute = new Commute(originLatLong, destinationLatLong, arrivalTime, selectedDays, journeyID);
+            newCommute.init();
+            setCommute(newCommute)}}
+
       />
+      </ScrollView>
+      <Text style={{ color: "white" }}>{String(commute)}</Text>
     </View>
   );
 }

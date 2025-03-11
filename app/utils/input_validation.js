@@ -1,10 +1,8 @@
-
 const Errors = {
     INVALID_ARRIVAL_TIME: "Invalid arrival time",
     INVALID_ORIGIN: "Invalid origin",
     INVALID_DESTINATION: "Invalid destination",
 }
-
 /**
  * Validates the arrival time. Arrival time must be a string of length 4, containing only numbers
  * and be between 0000 and 2359.

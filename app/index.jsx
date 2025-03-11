@@ -1,14 +1,24 @@
 import { Text, View, ActivityIndicator, StyleSheet, Image } from "react-native";
 import React, { act, useEffect } from "react";
 import { useRouter, Link } from "expo-router";
-import { indexStyles } from "./style"; // Import styles from style.js
+import { indexStyles } from "./style";
+import { requestPermissions, scheduleNotification, setupNotificationChannel, checkScheduledNotifications } from './utils/notifManager';
+import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
 
 const App = () => {
   const router = useRouter();
 
-  useEffect(() => {  
+  useEffect(() => {
+      Notifications.presentNotificationAsync({
+        title: "Notifcation Test",
+        body: "HELLO!!!!!!",
+      });
+    requestPermissions();
+    setupNotificationChannel();
+    scheduleNotification();
     setTimeout(() => {
-      router.replace('/home'); // Redirects to the Home screen after 6 seconds
+      router.replace('/home');
     }, 1000);
   }, []);
 
