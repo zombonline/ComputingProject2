@@ -10,12 +10,6 @@ const Settings = () => {
   return (
     <View style={commonStyles.container}>
 
-      {/* Search Bar */}
-      <View style={commonStyles.searchContainer}>
-        <Ionicons name="search" size={20} color="black" style={settingsStyles.searchIcon} />
-        <Text style={commonStyles.searchText}>Search location</Text>
-      </View>
-
       {/* Settings Panel */}
       <View style={settingsStyles.settingsPanel}>
         <Text style={settingsStyles.panelTitle}>Settings</Text>

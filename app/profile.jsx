@@ -10,15 +10,6 @@ export default function Account() {
 
   return (
     <View style={commonStyles.container}>
-      <Image source={splashCoffee} style={accountStyles.imageBackground} />
-      <View style={commonStyles.searchContainer}>
-        <Icon name="search" size={24} color="#000" style={commonStyles.searchIcon} />
-        <TextInput
-          placeholder="Search location"
-          placeholderTextColor="#666"
-          style={commonStyles.searchInput}
-        />
-      </View>
       <View style={accountStyles.bottomSection}>
         <Icon name="chevron-up" size={28} color="#fff" style={accountStyles.chevronUp} />
         <Text style={accountStyles.profileTitle}>Profile</Text>

@@ -1,24 +1,35 @@
 import React from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { Slot, useRouter, usePathname } from "expo-router";
+import { commonStyles } from "./style";
 
 const Layout = () => {
   const router = useRouter();
   const pathname = usePathname(); // Get current route
 
-  // Define pages where you want to hide the bottom nav
-  const excludedRoutes = ["/",];
+  // Define pages where the search bar or bottom nav should be hidden
+  const excludedSearch = ["/", "/commuteTestScreen", ];
+  const excludedBottomNav = ["/"];
 
   return (
     <View style={styles.container}>
+      {/* Show Search Bar only if the page is NOT in excludedRoutes */}
+      {!excludedSearch.includes(pathname) && (
+        <View style={commonStyles.searchContainer}>
+          <FontAwesome name="search" size={20} color="black" style={commonStyles.searchIcon} />
+          <TextInput placeholder="Search location" style={commonStyles.searchInput} />
+        </View>
+      )}
+
       {/* Page Content */}
       <View style={styles.pageContent}>
         <Slot /> {/* This loads the current screen */}
       </View>
 
-      {/* Show bottom nav only if the page is NOT in excludedRoutes */}
-      {!excludedRoutes.includes(pathname) && (
+      {/* Show Bottom Nav only if the page is NOT in excludedRoutes */}
+      {!excludedBottomNav.includes(pathname) && (
         <View style={styles.bottomNav}>
           <TouchableOpacity onPress={() => router.push("/settings")}>
             <Ionicons
