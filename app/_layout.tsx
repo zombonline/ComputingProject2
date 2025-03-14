@@ -7,15 +7,17 @@ import { commonStyles } from "./style";
 
 const Layout = () => {
   const router = useRouter();
-  const pathname = usePathname(); // Get current route
+  const pathname = usePathname();
 
-  // Define pages where the search bar or bottom nav should be hidden
-  const excludedSearch = ["/", "/commuteTestScreen", ];
-  const excludedBottomNav = ["/"];
+  // Pages that should NOT show the search bar
+  const excludedSearch = ["/", "/commuteTestScreen", "/login", "/signup"];
+  
+  // Pages that should NOT show the bottom nav
+  const excludedBottomNav = ["/", "/login", "/signup"];
 
   return (
     <View style={styles.container}>
-      {/* Show Search Bar only if the page is NOT in excludedRoutes */}
+      {/* Conditionally render the search bar */}
       {!excludedSearch.includes(pathname) && (
         <View style={commonStyles.searchContainer}>
           <FontAwesome name="search" size={20} color="black" style={commonStyles.searchIcon} />
@@ -23,12 +25,12 @@ const Layout = () => {
         </View>
       )}
 
-      {/* Page Content */}
+      {/* The current screen */}
       <View style={styles.pageContent}>
-        <Slot /> {/* This loads the current screen */}
+        <Slot />
       </View>
 
-      {/* Show Bottom Nav only if the page is NOT in excludedRoutes */}
+      {/* Conditionally render the bottom nav */}
       {!excludedBottomNav.includes(pathname) && (
         <View style={styles.bottomNav}>
           <TouchableOpacity onPress={() => router.push("/settings")}>
@@ -38,13 +40,15 @@ const Layout = () => {
               color={pathname === "/settings" ? "#DC9F85" : "white"}
             />
           </TouchableOpacity>
+
           <TouchableOpacity onPress={() => router.push("/commuteTestScreen")}>
             <Ionicons
               name="home-outline"
               size={28}
-              color={pathname === "/commutes" ? "#DC9F85" : "white"}
+              color={pathname === "/commuteTestScreen" ? "#DC9F85" : "white"}
             />
           </TouchableOpacity>
+
           <TouchableOpacity onPress={() => router.push("/profile")}>
             <Ionicons
               name="person-outline"
@@ -59,12 +63,8 @@ const Layout = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  pageContent: {
-    flex: 1, // Allows the page content to take full height
-  },
+  container: { flex: 1 },
+  pageContent: { flex: 1 },
   bottomNav: {
     flexDirection: "row",
     justifyContent: "space-around",

@@ -25,12 +25,16 @@ export default function Account() {
           <Text style={accountStyles.accountSettingsText}>Account Settings</Text>
         </TouchableOpacity>
         <View style={accountStyles.loginRow}>
-          <TouchableOpacity
-            style={accountStyles.loginButton}
-            onPress={() => router.push("profile")}
-          >
-            <Text style={accountStyles.loginButtonText}>Log In</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={accountStyles.loginButton}
+          onPress={() => {
+          console.log("Navigating to /login");
+          router.push("/login");
+          }}
+>
+          <Text style={accountStyles.loginButtonText}>Log In</Text>
+        </TouchableOpacity>
+
           <TouchableOpacity style={accountStyles.logoutButton}>
             <Text style={accountStyles.logoutButtonText}>Log out</Text>
           </TouchableOpacity>
