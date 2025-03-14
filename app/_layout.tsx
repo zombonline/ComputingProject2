@@ -10,8 +10,8 @@ const Layout = () => {
   const pathname = usePathname(); // Get current route
 
   // Define pages where the search bar or bottom nav should be hidden
-  const excludedSearch = ["/", "/commuteTestScreen", ];
-  const excludedBottomNav = ["/"];
+  const excludedSearch = ["/", "/commuteTestScreen","signup","login" ];
+  const excludedBottomNav = ["/","login","signup"];
 
   return (
     <View style={styles.container}>
