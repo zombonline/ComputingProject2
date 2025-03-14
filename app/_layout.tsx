@@ -7,17 +7,15 @@ import { commonStyles } from "./style";
 
 const Layout = () => {
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname(); // Get current route
 
-  // Pages that should NOT show the search bar
-  const excludedSearch = ["/", "/commuteTestScreen", "/login", "/signup"];
-  
-  // Pages that should NOT show the bottom nav
-  const excludedBottomNav = ["/", "/login", "/signup"];
+  // Define pages where the search bar or bottom nav should be hidden
+  const excludedSearch = ["/", "/commuteTestScreen", ];
+  const excludedBottomNav = ["/"];
 
   return (
     <View style={styles.container}>
-      {/* Conditionally render the search bar */}
+      {/* Show Search Bar only if the page is NOT in excludedRoutes */}
       {!excludedSearch.includes(pathname) && (
         <View style={commonStyles.searchContainer}>
           <FontAwesome name="search" size={20} color="black" style={commonStyles.searchIcon} />
@@ -30,7 +28,7 @@ const Layout = () => {
         <Slot />
       </View>
 
-      {/* Conditionally render the bottom nav */}
+      {/* Show Bottom Nav only if the page is NOT in excludedRoutes */}
       {!excludedBottomNav.includes(pathname) && (
         <View style={styles.bottomNav}>
           <TouchableOpacity onPress={() => router.push("/settings")}>
@@ -45,7 +43,7 @@ const Layout = () => {
             <Ionicons
               name="home-outline"
               size={28}
-              color={pathname === "/commuteTestScreen" ? "#DC9F85" : "white"}
+              color={pathname === "/commutes" ? "#DC9F85" : "white"}
             />
           </TouchableOpacity>
 
@@ -54,6 +52,13 @@ const Layout = () => {
               name="person-outline"
               size={28}
               color={pathname === "/profile" ? "#DC9F85" : "white"}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/commutes")}>
+            <Ionicons
+              name="bus-outline"
+              size={28}
+              color={pathname === "/commutes" ? "#DC9F85" : "white"}
             />
           </TouchableOpacity>
         </View>
