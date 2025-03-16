@@ -1,22 +1,47 @@
 import fetch from 'node-fetch';
 import { getDateYYYYMMDD } from './helperFunctions';
 import CryptoJS from "crypto-js";
+import { saveCommute } from "./accountStorage";
+
 base_url = "https://api.tfl.gov.uk/Journey/JourneyResults"
 export class Commute {
-    constructor(origin, destination, arrivalTime, days, journeyID) {
+    constructor(origin, originLatLong, destination, destinationLatLong, arrivalTime, days, journeyId) {
         this.origin = origin;
+        this.originLatLong = originLatLong;
         this.destination = destination;
+        this.destinationLatLong = destinationLatLong;
         this.arrivalTime = arrivalTime;
         this.days = days;
-        this.journeyID = journeyID;
+        this.journeyId = journeyId;
         this.duration = null;
-        console.log("Commute created. " + origin + " to " + destination + " at " + arrivalTime + " on " + days + " with ID " + journeyID)
+        this.commuteId = this.generateCommuteId();
+        console.log("Commute created. " + origin + " to " + destination + " at " + arrivalTime + " on " + days + " with ID " + journeyId)
     }
     async init(){
-        this.duration = await Commute.getAverageJourneyDuration(this.origin, this.destination, this.arrivalTime, 20, this.journeyID);
+        this.duration = await Commute.getAverageJourneyDuration(this.origin, this.destination, this.arrivalTime, 20, this.journeyId);
         console.log("Commute duration: " + this.duration);
+        this.save();
     }
-
+    /**
+     * Saves the commute instance to local storage.
+     * @returns {Promise<void>}
+     */
+    async save() {
+        try {
+            await saveCommute(this);
+            console.log(`Commute ${this.commuteId} saved successfully.`);
+        } catch (error) {
+            console.error("Error saving commute:", error);
+        }
+    }
+    /**
+     * Generates a unique commute ID based on journeyID, arrival time, and days.
+     * @returns {string} - A unique commute identifier.
+     */
+    generateCommuteId() {
+        const dataString = `${this.journeyId}_${this.arrivalTime}_${this.days.sort().join("")}`;
+        return CryptoJS.MD5(dataString).toString();
+    }
     /**
     * Returns the duration of the journey in minutes.
     * @param {Date} date - The date to check.
@@ -29,7 +54,7 @@ export class Commute {
             return null;
         }
         for(let i = 0; i < journeys.length; i++){
-            if(Commute.buildJourneyID(journeys[i]) == this.journeyID){
+            if(Commute.buildJourneyId(journeys[i]) == this.journeyId){
                 console.log("Average duration: " + this.duration + " Today's Duration: " + journeys[i]["duration"])
                 return journeys[i]["duration"];
             }
@@ -42,26 +67,26 @@ export class Commute {
      * @param {object} journey - The journey object from the TFL API.
      * @returns {string} - The MD5 hash of the journey details.
      */
-    static buildJourneyID(journey) {
-        id = "";
-        prevNaptanID = "";
+    static buildJourneyId(journey) {
+        let journeyId = "";
+        let prevNaptanId = "";
         journey.legs.forEach(leg => {
-            depNaptanID = leg["departurePoint"]["naptanId"];
-            arrNaptanID = leg["arrivalPoint"]["naptanId"];
-            mode = leg["mode"]["id"];
-            if(depNaptanID != prevNaptanID && depNaptanID != undefined){
-                id += depNaptanID
-                prevNaptanID = depNaptanID;
+            const depNaptanId = leg["departurePoint"]["naptanId"];
+            const arrNaptanId = leg["arrivalPoint"]["naptanId"];
+            const mode = leg["mode"]["id"];
+            if(depNaptanId != prevNaptanId && depNaptanId != undefined){
+                journeyId += depNaptanId
+                prevNaptanId = depNaptanId;
             }
-            if(depNaptanID !=undefined && arrNaptanID != undefined){
-                id += mode;
+            if(depNaptanId !=undefined && arrNaptanId != undefined){
+                journeyId += mode;
             }
-            if(arrNaptanID != prevNaptanID && arrNaptanID != undefined){
-                id += arrNaptanID
-                prevNaptanID = arrNaptanID;
+            if(arrNaptanId != prevNaptanId && arrNaptanId != undefined){
+                journeyId += arrNaptanId
+                prevNaptanId = arrNaptanId;
             }
         });
-        const hash = CryptoJS.MD5(id).toString();
+        const hash = CryptoJS.MD5(journeyId).toString();
         return hash;
     }
     /**
@@ -74,12 +99,12 @@ export class Commute {
      * @returns {number} - The median of the commute durations.
      * @throws {Error} - If the API call fails.
      */
-    static async getAverageJourneyDuration(origin, destination, arrivalTime, iterations, journeyID){
+    static async getAverageJourneyDuration(origin, destination, arrivalTime, iterations, journeyId){
         console.log("Getting average commute duration")
-        promises = []
-        dateToCheck = new Date();
+        let promises = []
+        let dateToCheck = new Date();
         for(let i = 0; i < iterations; i++) {
-            promises.push(Commute.getJourneyDuration(origin, destination, arrivalTime, getDateYYYYMMDD(dateToCheck), journeyID));
+            promises.push(Commute.getJourneyDuration(origin, destination, arrivalTime, getDateYYYYMMDD(dateToCheck), journeyId));
             dateToCheck.setDate(dateToCheck.getDate() + 1);
         }
         try{
@@ -105,18 +130,17 @@ export class Commute {
      * @throws {Error} - If the API call fails.
      **/
     static async getAllUniqueJourneys(origin, destination, arrivalTime, daysList){
-        console.log("Getting all unique commutes");
+        console.log("Getting all unique journeys");
         daysList.sort();
-        promises = []
-        dateToCheck = new Date();
+        let promises = [];
+        let dateToCheck = new Date();
+        console.log(dateToCheck)
         dateToCheck.setDate(dateToCheck.getDate() - dateToCheck.getDay()); //set to Sunday
-        uniqueJourneys = [];
-        uniqueJourneyIDs = [];
-        allJourneys = [];
-        console.log("set upr")
+        let uniqueJourneys = [];
+        let uniqueJourneyIds = [];
+        let allJourneys = [];
         for(let i = 0; i < 7; i++) {
             if(daysList.includes(i)){
-                console.log("adding day promise")
                 console.log(getDateYYYYMMDD(dateToCheck))
                 promises.push(Commute.getUniqueJourneys(origin, destination, arrivalTime, getDateYYYYMMDD(dateToCheck)));
             }
@@ -133,14 +157,15 @@ export class Commute {
                 }
             }    
         } catch (error) {
-
             console.log("Error: " + error)
             throw new Error(error);
         }
+        console.log("finished getting all journeys, removing dupes")
         for(let i = 0; i < allJourneys.length; i++){
-            const id = Commute.buildJourneyID(allJourneys[i]);
-            if(!uniqueJourneyIDs.includes(id)){
-                uniqueJourneyIDs.push(id);
+            const id = Commute.buildJourneyId(allJourneys[i]);
+            console.log(id);
+            if(!uniqueJourneyIds.includes(id)){
+                uniqueJourneyIds.push(id);
                 uniqueJourneys.push(allJourneys[i]);
             }
         }
@@ -170,7 +195,7 @@ export class Commute {
      * @returns {number} - The commute duration in minutes.
      * @throws {Error} - If the API call fails. 
      */
-    static async getJourneyDuration(origin, destination, arrivalTime, arrivalDate, journeyID){
+    static async getJourneyDuration(origin, destination, arrivalTime, arrivalDate, journeyId){
         const params = new URLSearchParams({
             time: arrivalTime,        
             timeIs: "Arriving",
@@ -179,8 +204,8 @@ export class Commute {
         const response = await fetch(`https://api.tfl.gov.uk/Journey/JourneyResults/${origin}/to/${destination}?${params}`);
         data = await response.json();
         for(let i = 0; i < data["journeys"].length; i++){
-            let id = Commute.buildJourneyID(data["journeys"][i])
-            if(id == journeyID)
+            let id = Commute.buildJourneyId(data["journeys"][i])
+            if(id == journeyId)
             {
                 return await data["journeys"][i]["duration"];
             }

@@ -10,7 +10,7 @@ const Layout = () => {
   const pathname = usePathname(); // Get current route
 
   // Define pages where the search bar or bottom nav should be hidden
-  const excludedSearch = ["/", "/commuteTestScreen","/signup","/login" ];
+  const excludedSearch = ["/", "/commuteTestScreen","/signup","/login", "/savedCommutesTestScreen" ];
   const excludedBottomNav = ["/","/login","/signup"];
 
   return (
@@ -38,7 +38,6 @@ const Layout = () => {
               color={pathname === "/settings" ? "#DC9F85" : "white"}
             />
           </TouchableOpacity>
-
           <TouchableOpacity onPress={() => router.push("/commuteTestScreen")}>
             <Ionicons
               name="home-outline"
@@ -46,7 +45,13 @@ const Layout = () => {
               color={pathname === "/commutes" ? "#DC9F85" : "white"}
             />
           </TouchableOpacity>
-
+          <TouchableOpacity onPress={() => router.push("/savedCommutesTestScreen")}>
+            <Ionicons
+              name="home-outline"
+              size={28}
+              color={pathname === "/commutes" ? "#DC9F85" : "white"}
+            />
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push("/profile")}>
             <Ionicons
               name="person-outline"

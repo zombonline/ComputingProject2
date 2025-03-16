@@ -10,10 +10,6 @@ const App = () => {
   const router = useRouter();
 
   useEffect(() => {
-      Notifications.presentNotificationAsync({
-        title: "Notifcation Test",
-        body: "HELLO!!!!!!",
-      });
     requestPermissions();
     setupNotificationChannel();
     scheduleNotification();

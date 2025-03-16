@@ -1,22 +1,25 @@
-import { Text, View, Button, TextInput, ScrollView, Pressable, FlatList, StyleSheet } from "react-native";
+import { Text, View, Button, TextInput, ScrollView, Pressable, FlatList } from "react-native";
 import { useState } from "react";
-import { getAllUniqueJourneys, buildJourneyID } from "./utils/commute";
+import { getAllUniqueJourneys, buildJourneyId } from "./utils/commute";
 import { validateArrivalTime } from "./utils/input_validation";
-import { getLatLong } from "./utils/helperFunctions"
+import { getLatLong } from "./utils/helperFunctions";
 import { commuteTestStyles } from "./style";
 import Commute from "./utils/commute";
+import { useLocalSearchParams } from "expo-router";
+import { removeCommute } from "./utils/accountStorage";
 
 export default function CommuteTestScreen() {
-  const [origin, setOrigin] = useState("");
-  const [originLatLong, setOriginLatLong] = useState("");
-  const [destination, setDestination] = useState("");
-  const [destinationLatLong, setDestinationLatLong] = useState("");
-  const [arrivalTime, setArrivalTime] = useState("");
-  const [instructions, setInstructions] = useState("");
+  const params = useLocalSearchParams();
+  const [origin, setOrigin] = useState(params.origin || "");
+  const [originLatLong, setOriginLatLong] = useState(params.originLatLong || "");
+  const [destination, setDestination] = useState(params.destination || "");
+  const [destinationLatLong, setDestinationLatLong] = useState(params.destinationLatLong || "");
+  const [arrivalTime, setArrivalTime] = useState(params.arrivalTime || "");
+  const [selectedDays, setSelectedDays] = useState(params.days ? JSON.parse(params.days) : []);
+  const [journeyId, setJourneyId] = useState(params.journeyId || "");
+  const [commuteIdToDelete, setCommuteIdToDelete] = useState(params.commuteId || "");
   const [arrivalTimeValid, setArrivalTimeValid] = useState(false);
-  const [selectedDays, setSelectedDays] = useState([]);
   const [journeys, setJourneys] = useState([]);
-  const [journeyID, setJourneyID] = useState("");
   const [commute, setCommute] = useState();
 
   const days = [
@@ -37,71 +40,71 @@ export default function CommuteTestScreen() {
 
   return (
     <View style={commuteTestStyles.container}>
-    <ScrollView style={commuteTestStyles.scrollView}>
-    <CustomInput
-        placeholder="Where do you start?"
-        value={origin}
-        onChangeText={async (text) => {
+        <CustomInput
+          placeholder="Where do you start?"
+          value={origin}
+          onChangeText={async (text) => {
             setOrigin(text);
             setOriginLatLong(await getLatLong(text));
-        }}
-      />
-      <Text style={{ color: "white" }}> {String(originLatLong)} </Text>
-      <CustomInput
-        placeholder="Where are you headed?"
-        value={destination}
-        onChangeText={async (text) => {
-          setDestination(text);
-          setDestinationLatLong(await getLatLong(text));
-        }}
-      />
-      <Text style={{ color: "white" }}> {String(destinationLatLong)} </Text>
-      <CustomInput
-        placeholder="What time do you arrive?"
-        value={arrivalTime}
-        onChangeText={(text) => {
-          setArrivalTime(text);
-          setArrivalTimeValid(validateArrivalTime(text));
-        }}
-      />
-      <Text style={{ color: "white" }}>{String(arrivalTimeValid)}</Text>
-      <Text style={{ color: "white" }}>{instructions}</Text>
-      <FlatList
-        data={days}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <Pressable onPress={() => toggleItem(item.id)}>
-            <Text style={{color: "white"}}>
-              {selectedDays.includes(item.id) ? "☑️" : "⬜"} {item.name}
-            </Text>
-          </Pressable>
-        )}
-      />
+          }}
+        />
+        <Text style={{ color: "white" }}> {String(originLatLong)} </Text>
+        <CustomInput
+          placeholder="Where are you headed?"
+          value={destination}
+          onChangeText={async (text) => {
+            setDestination(text);
+            setDestinationLatLong(await getLatLong(text));
+          }}
+        />
+        <Text style={{ color: "white" }}> {String(destinationLatLong)} </Text>
+        <CustomInput
+          placeholder="What time do you arrive?"
+          value={arrivalTime}
+          onChangeText={(text) => {
+            setArrivalTime(text);
+            setArrivalTimeValid(validateArrivalTime(text));
+          }}
+        />
+        <Text style={{ color: "white" }}>{String(arrivalTimeValid)}</Text>
+        <FlatList
+          data={days}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <Pressable onPress={() => toggleItem(item.id)}>
+              <Text style={{ color: "white" }}>
+                {selectedDays.includes(item.id) ? "☑️" : "⬜"} {item.name}
+              </Text>
+            </Pressable>
+          )}
+        />
+      <View style={{maxHeight:300}} >
       <ScrollView style={commuteTestStyles.scrollView}>
-        <View style={{ alignItems: "center" }}>
+        <View style={{ alignItems: "center", padding:10 }}>
           {journeys.map((journey, index) => (
-            <JourneyButton key={index} journey={journey} setJourneyID={setJourneyID} />
+            <JourneyButton key={index} journey={journey} setJourneyId={setJourneyId} />
           ))}
         </View>
       </ScrollView>
-      <Button
-        title="View Possible Journeys"
-        onPress={async () => {
-            console.log("i try")
+      </View>
+      <View style={{ alignItems: "center", padding:10 }}>
+        <Button
+          title="View Possible Journeys"
+          onPress={async () => {
             const v = await Commute.getAllUniqueJourneys(originLatLong, destinationLatLong, arrivalTime, selectedDays);
-          console.log("Hello")
-          setJourneys(v);
-        }}
-      />
-      <Button
-        title="Submit"
-        onPress={() => {
-            const newCommute = new Commute(originLatLong, destinationLatLong, arrivalTime, selectedDays, journeyID);
+            setJourneys(v);
+          }}
+        />
+        <Button
+          title="Submit"
+          onPress={() => {
+            removeCommute(commuteIdToDelete);
+            const newCommute = new Commute(origin, originLatLong, destination, destinationLatLong, arrivalTime, selectedDays, journeyId);
             newCommute.init();
-            setCommute(newCommute)}}
-
-      />
-      </ScrollView>
+            setCommute(newCommute);
+          }}
+        />
+        </View>
       <Text style={{ color: "white" }}>{String(commute)}</Text>
     </View>
   );
@@ -119,17 +122,17 @@ function CustomInput({ placeholder, value, onChangeText }) {
   );
 }
 
-function JourneyButton({ journey, setJourneyID }) {
+function JourneyButton({ journey, setJourneyId }) {
   return (
-       <View style={commuteTestStyles.journeyButton}>
-       <Pressable
+    <View style={commuteTestStyles.journeyButton}>
+      <Pressable
         onPress={() => {
-          const newID = Commute.buildJourneyID(journey);
-          setJourneyID(newID);
+          const newId = Commute.buildJourneyId(journey);
+          setJourneyId(newId);
         }}
       >
-       <Text style={commuteTestStyles.journeyButtonText}>
-        {journey.legs.map((leg) => leg.instruction.summary).join("\n")}
+        <Text style={commuteTestStyles.journeyButtonText}>
+          {journey.legs.map((leg) => leg.instruction.summary).join("\n")}
         </Text>
       </Pressable>
     </View>
