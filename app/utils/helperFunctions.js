@@ -5,7 +5,10 @@ export function getDateYYYYMMDD(inputDate){
 
     return `${yyyy}${mm}${dd}`;
 }
+
+lastLatLongCall = 0;
 export async function getLatLong(location){
+
     console.log("Getting lat long for " + location)
     location = encodeURIComponent(location);
     try{

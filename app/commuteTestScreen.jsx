@@ -7,12 +7,18 @@ import { commuteTestStyles } from "./style";
 import Commute from "./utils/commute";
 import { useLocalSearchParams } from "expo-router";
 import { removeCommute } from "./utils/accountStorage";
+import useDebouncedState from "./utils/useDebouncedState";
 
 export default function CommuteTestScreen() {
   const params = useLocalSearchParams();
-  const [origin, setOrigin] = useState(params.origin || "");
+  const [name, setName] = useState(params.name || "");
+  const [origin, setOrigin] = useDebouncedState("", 500, async (text) => {
+    setOriginLatLong(await getLatLong(text));
+  });
   const [originLatLong, setOriginLatLong] = useState(params.originLatLong || "");
-  const [destination, setDestination] = useState(params.destination || "");
+  const [destination, setDestination] = useDebouncedState("", 500, async (text) => {
+    setDestinationLatLong(await getLatLong(text));
+  });
   const [destinationLatLong, setDestinationLatLong] = useState(params.destinationLatLong || "");
   const [arrivalTime, setArrivalTime] = useState(params.arrivalTime || "");
   const [selectedDays, setSelectedDays] = useState(params.days ? JSON.parse(params.days) : []);
@@ -40,23 +46,10 @@ export default function CommuteTestScreen() {
 
   return (
     <View style={commuteTestStyles.container}>
-        <CustomInput
-          placeholder="Where do you start?"
-          value={origin}
-          onChangeText={async (text) => {
-            setOrigin(text);
-            setOriginLatLong(await getLatLong(text));
-          }}
-        />
+        <CustomInput placeholder="Give your commute a name" value={name} onChangeText={setName} />
+        <CustomInput placeholder="Where do you start?" value={origin} onChangeText={setOrigin} />
         <Text style={{ color: "white" }}> {String(originLatLong)} </Text>
-        <CustomInput
-          placeholder="Where are you headed?"
-          value={destination}
-          onChangeText={async (text) => {
-            setDestination(text);
-            setDestinationLatLong(await getLatLong(text));
-          }}
-        />
+        <CustomInput placeholder="Where are you headed?" value={destination} onChangeText={setDestination} />
         <Text style={{ color: "white" }}> {String(destinationLatLong)} </Text>
         <CustomInput
           placeholder="What time do you arrive?"
@@ -99,7 +92,7 @@ export default function CommuteTestScreen() {
           title="Submit"
           onPress={() => {
             removeCommute(commuteIdToDelete);
-            const newCommute = new Commute(origin, originLatLong, destination, destinationLatLong, arrivalTime, selectedDays, journeyId);
+            const newCommute = new Commute(name, origin, originLatLong, destination, destinationLatLong, arrivalTime, selectedDays, journeyId);
             newCommute.init();
             setCommute(newCommute);
           }}

@@ -27,6 +27,7 @@ const SavedCommutesTestScreen = () => {
                     onPress={() => router.push({
                             pathname: "/commuteTestScreen",
                             params: {
+                              name: commute.name,
                               origin: commute.origin,
                               originLatLong: commute.originLatLong,
                               destination: commute.destination,
@@ -37,6 +38,7 @@ const SavedCommutesTestScreen = () => {
                               commuteId: commute.commuteId,
                             },
                           })}>
+                        <Text style={styles.text}>Name: {commute.name}</Text>
                         <Text style={styles.text}>From: {commute.origin}</Text>
                         <Text style={styles.text}>From (Lat/Long): {commute.originLatLong}</Text>
                         <Text style={styles.text}>To: {commute.destination}</Text>

@@ -5,7 +5,8 @@ import { saveCommute } from "./accountStorage";
 
 base_url = "https://api.tfl.gov.uk/Journey/JourneyResults"
 export class Commute {
-    constructor(origin, originLatLong, destination, destinationLatLong, arrivalTime, days, journeyId) {
+    constructor(name, origin, originLatLong, destination, destinationLatLong, arrivalTime, days, journeyId) {
+        this.name = name;
         this.origin = origin;
         this.originLatLong = originLatLong;
         this.destination = destination;
