@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet, Pressable } from "react-native";
 import { getCommutes } from "./utils/accountStorage";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-const router = useRouter(); // Use Expo Router for navigation
+const router = useRouter(); 
 
 const SavedCommutesTestScreen = () => {
     const [commutes, setCommutes] = useState({});
