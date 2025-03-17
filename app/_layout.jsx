@@ -1,25 +1,55 @@
-import React from "react";
+// app/_layout.jsx
+import React, { useContext, useEffect, useState } from "react";
 import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import { Slot, useRouter, usePathname } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import { Slot, useRouter, usePathname } from "expo-router";
 import { commonStyles } from "./style";
+import { SettingsPanelModeProvider, SettingsPanelModeContext } from "./utils/SettingsPanelModeContext";
 
-const Layout = () => {
+// This is your inner Layout component that uses the context.
+function Layout() {
   const router = useRouter();
-  const pathname = usePathname(); // Get current route
+  const pathname = usePathname();
+  const { mode } = useContext(SettingsPanelModeContext);
+  const [localMode, setLocalMode] = useState(mode);
 
-  // Define pages where the search bar or bottom nav should be hidden
-  const excludedSearch = ["/", "/commuteTestScreen","/signup","/login", "/savedCommutesTestScreen" ];
-  const excludedBottomNav = ["/","/login","/signup"];
+  useEffect(() => {
+    console.log("Layout detected mode change:", mode);
+    setLocalMode(mode);
+  }, [mode]);
+
+  console.log("Current pathname:", pathname);
+  console.log("Settings panel mode (context):", mode);
+  console.log("Local mode:", localMode);
+
+  // Define pages where the search bar should always be hidden.
+  const excludedSearch = ["/", "/commuteTestScreen"];
+  // For settings routes: show search bar only if localMode is "half"
+  // For other routes: show the search bar (if not in excludedSearch)
+  const showSearch =
+    !excludedSearch.includes(pathname) &&
+    (pathname.startsWith("/settings") ? localMode === "half" : true);
+
+  console.log("Computed showSearch:", showSearch);
+
+  // Define pages where bottom navigation is hidden.
+  const excludedBottomNav = ["/"];
 
   return (
     <View style={styles.container}>
-      {/* Show Search Bar only if the page is NOT in excludedRoutes */}
-      {!excludedSearch.includes(pathname) && (
+      {showSearch && (
         <View style={commonStyles.searchContainer}>
-          <FontAwesome name="search" size={20} color="black" style={commonStyles.searchIcon} />
-          <TextInput placeholder="Search location" style={commonStyles.searchInput} />
+          <FontAwesome
+            name="search"
+            size={20}
+            color="black"
+            style={commonStyles.searchIcon}
+          />
+          <TextInput
+            placeholder="Search location"
+            style={commonStyles.searchInput}
+          />
         </View>
       )}
 
@@ -28,7 +58,6 @@ const Layout = () => {
         <Slot />
       </View>
 
-      {/* Show Bottom Nav only if the page is NOT in excludedRoutes */}
       {!excludedBottomNav.includes(pathname) && (
         <View style={styles.bottomNav}>
           <TouchableOpacity onPress={() => router.push("/settings")}>
@@ -38,27 +67,7 @@ const Layout = () => {
               color={pathname === "/settings" ? "#DC9F85" : "white"}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/commuteTestScreen")}>
-            <Ionicons
-              name="home-outline"
-              size={28}
-              color={pathname === "/commutes" ? "#DC9F85" : "white"}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/savedCommutesTestScreen")}>
-            <Ionicons
-              name="home-outline"
-              size={28}
-              color={pathname === "/commutes" ? "#DC9F85" : "white"}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/profile")}>
-            <Ionicons
-              name="person-outline"
-              size={28}
-              color={pathname === "/profile" ? "#DC9F85" : "white"}
-            />
-          </TouchableOpacity>
+
           <TouchableOpacity onPress={() => router.push("/commutes")}>
             <Ionicons
               name="bus-outline"
@@ -66,11 +75,20 @@ const Layout = () => {
               color={pathname === "/commutes" ? "#DC9F85" : "white"}
             />
           </TouchableOpacity>
+         
+          <TouchableOpacity onPress={() => router.push("/profile")}>
+            <Ionicons
+              name="person-outline"
+              size={28}
+              color={pathname === "/profile" ? "#DC9F85" : "white"}
+            />
+          </TouchableOpacity>
+          
         </View>
       )}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
@@ -90,4 +108,11 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Layout;
+// This is the single default export that wraps your Layout in the global provider.
+export default function LayoutWrapper() {
+  return (
+    <SettingsPanelModeProvider>
+      <Layout />
+    </SettingsPanelModeProvider>
+  );
+}

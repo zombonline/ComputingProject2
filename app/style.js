@@ -6,22 +6,18 @@ export const commonStyles = StyleSheet.create({
     backgroundColor: "#F0F0F0",
   },
   searchContainer: {
-    flexDirection: "row",
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 10,
-    margin: 10,
-    marginHorizontal: 20,
-    alignItems: "center",
     position: "absolute",
-    top: 40,
+    top: Platform.OS === "ios" ? 50 : 30,
     left: 20,
     right: 20,
-    zIndex: 1,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 30,
+    paddingHorizontal: 15,
+    height: 50,
     elevation: 3,
+    zIndex: 2,
   },
   searchIcon: {
     marginRight: 10,
@@ -34,18 +30,29 @@ export const commonStyles = StyleSheet.create({
     fontSize: 16,
     color: "gray",
   },
-  settingsPanel: {
-    backgroundColor: "#33333E",
-    borderRadius: 10,
+  Panel: {
+    position: "absolute",
+    bottom: 0, // raise above bottom nav if needed
+    left: 0,
+    right: 0,
+    backgroundColor: "#33333e",
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
     padding: 20,
-    margin: 20,
+    alignItems: "center",
+  },
+   chevronUp: {
+    alignItems: "center",
+    padding: 10,
   },
   panelTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "black",
+    color: "white",
     marginBottom: 10,
+    textAlign: "center",
   },
+
   settingButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -96,33 +103,21 @@ export const indexStyles = StyleSheet.create({
 
 // Styles for settings.jsx
 export const settingsStyles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F0F0F0" },
-  header: { fontSize: 24, fontWeight: "bold", padding: 20 },
-
-  searchContainer: {
-    flexDirection: "row",
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 10,
-    marginHorizontal: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
+  container: {
+    flex: 1,
+    backgroundColor: "#F0F0F0",
   },
-  searchIcon: { marginRight: 10 },
-  searchText: { fontSize: 16, color: "gray" },
+  container: commonStyles.container,
 
-  settingsPanel: {
-    backgroundColor: "#33333e",
-    borderRadius: 10,
-    padding: 20,
-    margin: 20,
-    top: 600,
-  },
-  panelTitle: { fontSize: 18, fontWeight: "bold", color: "black", marginBottom: 10 },
+  searchBarContainer: commonStyles.searchContainer,
+  searchIcon: commonStyles.searchIcon,
+  searchInput: commonStyles.searchInput,
+  searchText: commonStyles.searchText,
+  chevronUp: commonStyles.chevronUp,
+  panelTitle: commonStyles.panelTitle,
+  settingsPanel: commonStyles.Panel,
 
+  // Each white button in the panel
   settingButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -131,69 +126,102 @@ export const settingsStyles = StyleSheet.create({
     padding: 15,
     marginBottom: 10,
   },
-  icon: { marginRight: 10 },
-  optionText: { fontSize: 16 },
-
-  bottomNav: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    backgroundColor: "#333",
-    paddingVertical: 10,
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
+  icon: {
+    marginRight: 10,
   },
+  optionText: {
+    fontSize: 16,
+  },
+  bottomNav: commonStyles.bottomNav,
+  navItem: commonStyles.navItem,
 });
 
-// Styles for `[setting].jsx`
+// Styles for `subsettings.jsx`
 export const subSettingStyles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F0F0F0", padding: 20 },
-  header: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
-
-  searchContainer: {
-    flexDirection: "row",
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 10,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-    marginBottom: 570,
+  container: {
+    flex: 1,
+    backgroundColor: "#F0F0F0", // Light grey behind the dark panel
   },
-  searchIcon: { marginRight: 10 },
-  searchText: { fontSize: 16, color: "gray" },
 
-  settingsPanel: {
-    backgroundColor: "#ddd",
-    borderRadius: 10,
-    padding: 20,
+  chevronUp: commonStyles.chevronUp,
+  panelTitle:commonStyles.panelTitle,
+  settingsPanel: commonStyles.Panel,
+  searchContainer: commonStyles.searchContainer,
+  searchIcon: commonStyles.searchIcon,
+  searchInput: commonStyles.searchInput,
+  // Arrow icon at the top center
+  
+  // Sub-header for this specific setting
+  subHeader: {
+    fontSize: 16,
+    color: "#FFF",
+    marginVertical: 10,
+    textAlign: "center",
   },
-  panelTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
 
-  optionContainer: {
+  // Switch row
+  switchRow: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 10,
+    alignItems: "center",
+    marginBottom: 15,
   },
-  optionText: { fontSize: 16 },
+  switchLabel: {
+    fontSize: 16,
+    color: "#FFF",
+  },
 
-  errorText: { fontSize: 18, color: "red", textAlign: "center", marginTop: 20 },
+  // Dropdown row
+  dropdownRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  dropdownLabel: {
+    fontSize: 16,
+    color: "#FFF",
+  },
+  dropdownIcon: {
+    marginLeft: 10,
+  },
+
+  // The container for checkboxes once the dropdown is open
+  dropdownList: {
+    marginBottom: 10,
+  },
+
+  // Each checkbox row: checkbox on left, text on right
+  optionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  checkbox: {
+    marginRight: 10,
+  },
+  optionText: {
+    fontSize: 16,
+    color: "#FFF",
+  },
+
+  // If invalid param
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginTop: 20,
+  },
 });
 
 // Styles for commuteTestScreen.tsx
 export const commuteTestStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center", //flex-end
-    alignContent: "center",
-    alignItems: "center",
-    backgroundColor: "#33333E",
-  },
+  container: commonStyles.container,
+  Panel:  commonStyles.Panel,
+  imageBackground: commonStyles.imageBackground,
+  searchBarContainer: commonStyles.searchContainer,
+  searchIcon: commonStyles.searchIcon,
+  searchInput: commonStyles.searchInput,
+  searchText: commonStyles.searchText,
   input: {
     borderWidth: 1,
     borderRadius: 10,
@@ -231,44 +259,13 @@ export const commuteTestStyles = StyleSheet.create({
 export const accountStyles = StyleSheet.create({
   container: commonStyles.container,
   imageBackground: commonStyles.imageBackground,
-  searchBarContainer: {
-    position: "absolute",
-    top: Platform.OS === "ios" ? 50 : 30,
-    left: 20,
-    right: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    borderRadius: 30,
-    paddingHorizontal: 15,
-    height: 50,
-    elevation: 3,
-    zIndex: 2,
-  },
+  searchBarContainer: commonStyles.searchContainer,
   searchIcon: commonStyles.searchIcon,
   searchInput: commonStyles.searchInput,
-  // Dark bottom card containing user information
-  bottomSection: {
-    position: "absolute",
-    bottom: 70,
-    width: "100%",
-    backgroundColor: "#2C2C2E",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingBottom: 20,
-    paddingTop: 10,
-    paddingHorizontal: 20,
-    alignItems: "center",
-  },
-  chevronUp: {
-    marginBottom: 5,
-  },
-  profileTitle: {
-    fontSize: 18,
-    color: "#fff",
-    marginBottom: 20,
-    fontWeight: "bold",
-  },
+  Panel: commonStyles.Panel,
+  panelTitle:commonStyles.panelTitle,
+  chevronUp: commonStyles.chevronUp,
+  
   userIconContainer: {
     width: 90,
     height: 90,
@@ -277,11 +274,13 @@ export const accountStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 8,
+    alignSelf: "center",
   },
   userName: {
     fontSize: 16,
     color: "#fff",
     marginBottom: 20,
+    alignSelf: "center",
   },
   accountSettingsButton: {
     flexDirection: "row",
@@ -292,18 +291,22 @@ export const accountStyles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 8,
     marginBottom: 20,
+    alignSelf: "center", // Center the button horizontally
   },
   settingsIcon: {
     marginRight: 8,
+    alignItems: "center",
   },
   accountSettingsText: {
     fontSize: 16,
     color: "#fff",
+    alignItems: "center",
   },
   loginRow: {
     flexDirection: "row",
     width: "80%",
     justifyContent: "space-between",
+    alignSelf: "center",
   },
   loginButton: {
     backgroundColor: "limegreen",
@@ -330,3 +333,57 @@ export const accountStyles = StyleSheet.create({
   bottomNav: commonStyles.bottomNav,
   navItem: commonStyles.navItem,
 });
+export const commutesStyles = StyleSheet.create({
+    container: commonStyles.container,
+
+    searchBarContainer: commonStyles.searchContainer,
+    searchIcon: commonStyles.searchIcon,
+    searchInput: commonStyles.searchInput,
+    searchText: commonStyles.searchText,
+    chevronUp: commonStyles.chevronUp,
+    panelTitle: commonStyles.panelTitle,
+    Panel: commonStyles.Panel,
+    container: {
+      flex: 1,
+      backgroundColor: "#333",
+      padding: 20,
+      borderTopLeftRadius: 15,
+      borderTopRightRadius: 15,
+      marginTop: 600,
+    },
+    title: {
+      color: "white",
+      fontSize: 18,
+      textAlign: "center",
+      marginBottom: 15,
+    },
+    journeyContainer: {
+      backgroundColor: "#444",
+      borderRadius: 10,
+      padding: 10,
+    },
+    journeyButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: "white",
+      padding: 10,
+      borderRadius: 10,
+      marginBottom: 10,
+      justifyContent: "space-between",
+    },
+    addButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: "white",
+      padding: 10,
+      borderRadius: 10,
+      justifyContent: "center",
+    },
+    journeyText: {
+      fontSize: 16,
+      flex: 1,
+      textAlign: "center",
+    },
+    bottomNav: commonStyles.bottomNav,
+    navItem: commonStyles.navItem,
+  });

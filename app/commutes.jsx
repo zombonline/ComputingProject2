@@ -1,76 +1,55 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
+import { useRouter } from "expo-router";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import Icon from "react-native-vector-icons/Feather";
+import { commonStyles, commutesStyles } from "./style";
+import BottomSheet from "../components/BottomSheet";
 
-const Commutes = () => {
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+
+export default function Commutes() {
+  const router = useRouter();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Choose Journey</Text>
-      
-      <View style={styles.journeyContainer}>
-        <TouchableOpacity style={styles.journeyButton}>
-          <Ionicons name="home-outline" size={24} color="black" />
-          <Text style={styles.journeyText}>Home</Text>
-          <FontAwesome name="pencil" size={20} color="black" />
-        </TouchableOpacity>
+    <View style={commonStyles.container}>
+      <BottomSheet
+        halfHeight={SCREEN_HEIGHT * 0.5}
+        onDismiss={() => router.replace("/home")}
+        onModeChange={(newMode) => {
+          console.log("Commutes mode updated to:", newMode);
+          // Optionally update global context if needed
+        }}
+      >
+          
+          <Text style={commutesStyles.panelTitle}>Choose Journey</Text>
 
-        <TouchableOpacity style={styles.journeyButton}>
-          <Ionicons name="briefcase-outline" size={24} color="black" />
-          <Text style={styles.journeyText}>Work</Text>
-          <FontAwesome name="pencil" size={20} color="black" />
-        </TouchableOpacity>
+          <TouchableOpacity style={commutesStyles.journeyButton}>
+            <Ionicons name="home-outline" size={24} color="black" />
+            <Text style={commutesStyles.journeyText}>Home</Text>
+            <FontAwesome name="pencil" size={20} color="black" />
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.addButton}>
+          <TouchableOpacity style={commutesStyles.journeyButton}>
+            <Ionicons name="briefcase-outline" size={24} color="black" />
+            <Text style={commutesStyles.journeyText}>Work</Text>
+            <FontAwesome name="pencil" size={20} color="black" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+          style={commutesStyles.addButton}
+          onPress={() => router.push("/commuteTestScreen")}
+        >
           <Ionicons name="add-outline" size={24} color="black" />
-          <Text style={styles.journeyText}>Add</Text>
+          <Text style={commutesStyles.journeyText}>Add</Text>
+        </TouchableOpacity>
+      </BottomSheet>
+
+      <View style={commutesStyles.bottomNav}>
+        <TouchableOpacity onPress={() => router.push("/settings")}>
+          <Ionicons name="settings-outline" size={28} color="#DC9F85" />
         </TouchableOpacity>
       </View>
     </View>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#333",
-    padding: 20,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    marginTop: 600,
-  },
-  title: {
-    color: "white",
-    fontSize: 18,
-    textAlign: "center",
-    marginBottom: 15,
-  },
-  journeyContainer: {
-    backgroundColor: "#444",
-    borderRadius: 10,
-    padding: 10,
-  },
-  journeyButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: 10,
-    justifyContent: "space-between",
-  },
-  addButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-    padding: 10,
-    borderRadius: 10,
-    justifyContent: "center",
-  },
-  journeyText: {
-    fontSize: 16,
-    flex: 1,
-    textAlign: "center",
-  },
-});
-
-export default Commutes;
+}
