@@ -106,8 +106,21 @@ export const removeCommute = async (commuteId) => {
 export const saveCommuteToFirestore = async (commute) => {
   try {
     if (!auth.currentUser) throw new Error("No authenticated user");
+    if (typeof commute !== "object" || commute === null) throw new Error("Invalid commute data");
+    if (!commute.commuteId) throw new Error("Missing commuteId");
+
     const userDocRef = doc(db, "users", auth.currentUser.uid, "commutes", commute.commuteId);
-    await setDoc(userDocRef, commute);
+
+    // Remove undefined values from the object
+    const cleanCommute = Object.fromEntries(
+      Object.entries(commute).filter(([_, value]) => value !== undefined)
+    );
+
+    if (Object.keys(cleanCommute).length === 0) throw new Error("No valid data to save");
+
+    await setDoc(userDocRef, cleanCommute);
+
+    console.log("Commute saved successfully!");
   } catch (error) {
     console.error("Error saving commute to Firestore:", error);
   }

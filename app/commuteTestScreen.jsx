@@ -12,11 +12,11 @@ import useDebouncedState from "./utils/useDebouncedState";
 export default function CommuteTestScreen() {
   const params = useLocalSearchParams();
   const [name, setName] = useState(params.name || "");
-  const [origin, setOrigin] = useDebouncedState("", 500, async (text) => {
+  const [origin, setOrigin] = useDebouncedState(params.origin || "", 500, async (text) => {
     setOriginLatLong(await getLatLong(text));
   });
   const [originLatLong, setOriginLatLong] = useState(params.originLatLong || "");
-  const [destination, setDestination] = useDebouncedState("", 500, async (text) => {
+  const [destination, setDestination] = useDebouncedState(params.destination || "", 500, async (text) => {
     setDestinationLatLong(await getLatLong(text));
   });
   const [destinationLatLong, setDestinationLatLong] = useState(params.destinationLatLong || "");

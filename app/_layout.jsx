@@ -75,6 +75,13 @@ function Layout() {
               color={pathname === "/commutes" ? "#DC9F85" : "white"}
             />
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/savedCommutesTestScreen")}>
+                      <Ionicons
+                        name="bus-outline"
+                        size={28}
+                        color={pathname === "/commutes" ? "#DC9F85" : "white"}
+                      />
+          </TouchableOpacity>
          
           <TouchableOpacity onPress={() => router.push("/profile")}>
             <Ionicons

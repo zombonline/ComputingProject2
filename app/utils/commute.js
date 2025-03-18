@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { getDateYYYYMMDD } from './helperFunctions';
 import CryptoJS from "crypto-js";
-import { saveCommute } from "./accountStorage";
+import { saveCommute, saveCommuteToFirestore } from "./accountStorage";
 
 base_url = "https://api.tfl.gov.uk/Journey/JourneyResults"
 export class Commute {
@@ -30,6 +30,12 @@ export class Commute {
     async save() {
         try {
             await saveCommute(this);
+            console.log(`Commute ${this.commuteId} saved successfully.`);
+        } catch (error) {
+            console.error("Error saving commute:", error);
+        }
+        try {
+            await saveCommuteToFirestore(this);
             console.log(`Commute ${this.commuteId} saved successfully.`);
         } catch (error) {
             console.error("Error saving commute:", error);
