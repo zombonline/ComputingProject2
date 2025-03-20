@@ -33,7 +33,6 @@ export default function Commutes() {
       >
           
           <Text style={commutesStyles.panelTitle}>Your Commutes</Text>
-          <Text style={commutesStyles.panelTitle}>Saved Commutes</Text>
           <ScrollView>
                       {Object.keys(commutes).length > 0 ? (
                           Object.values(commutes).map((commute, index) => (
