@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import { signInAnonymouslyIfNeeded, db, doc, setDoc, getDoc } from "@/app/utils/firebaseConfig";
 import { saveUserDataLocally, getLocalUserData } from "@/app/utils/accountStorage";
-
+import  GoogleMap from "./utils/googlemap"
 const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
@@ -42,7 +42,8 @@ const HomeScreen = () => {
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <View style={styles.container}pointerEvents="box-none">
+  
         <ActivityIndicator size="large" color="#007AFF" />
         <Text>Initializing user...</Text>
       </View>
@@ -51,6 +52,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+
       <Text>Welcome, anonymous user!</Text>
       <Text>Your ID: {userId}</Text>
     </View>
@@ -58,7 +60,7 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#fff" },
+  container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "transparent" },
 });
 
 export default HomeScreen;

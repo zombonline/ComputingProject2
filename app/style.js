@@ -3,7 +3,7 @@ import { StyleSheet, Platform } from "react-native";
 export const commonStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F0F0",
+    backgroundColor: "transparent",
   },
   searchContainer: {
     position: "absolute",
@@ -79,6 +79,7 @@ export const commonStyles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    zIndex:4,
   },
 });
 
@@ -140,7 +141,7 @@ export const settingsStyles = StyleSheet.create({
 export const subSettingStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F0F0", // Light grey behind the dark panel
+    backgroundColor: "#transparent", // Light grey behind the dark panel
   },
 
   chevronUp: commonStyles.chevronUp,

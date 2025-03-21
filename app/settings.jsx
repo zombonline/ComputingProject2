@@ -7,6 +7,7 @@ import BottomSheet from "../components/BottomSheet";
 import { settingsStyles, commonStyles } from "./style";
 import { SettingsPanelModeContext } from "./utils/SettingsPanelModeContext";
 
+
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function Settings() {
@@ -14,7 +15,8 @@ export default function Settings() {
   const { setMode } = useContext(SettingsPanelModeContext);
 
   return (
-    <View style={commonStyles.container}>
+    <View style={commonStyles.container} pointerEvents="box-none">
+ 
       <BottomSheet
         halfHeight={SCREEN_HEIGHT * 0.5}
         onDismiss={() => router.replace("/home")}

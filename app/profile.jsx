@@ -5,6 +5,7 @@ import Icon from "react-native-vector-icons/Feather";
 import { Ionicons } from "@expo/vector-icons";
 import { commonStyles, accountStyles } from "./style";
 import BottomSheet from "../components/BottomSheet";
+import  GoogleMap from "./utils/googlemap"
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -12,7 +13,7 @@ export default function Account() {
   const router = useRouter();
 
   return (
-    <View style={commonStyles.container}>
+    <View style={commonStyles.container} pointerEvents="box-none">
       <BottomSheet
         halfHeight={SCREEN_HEIGHT * 0.5}
         onDismiss={() => router.replace("/home")}
@@ -21,7 +22,6 @@ export default function Account() {
           // Optionally update global context if needed
         }}
       >
-        
           <Text style={accountStyles.panelTitle}>Profile</Text>
           <View style={accountStyles.userIconContainer}>
             <Icon name="user" size={60} color="#000" />

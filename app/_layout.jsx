@@ -6,7 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { commonStyles } from "./style";
 import { SettingsPanelModeProvider, SettingsPanelModeContext } from "./utils/SettingsPanelModeContext";
-
+import  GoogleMap from "./utils/googlemap"
 // This is your inner Layout component that uses the context.
 function Layout() {
   const router = useRouter();
@@ -24,12 +24,11 @@ function Layout() {
   console.log("Local mode:", localMode);
 
   // Define pages where the search bar should always be hidden.
-  const excludedSearch = ["/", "/commuteTestScreen"];
+  const excludedSearch = ["/", "/commuteTestScreen", "/settings", "/subsettings", "/profile", "/commutes"];
   // For settings routes: show search bar only if localMode is "half"
   // For other routes: show the search bar (if not in excludedSearch)
   const showSearch =
-    !excludedSearch.includes(pathname) &&
-    (pathname.startsWith("/settings") ? localMode === "half" : true);
+    !excludedSearch.includes(pathname);
 
   console.log("Computed showSearch:", showSearch);
 
@@ -37,7 +36,10 @@ function Layout() {
   const excludedBottomNav = ["/"];
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} pointerEvents="box-none">
+      <GoogleMap style={styles.map} />
+      <View pointerEvents="auto">
+
       {showSearch && (
         <View style={commonStyles.searchContainer}>
           <FontAwesome
@@ -52,11 +54,15 @@ function Layout() {
           />
         </View>
       )}
+      
+      
 
       {/* The current screen */}
       <View style={styles.pageContent}>
         <Slot />
       </View>
+      </View>
+      
 
       {!excludedBottomNav.includes(pathname) && (
         <View style={styles.bottomNav}>
@@ -86,13 +92,25 @@ function Layout() {
           
         </View>
       )}
+      
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  pageContent: { flex: 1 },
+  // The map should fill the container and be at the bottom layer.
+  map: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 0,
+  },
+  // Ensure the content is transparent so the map shows through.
+  pageContent: {
+    flex: 1,
+    backgroundColor: "transparent",
+    zIndex: 1,
+  },
+  // Bottom navigation with a higher zIndex.
   bottomNav: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -105,14 +123,18 @@ const styles = StyleSheet.create({
     right: 0,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
+    zIndex: 2,
   },
 });
 
-// This is the single default export that wraps your Layout in the global provider.
+// Single default export that wraps your Layout in the global provider.
 export default function LayoutWrapper() {
   return (
+    
+
     <SettingsPanelModeProvider>
       <Layout />
+      
     </SettingsPanelModeProvider>
   );
 }
