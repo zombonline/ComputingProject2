@@ -1,9 +1,40 @@
+import BottomSheet from "@/components/BottomSheet";
 import { StyleSheet, Platform } from "react-native";
+
+export const LayoutStyles = StyleSheet.create({
+  container: { flex: 1 },
+  // The map fills the container and be at the bottom layer.
+  map: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 0,
+  },
+  // Ensure the content is transparent so the map shows through.
+  pageContent: {
+    flex: 1,
+    backgroundColor: "transparent",
+    zIndex: 1,
+  },
+  // Bottom navigation with a higher zIndex.
+  bottomNav: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "#333",
+    paddingVertical: 10,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    zIndex: 2,
+  },
+});
 
 export const commonStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F0F0",
+    backgroundColor: "transparent",
   },
   searchContainer: {
     position: "absolute",

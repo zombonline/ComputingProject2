@@ -4,16 +4,12 @@ import Checkbox from "expo-checkbox";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import BottomSheet from "../components/BottomSheet"; // Adjust path as needed
-import { subSettingStyles, commonStyles } from "./style"; // Adjust path as needed
-import { SettingsPanelModeContext } from "./utils/SettingsPanelModeContext"; // Adjust path as needed
+import { subSettingStyles,  } from "./style"; // Adjust path as needed
+
 
 export default function SettingDetail() {
   const router = useRouter();
-  const { setting } = useLocalSearchParams(); // using query params: ?setting=notifications, etc.
-  const { mode } = useContext(SettingsPanelModeContext);
-  
-  // When in half mode, we want the search bar to appear.
-  const showSearch = mode === "half";
+  const { setting } = useLocalSearchParams(); 
   const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
   // Configuration for each sub-setting
@@ -26,7 +22,7 @@ export default function SettingDetail() {
     },
     accessibility: {
       title: "Accessibility Settings",
-      switchLabel: null, // if you want a switch, define it here
+      switchLabel: null, // Define switch (Optional)
       dropdownLabel: "Theme",
       dropdownOptions: ["Light Theme", "Dark Theme", "Colour Blind"],
     },
@@ -67,22 +63,7 @@ export default function SettingDetail() {
   };
 
   return (
-    <View style={subSettingStyles.container}>
-      {/* Conditionally render the search bar when mode is half */}
-      {showSearch && (
-        <View style={commonStyles.searchContainer}>
-          <FontAwesome
-            name="search"
-            size={20}
-            color="black"
-            style={commonStyles.searchIcon}
-          />
-          <TextInput
-            placeholder="Search location"
-            style={commonStyles.searchInput}
-          />
-        </View>
-      )}
+    <>
 
       {/* Wrap the panel content in your interactive BottomSheet */}
       <BottomSheet
@@ -137,6 +118,6 @@ export default function SettingDetail() {
           </View>
         )}
       </BottomSheet>
-    </View>
+    </>
   );
 }

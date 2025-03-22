@@ -4,10 +4,11 @@ import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import { Slot, useRouter, usePathname } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import { commonStyles } from "./style";
+import { commonStyles, LayoutStyles } from "./style";
 import { SettingsPanelModeProvider, SettingsPanelModeContext } from "./utils/SettingsPanelModeContext";
+import  GoogleMap from "./utils/googlemap"
 
-// This is your inner Layout component that uses the context.
+// Inner Layout component that uses the context.
 function Layout() {
   const router = useRouter();
   const pathname = usePathname();
@@ -24,20 +25,18 @@ function Layout() {
   console.log("Local mode:", localMode);
 
   // Define pages where the search bar should always be hidden.
-  const excludedSearch = ["/", "/commuteTestScreen"];
-  // For settings routes: show search bar only if localMode is "half"
+  const excludedSearch = ["/", "/commuteTestScreen", "/settings", "/subsettings", "/profile", "/commutes"];
+
   // For other routes: show the search bar (if not in excludedSearch)
   const showSearch =
-    !excludedSearch.includes(pathname) &&
-    (pathname.startsWith("/settings") ? localMode === "half" : true);
-
+    !excludedSearch.includes(pathname);
   console.log("Computed showSearch:", showSearch);
 
   // Define pages where bottom navigation is hidden.
   const excludedBottomNav = ["/"];
 
   return (
-    <View style={styles.container}>
+      <>
       {showSearch && (
         <View style={commonStyles.searchContainer}>
           <FontAwesome
@@ -54,12 +53,13 @@ function Layout() {
       )}
 
       {/* The current screen */}
-      <View style={styles.pageContent}>
+      <View style={LayoutStyles.pageContent}>
+      <GoogleMap style={LayoutStyles.map} />
         <Slot />
       </View>
 
       {!excludedBottomNav.includes(pathname) && (
-        <View style={styles.bottomNav}>
+        <View style={LayoutStyles.bottomNav}>
           <TouchableOpacity onPress={() => router.push("/settings")}>
             <Ionicons
               name="settings-outline"
@@ -75,14 +75,7 @@ function Layout() {
               color={pathname === "/commutes" ? "#DC9F85" : "white"}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/savedCommutesTestScreen")}>
-                      <Ionicons
-                        name="bus-outline"
-                        size={28}
-                        color={pathname === "/commutes" ? "#DC9F85" : "white"}
-                      />
-          </TouchableOpacity>
-         
+
           <TouchableOpacity onPress={() => router.push("/profile")}>
             <Ionicons
               name="person-outline"
@@ -93,29 +86,13 @@ function Layout() {
           
         </View>
       )}
-    </View>
+    </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  pageContent: { flex: 1 },
-  bottomNav: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    backgroundColor: "#333",
-    paddingVertical: 10,
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-  },
-});
 
-// This is the single default export that wraps your Layout in the global provider.
+
+// Single default export that wraps Layout in the global provider.
 export default function LayoutWrapper() {
   return (
     <SettingsPanelModeProvider>

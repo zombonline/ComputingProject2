@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import { signInAnonymouslyIfNeeded, db, doc, setDoc, getDoc } from "@/app/utils/firebaseConfig";
 import { saveUserDataLocally, getLocalUserData } from "@/app/utils/accountStorage";
+import  GoogleMap from "./utils/googlemap";
 
 const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
@@ -42,18 +43,18 @@ const HomeScreen = () => {
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <>
         <ActivityIndicator size="large" color="#007AFF" />
         <Text>Initializing user...</Text>
-      </View>
+      </>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <>
       <Text>Welcome, anonymous user!</Text>
       <Text>Your ID: {userId}</Text>
-    </View>
+    </>
   );
 };
 

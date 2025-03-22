@@ -18,8 +18,7 @@ export default function Account() {
         onDismiss={() => router.replace("/home")}
         onModeChange={(newMode) => {
           console.log("Profile mode updated to:", newMode);
-          // Optionally update global context if needed
-        }}
+          }}
       >
         
           <Text style={accountStyles.panelTitle}>Profile</Text>

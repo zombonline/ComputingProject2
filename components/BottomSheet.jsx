@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#33333e",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    
+    zIndex:1
 
   },
   arrowContainer: {
