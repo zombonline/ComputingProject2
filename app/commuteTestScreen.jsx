@@ -6,7 +6,7 @@ import { getLatLong } from "./utils/helperFunctions";
 import { commuteTestStyles } from "./style";
 import Commute from "./utils/commute";
 import { useLocalSearchParams } from "expo-router";
-import { removeCommute } from "./utils/accountStorage";
+import { removeCommute, removeCommuteFromFirestore } from "./utils/accountStorage";
 import useDebouncedState from "./utils/useDebouncedState";
 import BottomSheet from "../components/BottomSheet";
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -106,8 +106,19 @@ export default function CommuteTestScreen() {
             setCommute(newCommute);
           }}
         />
+        {commuteIdToDelete ? (
+          <Button
+            title="Delete"
+            onPress={() => {
+              removeCommute(commuteIdToDelete);
+              removeCommuteFromFirestore(commuteIdToDelete);
+            }}
+          />
+        ) : null}
+
         </View>
-      <Text style={{ color: "white" }}>{String(commute)}</Text>
+        
+
     </BottomSheet>
     </View>
   );

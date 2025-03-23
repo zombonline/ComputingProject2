@@ -2,7 +2,7 @@
 import { Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { db, auth } from "./firebaseConfig";
-import { doc, setDoc, getDoc, collection, getDocs } from "firebase/firestore";
+import { doc, setDoc, getDoc, collection, getDocs, deleteDoc } from "firebase/firestore";
 
 const DATA_KEY = "userData";
 const COMMUTE_STORAGE_KEY = "commutes";
@@ -113,7 +113,7 @@ export const saveCommuteToFirestore = async (commute) => {
 
     // Remove undefined values from the object
     const cleanCommute = Object.fromEntries(
-      Object.entries(commute).filter(([_, valuer]) => value !== undefined)
+      Object.entries(commute).filter(([_, value]) => value !== undefined)
     );
 
     if (Object.keys(cleanCommute).length === 0) throw new Error("No valid data to save");
@@ -163,3 +163,16 @@ export const getCommuteFromFirestore = async (commuteId) => {
     return null;
   }
 };
+//removes the commute object from commutes collection in firestore
+export const removeCommuteFromFirestore = async (commuteId) => {
+  try {
+    if (!auth.currentUser) throw new Error("No authenticated user");
+    const userCollection = collection(db, "users", auth.currentUser.uid, "commutes");
+    //remove doc from commutes collection
+    const userDocRef = doc(userCollection, commuteId);
+    await deleteDoc(userDocRef);
+    console.log("Commute removed successfully!");
+  } catch (error) {
+    console.error("Error removing commute from Firestore:", error);
+  }
+}
