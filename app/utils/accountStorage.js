@@ -2,7 +2,7 @@
 import { Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { db, auth } from "./firebaseConfig";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, collection, getDocs } from "firebase/firestore";
 
 const DATA_KEY = "userData";
 const COMMUTE_STORAGE_KEY = "commutes";
@@ -113,7 +113,7 @@ export const saveCommuteToFirestore = async (commute) => {
 
     // Remove undefined values from the object
     const cleanCommute = Object.fromEntries(
-      Object.entries(commute).filter(([_, value]) => value !== undefined)
+      Object.entries(commute).filter(([_, valuer]) => value !== undefined)
     );
 
     if (Object.keys(cleanCommute).length === 0) throw new Error("No valid data to save");
@@ -126,6 +126,27 @@ export const saveCommuteToFirestore = async (commute) => {
   }
 };
 
+/**
+ * Retrieves all saved commutes from Firestore.
+ * @returns {Promise<Object>} - A dictionary of commute data.
+ */
+export const getCommutesFromFirestore = async () => {
+  try {
+    if (!auth.currentUser) throw new Error("No authenticated user");
+    const commutesCollectionRef = collection(db, "users", auth.currentUser.uid, "commutes");
+    const querySnapshot = await getDocs(commutesCollectionRef);
+
+    const commutes = {};
+    querySnapshot.forEach((doc) => {
+      commutes[doc.id] = doc.data();
+    });
+
+    return commutes;
+  } catch (error) {
+    console.error("Error retrieving commutes from Firestore:", error);
+    return {};
+  }
+};
 /**
  * Retrieves a specific commute from Firestore.
  * @param {string} commuteId - The unique ID of the commute to retrieve.

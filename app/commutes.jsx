@@ -5,9 +5,8 @@ import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/Feather";
 import { commonStyles, commutesStyles } from "./style";
 import BottomSheet from "../components/BottomSheet";
-import { getCommutes } from "./utils/accountStorage";
+import { getCommutes, getCommutesFromFirestore} from "./utils/accountStorage";
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
-
 export default function Commutes() {
   const router = useRouter();
   const [commutes, setCommutes] = useState({});
@@ -15,8 +14,9 @@ export default function Commutes() {
   useEffect(() => {
       const loadCommutes = async () => {
           const storedCommutes = await getCommutes();
-          setCommutes(storedCommutes);
-          console.log(Object.keys(storedCommutes).length);
+          const firebaseCommutes = await getCommutesFromFirestore();
+          const allCommutes = { ...storedCommutes, ...firebaseCommutes };
+          setCommutes(allCommutes);
       };
       loadCommutes();
   }, []);
