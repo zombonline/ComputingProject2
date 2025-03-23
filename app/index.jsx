@@ -14,7 +14,6 @@ const App = () => {
     const setupNotifications = async () => {
       await requestPermissions();
       await setupNotificationChannel();
-      await scheduleNotification();
 
       if (messaging) {
         try {

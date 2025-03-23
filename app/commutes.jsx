@@ -1,15 +1,25 @@
-import React from "react";
-import { View, Text, TouchableOpacity, Dimensions } from "react-native";
+import React, {useState, useEffect} from "react";
+import { View, Text, TouchableOpacity, Dimensions, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/Feather";
 import { commonStyles, commutesStyles } from "./style";
 import BottomSheet from "../components/BottomSheet";
-
+import { getCommutes } from "./utils/accountStorage";
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function Commutes() {
   const router = useRouter();
+  const [commutes, setCommutes] = useState({});
+
+  useEffect(() => {
+      const loadCommutes = async () => {
+          const storedCommutes = await getCommutes();
+          setCommutes(storedCommutes);
+          console.log(Object.keys(storedCommutes).length);
+      };
+      loadCommutes();
+  }, []);
 
   return (
     <View style={commonStyles.container}>
@@ -18,23 +28,36 @@ export default function Commutes() {
         onDismiss={() => router.replace("/home")}
         onModeChange={(newMode) => {
           console.log("Commutes mode updated to:", newMode);
-          // Optionally update global context if needed
         }}
       >
-          
-          <Text style={commutesStyles.panelTitle}>Choose Journey</Text>
 
-          <TouchableOpacity style={commutesStyles.journeyButton}>
-            <Ionicons name="home-outline" size={24} color="black" />
-            <Text style={commutesStyles.journeyText}>Home</Text>
-            <FontAwesome name="pencil" size={20} color="black" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={commutesStyles.journeyButton}>
-            <Ionicons name="briefcase-outline" size={24} color="black" />
-            <Text style={commutesStyles.journeyText}>Work</Text>
-            <FontAwesome name="pencil" size={20} color="black" />
-          </TouchableOpacity>
+          <Text style={commutesStyles.panelTitle}>Your Commutes</Text>
+          <ScrollView>
+                      {Object.keys(commutes).length > 0 ? (
+                          Object.values(commutes).map((commute, index) => (
+                              <TouchableOpacity key={index} style={commutesStyles.journeyButton}
+                              onPress={() => router.push({
+                                      pathname: "/commuteTestScreen",
+                                      params: {
+                                        name: commute.name,
+                                        origin: commute.origin,
+                                        originLatLong: commute.originLatLong,
+                                        destination: commute.destination,
+                                        destinationLatLong: commute.destinationLatLong,
+                                        arrivalTime: commute.arrivalTime,
+                                        days: JSON.stringify(commute.days), // Convert array to string
+                                        journeyId: commute.journeyId,
+                                        commuteId: commute.commuteId,
+                                      },
+                                    })}>
+                                <FontAwesome name="pencil" size={20} color="black" />
+                                <Text style={commutesStyles.journeyText}>{commute.name}</Text>
+                              </TouchableOpacity>
+                          ))
+                      ) : (
+                          <Text style={commutesStyles.journeyText}>No saved commutes found.</Text>
+                      )}
+                  </ScrollView>
 
           <TouchableOpacity
           style={commutesStyles.addButton}

@@ -1,4 +1,4 @@
-import { Text, View, Button, TextInput, ScrollView, Pressable, FlatList } from "react-native";
+import { Text, View, Button, TextInput, ScrollView, Pressable, FlatList,Dimensions } from "react-native";
 import { useState } from "react";
 import { getAllUniqueJourneys, buildJourneyId } from "./utils/commute";
 import { validateArrivalTime } from "./utils/input_validation";
@@ -8,6 +8,8 @@ import Commute from "./utils/commute";
 import { useLocalSearchParams } from "expo-router";
 import { removeCommute } from "./utils/accountStorage";
 import useDebouncedState from "./utils/useDebouncedState";
+import BottomSheet from "../components/BottomSheet";
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function CommuteTestScreen() {
   const params = useLocalSearchParams();
@@ -46,6 +48,13 @@ export default function CommuteTestScreen() {
 
   return (
     <View style={commuteTestStyles.container}>
+        <BottomSheet
+                halfHeight={SCREEN_HEIGHT * 0.5}
+                onDismiss={() => router.replace("/home")}
+                onModeChange={(newMode) => {
+                  console.log("Commutes mode updated to:", newMode);
+                }}
+              >
         <CustomInput placeholder="Give your commute a name" value={name} onChangeText={setName} />
         <CustomInput placeholder="Where do you start?" value={origin} onChangeText={setOrigin} />
         <Text style={{ color: "white" }}> {String(originLatLong)} </Text>
@@ -99,6 +108,7 @@ export default function CommuteTestScreen() {
         />
         </View>
       <Text style={{ color: "white" }}>{String(commute)}</Text>
+    </BottomSheet>
     </View>
   );
 }
