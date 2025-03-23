@@ -15,7 +15,7 @@ export default function Settings() {
   const { setMode } = useContext(SettingsPanelModeContext);
 
   return (
-    <View style={commonStyles.container}>
+    <>
  
       <BottomSheet
         halfHeight={SCREEN_HEIGHT * 0.5}
@@ -58,6 +58,6 @@ export default function Settings() {
           <Ionicons name="settings-outline" size={28} color="#DC9F85" />
         </TouchableOpacity>
       </View>
-    </View>
+    </>
   );
 }

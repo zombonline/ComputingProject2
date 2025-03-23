@@ -156,6 +156,7 @@ export const settingsStyles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginBottom: 10,
+    
   },
   icon: {
     marginRight: 10,
@@ -242,6 +243,38 @@ export const subSettingStyles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
   },
+ // Container for each input + label
+ inputGroup: {
+  marginBottom: 20,
+},
+// The label above the input field
+inputLabel: {
+  color: "white",
+  marginBottom: 5,
+  fontSize: 16,
+},
+// The text input field itself
+inputField: {
+  backgroundColor: "transparent",
+  borderRadius: 8,
+  borderWidth: 1,
+  borderColor: "white",
+  paddingHorizontal: 20,
+  paddingVertical: 8,
+  color: "white",
+},
+saveButton: {
+  backgroundColor: "#DC9F85",
+  paddingVertical: 12,
+  borderRadius: 8,
+  alignItems: "center",
+  marginTop: 20,
+},
+saveButtonText: {
+  color: "#000",
+  fontWeight: "bold",
+  fontSize: 16,
+},
 });
 
 // Styles for commuteTestScreen.tsx
@@ -316,21 +349,21 @@ export const accountStyles = StyleSheet.create({
   accountSettingsButton: {
     flexDirection: "row",
     alignItems: "center",
-    borderColor: "#fff",
-    borderWidth: 2,
-    borderRadius: 25,
+    backgroundColor: "white",
+    borderRadius: 10,
     paddingHorizontal: 20,
     paddingVertical: 8,
     marginBottom: 20,
-    alignSelf: "center", // Center the button horizontally
+    alignSelf: "center", 
   },
+  
   settingsIcon: {
     marginRight: 8,
     alignItems: "center",
   },
   accountSettingsText: {
     fontSize: 16,
-    color: "#fff",
+    color: "black",
     alignItems: "center",
   },
   loginRow: {

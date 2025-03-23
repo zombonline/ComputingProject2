@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: SCREEN_HEIGHT,
-    backgroundColor: "#33333e",
+    backgroundColor: "#2D2D35",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
     zIndex:1
