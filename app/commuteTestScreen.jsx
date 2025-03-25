@@ -1,35 +1,37 @@
 import { Text, View, Button, TextInput, ScrollView, Pressable, FlatList,Dimensions } from "react-native";
 import { useState } from "react";
-import { getAllUniqueJourneys, buildJourneyId } from "./utils/commute";
-import { validateArrivalTime } from "./utils/input_validation";
-import { getLatLong } from "./utils/helperFunctions";
+import { validateArrivalTime, validateCommuteName } from "./utils/input_validation";
+import { getLatLong, getDateYYYYMMDD } from "./utils/helperFunctions";
 import { commuteTestStyles } from "./style";
 import Commute from "./utils/commute";
 import { useLocalSearchParams } from "expo-router";
 import { removeCommute, removeCommuteFromFirestore } from "./utils/accountStorage";
 import useDebouncedState from "./utils/useDebouncedState";
+import * as Notifications from "expo-notifications";
 import BottomSheet from "../components/BottomSheet";
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function CommuteTestScreen() {
   const params = useLocalSearchParams();
-  const [name, setName] = useState(params.name || "");
-  const [origin, setOrigin] = useDebouncedState(params.origin || "", 500, async (text) => {
+  const loadedCommute = LoadCommute(params);
+// #region input variables
+  const [name, setName] = useState(loadedCommute.name || "");
+  const [origin, setOrigin] = useDebouncedState(loadedCommute.origin || "", 500, async (text) => {
     setOriginLatLong(await getLatLong(text));
   });
-  const [originLatLong, setOriginLatLong] = useState(params.originLatLong || "");
-  const [destination, setDestination] = useDebouncedState(params.destination || "", 500, async (text) => {
+  const [originLatLong, setOriginLatLong] = useState(loadedCommute.originLatLong || "");
+  const [destination, setDestination] = useDebouncedState(loadedCommute.destination || "", 500, async (text) => {
     setDestinationLatLong(await getLatLong(text));
   });
-  const [destinationLatLong, setDestinationLatLong] = useState(params.destinationLatLong || "");
-  const [arrivalTime, setArrivalTime] = useState(params.arrivalTime || "");
-  const [selectedDays, setSelectedDays] = useState(params.days ? JSON.parse(params.days) : []);
-  const [journeyId, setJourneyId] = useState(params.journeyId || "");
-  const [commuteIdToDelete, setCommuteIdToDelete] = useState(params.commuteId || "");
+  const [destinationLatLong, setDestinationLatLong] = useState(loadedCommute.destinationLatLong || "");
+  const [arrivalTime, setArrivalTime] = useState(loadedCommute.arrivalTime || "");
+  const [selectedDays, setSelectedDays] = useState(loadedCommute.days || []);
+  const [journeyId, setJourneyId] = useState(loadedCommute.journeyId || "");
+  const [duration, setDuration] = useState(loadedCommute.duration || 0);
+  const [commuteIdToDelete, setCommuteIdToDelete] = useState(loadedCommute.commuteId || "");
   const [arrivalTimeValid, setArrivalTimeValid] = useState(false);
   const [journeys, setJourneys] = useState([]);
   const [commute, setCommute] = useState();
-
   const days = [
     { id: 1, name: "Monday" },
     { id: 2, name: "Tuesday" },
@@ -39,6 +41,7 @@ export default function CommuteTestScreen() {
     { id: 6, name: "Saturday" },
     { id: 0, name: "Sunday" },
   ];
+// #endregion
 
   const toggleItem = (id) => {
     setSelectedDays((prev) =>
@@ -55,19 +58,36 @@ export default function CommuteTestScreen() {
                   console.log("Commutes mode updated to:", newMode);
                 }}
               >
-        <CustomInput placeholder="Give your commute a name" value={name} onChangeText={setName} />
-        <CustomInput placeholder="Where do you start?" value={origin} onChangeText={setOrigin} />
-        <Text style={{ color: "white" }}> {String(originLatLong)} </Text>
-        <CustomInput placeholder="Where are you headed?" value={destination} onChangeText={setDestination} />
-        <Text style={{ color: "white" }}> {String(destinationLatLong)} </Text>
+        <CustomInput placeholder="Give your commute a name" value={name} onChangeText={setName} inputValid={validateCommuteName(name)} />
+        <CustomInput placeholder="Where do you start?" value={origin}
+        onChangeText={setOrigin}
+        inputValid={originLatLong!=null}
+        />
+        <CustomInput placeholder="Where are you headed?"
+         value={destination}
+         onChangeText={setDestination}
+         inputValid={destinationLatLong!=null}
+         />
         <CustomInput
           placeholder="What time do you arrive?"
           value={arrivalTime}
           onChangeText={(text) => {
             setArrivalTime(text);
-            setArrivalTimeValid(validateArrivalTime(text));
+            console.log("valid? " + validateArrivalTime(text));
           }}
+          inputValid={validateArrivalTime(arrivalTime)}
         />
+        {commuteIdToDelete ? (
+              <CustomInput
+                placeholder="Usual Journey Duration"
+                value={duration}
+                onChangeText={
+                    (text) => {
+                        setDuration(parseInt(text));
+                        console.log(typeof duration);
+                    }}
+              />
+            ) : null }
         <Text style={{ color: "white" }}>{String(arrivalTimeValid)}</Text>
         <FlatList
           data={days}
@@ -101,7 +121,7 @@ export default function CommuteTestScreen() {
           title="Submit"
           onPress={() => {
             removeCommute(commuteIdToDelete);
-            const newCommute = new Commute(name, origin, originLatLong, destination, destinationLatLong, arrivalTime, selectedDays, journeyId);
+            const newCommute = new Commute(name, origin, originLatLong, destination, destinationLatLong, arrivalTime, selectedDays, journeyId, parseInt(duration, 10));
             newCommute.init();
             setCommute(newCommute);
           }}
@@ -115,6 +135,22 @@ export default function CommuteTestScreen() {
             }}
           />
         ) : null}
+        {commuteIdToDelete ? (
+          <Button
+            title="Check for delays today"
+            onPress={async () => {
+              console.log("Checking for delays today...");
+              const todaysDuration = await Commute.getJourneyDuration(originLatLong, destinationLatLong, arrivalTime, getDateYYYYMMDD(new Date()), journeyId);
+              const delay = todaysDuration - duration
+              console.log("Delay:", delay);
+              Notifications.presentNotificationAsync({
+                      title: "Your commute is delayed!",
+                      body: "Your usual commute is delayed by " + delay + " minutes.",
+                      data: { delay },
+                    });
+            }}
+          />
+        ) : null}
 
         </View>
         
@@ -124,10 +160,11 @@ export default function CommuteTestScreen() {
   );
 }
 
-function CustomInput({ placeholder, value, onChangeText }) {
+function CustomInput({ placeholder, value, onChangeText, inputValid }) {
+  console.log("Input validation:", inputValid);
   return (
     <TextInput
-      style={commuteTestStyles.input}
+      style={inputValid ? commuteTestStyles.input : commuteTestStyles.input_invalid}
       placeholder={placeholder}
       placeholderTextColor="grey"
       value={value}
@@ -151,4 +188,16 @@ function JourneyButton({ journey, setJourneyId }) {
       </Pressable>
     </View>
   );
+}
+
+function LoadCommute(params){
+  let loadedCommute;
+  if(params.commuteId != undefined){
+    loadedCommute = new Commute(params.name,
+       params.origin, params.originLatLong,
+        params.destination, params.destinationLatLong,
+         params.arrivalTime, JSON.parse(params.days), params.journeyId,
+          params.duration, params.commuteId);
+  }
+  return loadedCommute;
 }

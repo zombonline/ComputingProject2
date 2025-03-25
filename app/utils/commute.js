@@ -5,7 +5,7 @@ import { saveCommute, saveCommuteToFirestore } from "./accountStorage";
 
 base_url = "https://api.tfl.gov.uk/Journey/JourneyResults"
 export class Commute {
-    constructor(name, origin, originLatLong, destination, destinationLatLong, arrivalTime, days, journeyId) {
+    constructor(name, origin, originLatLong, destination, destinationLatLong, arrivalTime, days, journeyId, duration, commuteId) {
         this.name = name;
         this.origin = origin;
         this.originLatLong = originLatLong;
@@ -14,13 +14,17 @@ export class Commute {
         this.arrivalTime = arrivalTime;
         this.days = days;
         this.journeyId = journeyId;
-        this.duration = null;
-        this.commuteId = this.generateCommuteId();
-        console.log("Commute created. " + origin + " to " + destination + " at " + arrivalTime + " on " + days + " with ID " + journeyId)
+        this.duration = duration;
+        this.commuteId = commuteId;
+        console.log("Commute " + name + " (" + commuteId +  ") created. (" + origin + " to " + destination + " at " + arrivalTime + " on " + days + " with ID " + journeyId + " taking " + this.duration + " minutes)")
     }
     async init(){
-        this.duration = await Commute.getAverageJourneyDuration(this.origin, this.destination, this.arrivalTime, 20, this.journeyId);
-        console.log("Commute duration: " + this.duration);
+        if(isNaN(this.duration))
+        {
+            this.duration = await Commute.getAverageJourneyDuration(this.originLatLong, this.destinationLatLong, this.arrivalTime, 20, this.journeyId);
+            console.log("Commute duration: " + this.duration);
+        }
+        this.commuteId = this.generateCommuteId();
         this.save();
     }
     /**
@@ -193,6 +197,7 @@ export class Commute {
         return data["journeys"];
     }
 
+
     /**
      * Returns the commute duration between two locations at a given arrival time and date.
      * @param {string} origin - The origin
@@ -203,20 +208,25 @@ export class Commute {
      * @throws {Error} - If the API call fails. 
      */
     static async getJourneyDuration(origin, destination, arrivalTime, arrivalDate, journeyId){
+        console.log("Getting journey duration for " + origin + " to " + destination + " at " + arrivalTime + " on " + arrivalDate);
         const params = new URLSearchParams({
             time: arrivalTime,        
             timeIs: "Arriving",
             date: arrivalDate,
         });
+        console.log("Fetching from: " + `https://api.tfl.gov.uk/Journey/JourneyResults/${origin}/to/${destination}?${params}`)
         const response = await fetch(`https://api.tfl.gov.uk/Journey/JourneyResults/${origin}/to/${destination}?${params}`);
         data = await response.json();
         for(let i = 0; i < data["journeys"].length; i++){
+            console.log("Checking journey " + (i+1) + " of " + data["journeys"].length)
             let id = Commute.buildJourneyId(data["journeys"][i])
             if(id == journeyId)
             {
-                return await data["journeys"][i]["duration"];
+                console.log("Found journey " + journeyId + " in results.")
+                return data["journeys"][i]["duration"];
             }
         }
+        console.log("Can't find journey  " + journeyID + " in results.")
         return null;
     }
 }

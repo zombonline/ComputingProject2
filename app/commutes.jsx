@@ -30,29 +30,28 @@ export default function Commutes() {
           console.log("Commutes mode updated to:", newMode);
         }}
       >
-
-          <Text style={commutesStyles.panelTitle}>Your Commutes</Text>
-          <ScrollView>
-                      {Object.keys(commutes).length > 0 ? (
-                          Object.values(commutes).map((commute, index) => (
-                              <TouchableOpacity key={index} style={commutesStyles.journeyButton}
-                              onPress={() => router.push({
-                                      pathname: "/commuteTestScreen",
-                                      params: {
-                                        name: commute.name,
-                                        origin: commute.origin,
-                                        originLatLong: commute.originLatLong,
-                                        destination: commute.destination,
-                                        destinationLatLong: commute.destinationLatLong,
-                                        arrivalTime: commute.arrivalTime,
-                                        days: JSON.stringify(commute.days), // Convert array to string
-                                        journeyId: commute.journeyId,
-                                        commuteId: commute.commuteId,
-                                      },
-                                    })}>
-                                <FontAwesome name="pencil" size={20} color="black" />
-                                <Text style={commutesStyles.journeyText}>{commute.name}</Text>
-                              </TouchableOpacity>
+      <Text style={commutesStyles.panelTitle}>Your Commutes</Text>
+      <ScrollView>
+          {Object.keys(commutes).length > 0 ? (
+              Object.values(commutes).map((commute, index) => (
+                  <TouchableOpacity key={index} style={commutesStyles.journeyButton}
+                  onPress={() => router.push({
+                  pathname: "/commuteTestScreen",
+                  params: {
+                    name: commute.name,
+                    origin: commute.origin,
+                    originLatLong: commute.originLatLong,
+                    destination: commute.destination,
+                    destinationLatLong: commute.destinationLatLong,
+                    arrivalTime: commute.arrivalTime,
+                    days: JSON.stringify(commute.days), // Convert array to string
+                    journeyId: commute.journeyId,
+                    commuteId: commute.commuteId,
+                    duration: commute.duration,
+                  }})}>
+                  <FontAwesome name="pencil" size={20} color="black" />
+                  <Text style={commutesStyles.journeyText}>{commute.name}</Text>
+                  </TouchableOpacity>
                           ))
                       ) : (
                           <Text style={commutesStyles.journeyText}>No saved commutes found.</Text>

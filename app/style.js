@@ -295,6 +295,15 @@ export const commuteTestStyles = StyleSheet.create({
     borderColor: "grey",
     color: "white",
   },
+  input_invalid: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    width: "90%",
+    marginTop: 18,
+    borderColor: "red",
+    color: "white",
+  },
   journeyButton: {
     borderRadius: 10,
     backgroundColor: "red",
