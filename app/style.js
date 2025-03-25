@@ -19,7 +19,7 @@ export const LayoutStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    backgroundColor: "#333",
+    backgroundColor: "#000",
     paddingVertical: 10,
     position: "absolute",
     bottom: 0,
@@ -156,7 +156,6 @@ export const settingsStyles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginBottom: 10,
-    
   },
   icon: {
     marginRight: 10,
@@ -245,7 +244,11 @@ export const subSettingStyles = StyleSheet.create({
   },
  // Container for each input + label
  inputGroup: {
-  marginBottom: 20,
+  flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginTop:0,
+    marginBottom: 15,
 },
 // The label above the input field
 inputLabel: {
@@ -255,7 +258,7 @@ inputLabel: {
 },
 // The text input field itself
 inputField: {
-  backgroundColor: "transparent",
+  backgroundColor: "#0000",
   borderRadius: 8,
   borderWidth: 1,
   borderColor: "white",
@@ -264,14 +267,19 @@ inputField: {
   color: "white",
 },
 saveButton: {
-  backgroundColor: "#DC9F85",
-  paddingVertical: 12,
-  borderRadius: 8,
+  backgroundColor: "rgba(255, 230, 2, 0.1)",
+  flexDirection: "row",
   alignItems: "center",
-  marginTop: 20,
+  borderRadius: 10,
+  borderWidth: 1,
+  borderColor: "white",
+  paddingHorizontal: 20,
+  paddingVertical: 8,
+  marginBottom: 20,
+  alignSelf: "center", 
 },
 saveButtonText: {
-  color: "#000",
+  color: "white",
   fontWeight: "bold",
   fontSize: 16,
 },
@@ -382,20 +390,24 @@ export const accountStyles = StyleSheet.create({
     alignSelf: "center",
   },
   loginButton: {
-    backgroundColor: "limegreen",
+    backgroundColor: "rgba(0, 255, 0, 0.1)",
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "white",
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
   loginButtonText: {
     fontSize: 16,
-    color: "#000",
+    color: "white",
     fontWeight: "bold",
   },
   logoutButton: {
-    backgroundColor: "red",
+    backgroundColor: "rgba(255, 0, 0, 0.1)", 
     borderRadius: 8,
-    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: "white",
+    paddingHorizontal: 14,
     paddingVertical: 10,
   },
   logoutButtonText: {

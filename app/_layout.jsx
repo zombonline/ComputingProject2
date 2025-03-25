@@ -64,7 +64,7 @@ function Layout() {
             <Ionicons
               name="settings-outline"
               size={28}
-              color={pathname === "/settings" ? "#DC9F85" : "white"}
+              color={pathname === "/settings" ? "#DC9F55" : "white"}
             />
           </TouchableOpacity>
 
@@ -72,7 +72,7 @@ function Layout() {
             <Ionicons
               name="bus-outline"
               size={28}
-              color={pathname === "/commutes" ? "#DC9F85" : "white"}
+              color={pathname === "/commutes" ? "#DC9F55" : "white"}
             />
           </TouchableOpacity>
 
@@ -80,7 +80,7 @@ function Layout() {
             <Ionicons
               name="person-outline"
               size={28}
-              color={pathname === "/profile" ? "#DC9F85" : "white"}
+              color={pathname === "/profile" ? "#DC9F55" : "white"}
             />
           </TouchableOpacity>
           

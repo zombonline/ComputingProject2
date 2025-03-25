@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: SCREEN_HEIGHT,
-    backgroundColor: "#2D2D35",
+    backgroundColor: "#232323",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
     zIndex:1
@@ -115,7 +115,8 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    padding: 20,
+    paddingHorizontal:20,
+    paddingTop: 5,
   },
 });
 

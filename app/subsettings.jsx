@@ -39,7 +39,7 @@ export default function SettingDetail() {
       dropdownLabel: "Mode of Transport",
       dropdownOptions: ["ASAP", "Stop Freq", "Lowest Fare"],
     },
-    // NEW "account" entry
+ 
     account: {
       title: "Account Settings",
       isAccountScreen: true, // we'll handle this differently
@@ -70,23 +70,43 @@ export default function SettingDetail() {
         <Text style={subSettingStyles.panelTitle}>{title}</Text>
 
         {/* Account form fields */}
-        <TextInput
-          style={subSettingStyles.inputField}
-          placeholder="First Name"
-        />
-        <TextInput
-          style={subSettingStyles.inputField}
-          placeholder="Last Name"
-        />
-        <TextInput
-          style={subSettingStyles.inputField}
-          placeholder="Email"
-        />
-        <TextInput
-          style={subSettingStyles.inputField}
-          placeholder="Password"
-          secureTextEntry
-        />
+        <View style={subSettingStyles.inputGroup}>
+          <View style={{ flex: 1, marginRight: 10 }}>
+            <Text style={subSettingStyles.inputLabel}>First Name</Text>
+            <TextInput
+              style={subSettingStyles.inputField}
+              placeholder="First Name"
+              placeholderTextColor="#ccc"
+            />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={subSettingStyles.inputLabel}>Last Name</Text>
+            <TextInput
+              style={subSettingStyles.inputField}
+              placeholder="Last Name"
+              placeholderTextColor="#ccc"
+            />
+          </View>
+          </View>
+
+          <View style={{ marginBottom: 15 }}>
+          <Text style={subSettingStyles.inputLabel}>Email</Text>
+          <TextInput
+            style={subSettingStyles.inputField}
+            placeholder="Email"
+            placeholderTextColor="#ccc"
+          />
+        </View>
+
+<View style={{ marginBottom: 15 }}>
+  <Text style={subSettingStyles.inputLabel}>Password</Text>
+  <TextInput
+    style={subSettingStyles.inputField}
+    placeholder="Password"
+    secureTextEntry
+    placeholderTextColor="#ccc"
+  />
+</View>
 
         <TouchableOpacity
           style={subSettingStyles.saveButton}
