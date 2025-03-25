@@ -3,7 +3,7 @@ const Errors = {
     INVALID_ORIGIN: "Invalid origin",
     INVALID_DESTINATION: "Invalid destination",
 }
-const REG_SPECIAL = /[!"£!$%^&*()_+={};:@#~<`¬>,-.?/|]/;
+const REG_SPECIAL = /["£!$%^&*()_+={};:@#~<`¬>,-.?/|]/;
 
 /**
  * Validates the arrival time. Arrival time must be a string of length 4, containing only numbers
@@ -19,7 +19,7 @@ function validateArrivalTime(arrivalTime){
         {condition: parseInt(arrivalTime) >= 0 && parseInt(arrivalTime) <= 2359, errorMessage: "Not a valid time"}
     ];
     for (const check of checks) {
-        console.log("Condition ("+check.errorMessage+") met: " + check.condition)
+        // console.log("Condition ("+check.errorMessage+") met: " + check.condition)
         if (!check.condition) {
             return false;
         }
@@ -30,10 +30,23 @@ function validateCommuteName(name){
     const checks = [
         {condition: name.length > 0, errorMessage: "Name is empty"},
         {condition: name.length < 20, errorMessage: "Name is too long"},
-        { condition: () => REG_SPECIAL.test(name.replace(/[ -]/g, '')), errorMessage: "Name contains special characters" },
+        {condition: !REG_SPECIAL.test(name), errorMessage: "Name contains special characters" },
     ];
     for (const check of checks) {
-        console.log("Condition ("+check.errorMessage+") met: " + check.condition)
+        // console.log("Condition ("+check.errorMessage+") met: " + check.condition)
+        if (!check.condition) {
+            return false;
+        }
+    }
+    return true;
+}
+function validateAverageDuration(value){
+    const checks = [
+        {condition: value > 1, errorMessage: "Duration is less than 1 minute."},
+        {condition: /^[0-9]+$/.test(value), errorMessage: "Duration is not a number."},
+    ];
+    for (const check of checks) {
+        // console.log("Condition ("+check.errorMessage+") met: " + check.condition)
         if (!check.condition) {
             return false;
         }
@@ -41,4 +54,4 @@ function validateCommuteName(name){
     return true;
 }
 
-module.exports = {validateArrivalTime, validateCommuteName};
+module.exports = {validateArrivalTime, validateCommuteName, validateAverageDuration};

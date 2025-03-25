@@ -297,9 +297,8 @@ export const commuteTestStyles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderRadius: 10,
-    padding: 10,
     width: "90%",
-    marginTop: 18,
+    marginBottom: 10,
     borderColor: "grey",
     color: "white",
   },
@@ -320,6 +319,14 @@ export const commuteTestStyles = StyleSheet.create({
     marginTop: 10,
     borderColor: "grey",
   },
+  journeyButtonSelected: {
+    borderRadius: 10,
+    backgroundColor: "blue",
+    padding: 10,
+    width: "90%",
+    marginTop: 10,
+    borderColor: "grey",
+  },
   journeyButtonText: {
     color: "white",
     textAlign: "center",
@@ -333,6 +340,22 @@ export const commuteTestStyles = StyleSheet.create({
   listItem: {
     color: "white",
     fontSize: 16,
+  },
+  daysButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#444',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 5,
+  },
+  dayText: {
+    color: '#FFF',
+    fontSize: 12,
+  },
+  selectedDay: {
+    backgroundColor: '#DC9F85',
   },
 });
 

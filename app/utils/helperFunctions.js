@@ -8,8 +8,6 @@ export function getDateYYYYMMDD(inputDate){
 
 lastLatLongCall = 0;
 export async function getLatLong(location){
-
-    console.log("Getting lat long for " + location)
     location = encodeURIComponent(location);
     try{
         const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${location}&format=json`,

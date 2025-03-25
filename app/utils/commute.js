@@ -19,7 +19,7 @@ export class Commute {
         console.log("Commute " + name + " (" + commuteId +  ") created. (" + origin + " to " + destination + " at " + arrivalTime + " on " + days + " with ID " + journeyId + " taking " + this.duration + " minutes)")
     }
     async init(){
-        if(isNaN(this.duration))
+        if(isNaN(this.duration) || this.duration < 1)
         {
             this.duration = await Commute.getAverageJourneyDuration(this.originLatLong, this.destinationLatLong, this.arrivalTime, 20, this.journeyId);
             console.log("Commute duration: " + this.duration);
@@ -70,6 +70,13 @@ export class Commute {
                 return journeys[i]["duration"];
             }
         }
+    }
+
+    async checkForDelay(date){
+        const todaysDuration = await Commute.getJourneyDuration(this.originLatLong, this.destinationLatLong,
+            this.arrivalTime, getDateYYYYMMDD(new Date()), this.journeyId);
+        const delay = todaysDuration - this.duration
+        console.log("Delay:", delay);
     }
 
     /**
@@ -145,14 +152,12 @@ export class Commute {
         daysList.sort();
         let promises = [];
         let dateToCheck = new Date();
-        console.log(dateToCheck)
         dateToCheck.setDate(dateToCheck.getDate() - dateToCheck.getDay()); //set to Sunday
         let uniqueJourneys = [];
         let uniqueJourneyIds = [];
         let allJourneys = [];
         for(let i = 0; i < 7; i++) {
             if(daysList.includes(i)){
-                console.log(getDateYYYYMMDD(dateToCheck))
                 promises.push(Commute.getUniqueJourneys(origin, destination, arrivalTime, getDateYYYYMMDD(dateToCheck)));
             }
             dateToCheck.setDate(dateToCheck.getDate() + 1);
@@ -171,10 +176,8 @@ export class Commute {
             console.log("Error: " + error)
             throw new Error(error);
         }
-        console.log("finished getting all journeys, removing dupes")
         for(let i = 0; i < allJourneys.length; i++){
             const id = Commute.buildJourneyId(allJourneys[i]);
-            console.log(id);
             if(!uniqueJourneyIds.includes(id)){
                 uniqueJourneyIds.push(id);
                 uniqueJourneys.push(allJourneys[i]);
