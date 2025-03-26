@@ -1,25 +1,55 @@
 // app/subsettings.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   Switch,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator,
+  ScrollView,
   Dimensions,
 } from "react-native";
 import Checkbox from "expo-checkbox";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import BottomSheet from "../components/BottomSheet";
 import { subSettingStyles } from "./style";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/app/utils/firebaseConfig";
+
+
 
 export default function SettingDetail() {
   const router = useRouter();
   const { setting } = useLocalSearchParams();
   const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+  const [loading, setLoading] = useState(true);
+  const [displayName, setDisplayName] = useState("Anonymous");
+  const [email, setEmail] = useState("No email available");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Configuration to handle 'account'
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          setEmail(user.email || "No email available");
+          setDisplayName(user.displayName || "Anonymous" );
+
+          
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   const settingConfig = {
     notifications: {
       title: "Notifications Settings",
@@ -39,10 +69,9 @@ export default function SettingDetail() {
       dropdownLabel: "Mode of Transport",
       dropdownOptions: ["ASAP", "Stop Freq", "Lowest Fare"],
     },
- 
     account: {
       title: "Account Settings",
-      isAccountScreen: true, // we'll handle this differently
+      isAccountScreen: true,
     },
   };
 
@@ -54,10 +83,14 @@ export default function SettingDetail() {
     );
   }
 
-  const { title, switchLabel, dropdownLabel, dropdownOptions, isAccountScreen } =
-    settingConfig[setting];
+  const {
+    title,
+    switchLabel,
+    dropdownLabel,
+    dropdownOptions,
+    isAccountScreen,
+  } = settingConfig[setting];
 
-  // Account screen
   if (isAccountScreen) {
     return (
       <BottomSheet
@@ -67,69 +100,86 @@ export default function SettingDetail() {
           console.log("Account subsetting mode updated to:", newMode);
         }}
       >
-        <Text style={subSettingStyles.panelTitle}>{title}</Text>
+        <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+          <Text style={subSettingStyles.panelTitle}>{title}</Text>
 
-        {/* Account form fields */}
-        <View style={subSettingStyles.inputGroup}>
-          <View style={{ flex: 1, marginRight: 10 }}>
-            <Text style={subSettingStyles.inputLabel}>First Name</Text>
-            <TextInput
-              style={subSettingStyles.inputField}
-              placeholder="First Name"
-              placeholderTextColor="#ccc"
-            />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={subSettingStyles.inputLabel}>Last Name</Text>
-            <TextInput
-              style={subSettingStyles.inputField}
-              placeholder="Last Name"
-              placeholderTextColor="#ccc"
-            />
-          </View>
+          <View style={subSettingStyles.inputGroup}>
+            <View style={{ flex: 1, marginRight: 10 }}>
+              <Text style={subSettingStyles.inputLabel}>First Name</Text>
+              <TextInput
+                style={subSettingStyles.inputField}
+                value={displayName}
+                onChangeText={setDisplayName}
+                placeholder="First Name"
+                placeholderTextColor="#ccc"
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={subSettingStyles.inputLabel}>Last Name</Text>
+              <TextInput
+                style={subSettingStyles.inputField}
+               
+                onChangeText="Last Name"
+                placeholder="Last Name"
+                placeholderTextColor="#ccc"
+              />
+            </View>
           </View>
 
           <View style={{ marginBottom: 15 }}>
-          <Text style={subSettingStyles.inputLabel}>Email</Text>
-          <TextInput
-            style={subSettingStyles.inputField}
-            placeholder="Email"
-            placeholderTextColor="#ccc"
-          />
-        </View>
+            <Text style={subSettingStyles.inputLabel}>Email</Text>
+            <TextInput
+              style={subSettingStyles.inputField}
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Email"
+              placeholderTextColor="#ccc"
+            />
+          </View>
 
-<View style={{ marginBottom: 15 }}>
-  <Text style={subSettingStyles.inputLabel}>Password</Text>
-  <TextInput
-    style={subSettingStyles.inputField}
-    placeholder="Password"
-    secureTextEntry
-    placeholderTextColor="#ccc"
-  />
-</View>
+          <View style={{ marginBottom: 15 }}>
+            <Text style={subSettingStyles.inputLabel}>Password</Text>
+            <TextInput
+              style={subSettingStyles.inputField}
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Password"
+              secureTextEntry
+              placeholderTextColor="#ccc"
+            />
+          </View>
 
-        <TouchableOpacity
-          style={subSettingStyles.saveButton}
-          onPress={() => {
-            console.log("Saved changes for account settings");
-          }}
-        >
-          <Text style={subSettingStyles.saveButtonText}>Save Changes</Text>
-        </TouchableOpacity>
+          <View style={{ marginBottom: 15 }}>
+            <Text style={subSettingStyles.inputLabel}>Confirm Password</Text>
+            <TextInput
+              style={subSettingStyles.inputField}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              placeholder="Confirm Password"
+              secureTextEntry
+              placeholderTextColor="#ccc"
+            />
+          </View>
+
+          <TouchableOpacity
+            style={subSettingStyles.saveButton}
+            onPress={() => {
+              console.log("Saved changes for account settings");
+              // SAVE LOGIC.....
+            }}
+          >
+            <Text style={subSettingStyles.saveButtonText}>Save Changes</Text>
+          </TouchableOpacity>
+        </ScrollView>
       </BottomSheet>
     );
   }
 
-  // Otherwise, handle existing logic for notifications, accessibility, commute
-  // Local state for switch
+  // Other setting types
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((prev) => !prev);
-
-  // Local state for dropdown
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
-
-  // Local state for checkboxes
   const [checkedOptions, setCheckedOptions] = useState(
     new Array(dropdownOptions.length).fill(false)
   );
@@ -154,8 +204,8 @@ export default function SettingDetail() {
         <View style={subSettingStyles.switchRow}>
           <Text style={subSettingStyles.switchLabel}>{switchLabel}</Text>
           <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+            trackColor={{ false: "#000", true: "#DC9F55" }}
+            thumbColor={isEnabled ? "#f4f3f4" : "#f4f3f4"}
             onValueChange={toggleSwitch}
             value={isEnabled}
           />

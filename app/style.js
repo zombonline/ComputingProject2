@@ -267,7 +267,7 @@ inputField: {
   color: "white",
 },
 saveButton: {
-  backgroundColor: "rgba(255, 230, 2, 0.1)",
+  backgroundColor: "rgba(220, 159, 85, 0.3)",
   flexDirection: "row",
   alignItems: "center",
   borderRadius: 10,

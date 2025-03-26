@@ -1,16 +1,18 @@
-// app/profile.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
 import Icon from "react-native-vector-icons/Feather";
 import { Ionicons } from "@expo/vector-icons";
 import { commonStyles, accountStyles } from "./style";
 import BottomSheet from "../components/BottomSheet";
+import { auth } from "@/app/utils/firebaseConfig"; // Ensure this path is correct
+import { onAuthStateChanged } from "firebase/auth";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -19,6 +21,29 @@ export default function Account() {
   const [panelHeight, setPanelHeight] = useState(SCREEN_HEIGHT * 0.5);
   const [isLoginPressed, setLoginPressed] = useState(false);
   const [isLogoutPressed, setLogoutPressed] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [displayName, setDisplayName] = useState("Anonymous");
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setDisplayName(user.displayName || "Anonymous");
+      } else {
+        setDisplayName("Anonymous");
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={commonStyles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <>
@@ -38,7 +63,7 @@ export default function Account() {
             <View style={accountStyles.userIconContainer}>
               <Icon name="user" size={60} color="#000" />
             </View>
-            <Text style={accountStyles.userName}>John Smith</Text>
+            <Text style={accountStyles.userName}>{displayName}</Text>
 
             {/* Account Settings Navigation */}
             <TouchableOpacity
@@ -51,11 +76,13 @@ export default function Account() {
                 color="#000"
                 style={accountStyles.settingsIcon}
               />
-              <Text style={accountStyles.accountSettingsText}>Account Settings</Text>
+              <Text style={accountStyles.accountSettingsText}>
+                Account Settings
+              </Text>
             </TouchableOpacity>
           </View>
 
-          <View style={{ marginTop: "auto", marginBottom: 140 }}>
+          <View style={{ marginTop: "auto", marginBottom: 240 }}>
             <View style={accountStyles.loginRow}>
               {/* Log In Button */}
               <TouchableOpacity
@@ -67,7 +94,7 @@ export default function Account() {
                 }}
                 style={[
                   accountStyles.loginButton,
-                  isLoginPressed && { borderColor: "#00ff00"},
+                  isLoginPressed && { borderColor: "#00ff00" },
                 ]}
               >
                 <Text style={accountStyles.loginButtonText}>Log In</Text>
@@ -77,10 +104,15 @@ export default function Account() {
               <TouchableOpacity
                 onPressIn={() => setLogoutPressed(true)}
                 onPressOut={() => setLogoutPressed(false)}
-                onPress={() => console.log("Logged out")}
+                onPress={() => {
+                  auth.signOut().then(() => {
+                    console.log("User signed out");
+                    router.replace("/home");
+                  });
+                }}
                 style={[
                   accountStyles.logoutButton,
-                  isLogoutPressed && { borderColor: "#ff6666"  },
+                  isLogoutPressed && { borderColor: "#ff6666" },
                 ]}
               >
                 <Text style={accountStyles.logoutButtonText}>Log Out</Text>

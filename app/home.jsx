@@ -7,6 +7,7 @@ import  GoogleMap from "./utils/googlemap";
 const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
+  const [username, setUsername] = useState(null);
 
   useEffect(() => {
     const initializeUser = async () => {
@@ -26,6 +27,7 @@ const HomeScreen = () => {
           await setDoc(userRef, userData);
         } else {
           userData = userSnap.data();
+          setUsername(userData.username || "Anonymous");
         }
 
         // 💾 Guardar datos del usuario localmente (sin contraseña)
@@ -52,7 +54,10 @@ const HomeScreen = () => {
 
   return (
     <>
-      <Text>Welcome, anonymous user!</Text>
+   
+
+
+      <Text>Welcome, {username}!</Text>
       <Text>Your ID: {userId}</Text>
     </>
   );

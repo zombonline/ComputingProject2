@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    height: SCREEN_HEIGHT,
+    height: SCREEN_HEIGHT+1000,
     backgroundColor: "#232323",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
