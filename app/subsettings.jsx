@@ -26,8 +26,8 @@ export default function SettingDetail() {
   const { height: SCREEN_HEIGHT } = Dimensions.get("window");
   const [contentHeight, setContentHeight] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [displayName, setDisplayName] = useState("");
-  const [email, setEmail] = useState("");
+  const [displayName, setDisplayName] = useState("Anonymous");
+  const [email, setEmail] = useState("No email available");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [issavePressed, setsavePressed] = useState(false);
@@ -39,7 +39,7 @@ export default function SettingDetail() {
    // Determine if scrolling should be enabled:
    const isScrollable = contentHeight > availableHeight;
 
-  useEffect(() => {
+   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const user = auth.currentUser;
@@ -200,5 +200,76 @@ export default function SettingDetail() {
           </ScrollView>
         </View>
       </BottomSheet>
+      
     );}
+
+
+  // Other setting types
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled((prev) => !prev);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
+  const [checkedOptions, setCheckedOptions] = useState(
+    new Array(dropdownOptions.length).fill(false)
+  );
+  const toggleCheckbox = (index) => {
+    setCheckedOptions((prev) =>
+      prev.map((val, i) => (i === index ? !val : val))
+    );
+  };
+
+  return (
+    <BottomSheet
+      halfHeight={SCREEN_HEIGHT * 0.5}
+      onDismiss={() => router.replace("/home")}
+      onModeChange={(newMode) => {
+        console.log("Subsettings mode updated to:", newMode);
+      }}
+    >
+      <Text style={subSettingStyles.panelTitle}>Settings</Text>
+      <Text style={subSettingStyles.subHeader}>{title}</Text>
+
+      {switchLabel && (
+        <View style={subSettingStyles.switchRow}>
+          <Text style={subSettingStyles.switchLabel}>{switchLabel}</Text>
+          <Switch
+            trackColor={{ false: "#000", true: "#DC9F55" }}
+            thumbColor={isEnabled ? "#f4f3f4" : "#f4f3f4"}
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
+        </View>
+      )}
+
+      {dropdownLabel && (
+        <TouchableOpacity
+          style={subSettingStyles.dropdownRow}
+          onPress={toggleDropdown}
+        >
+          <Text style={subSettingStyles.dropdownLabel}>{dropdownLabel}</Text>
+          <Ionicons
+            name={isDropdownOpen ? "chevron-up" : "chevron-down"}
+            size={20}
+            color="#fff"
+            style={subSettingStyles.dropdownIcon}
+          />
+        </TouchableOpacity>
+      )}
+
+      {isDropdownOpen && dropdownOptions && (
+        <View style={subSettingStyles.dropdownList}>
+          {dropdownOptions.map((option, index) => (
+            <View key={option} style={subSettingStyles.optionRow}>
+              <Checkbox
+                value={checkedOptions[index]}
+                onValueChange={() => toggleCheckbox(index)}
+                style={subSettingStyles.checkbox}
+              />
+              <Text style={subSettingStyles.optionText}>{option}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+    </BottomSheet>
+  );
 }

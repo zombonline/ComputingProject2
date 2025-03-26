@@ -411,6 +411,7 @@ export const accountStyles = StyleSheet.create({
     width: "80%",
     justifyContent: "space-between",
     alignSelf: "center",
+    
   },
   loginButton: {
     backgroundColor: "rgba(0, 255, 0, 0.1)",
@@ -419,6 +420,8 @@ export const accountStyles = StyleSheet.create({
     borderColor: "white",
     paddingHorizontal: 20,
     paddingVertical: 10,
+    marginHorizontal:30,
+   
   },
   loginButtonText: {
     fontSize: 16,
@@ -432,6 +435,8 @@ export const accountStyles = StyleSheet.create({
     borderColor: "white",
     paddingHorizontal: 14,
     paddingVertical: 10,
+    marginHorizontal:30,
+
   },
   logoutButtonText: {
     fontSize: 16,
