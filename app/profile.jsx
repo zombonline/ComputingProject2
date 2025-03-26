@@ -11,7 +11,7 @@ import Icon from "react-native-vector-icons/Feather";
 import { Ionicons } from "@expo/vector-icons";
 import { commonStyles, accountStyles } from "./style";
 import BottomSheet from "../components/BottomSheet";
-import { auth } from "@/app/utils/firebaseConfig"; // Ensure this path is correct
+import { auth } from "@/app/utils/firebaseConfig"; 
 import { onAuthStateChanged } from "firebase/auth";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");

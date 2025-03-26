@@ -30,9 +30,12 @@ export default function BottomSheet({ halfHeight = SCREEN_HEIGHT * 0.5, onDismis
         });
       },
       onPanResponderMove: (_, gestureState) => {
-        const newY = lastOffset + gestureState.dy;
+        let newY = lastOffset + gestureState.dy;
+        // Clamp newY to not go above the top (FULL_OPEN_Y)
+        newY = Math.max(newY, FULL_OPEN_Y);
         translateY.setValue(newY);
       },
+      
       onPanResponderRelease: (_, gestureState) => {
         const { moveY } = gestureState;
         if (moveY > SCREEN_HEIGHT * 0.85) {
@@ -102,7 +105,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    height: SCREEN_HEIGHT+1000,
+    height: SCREEN_HEIGHT,
     backgroundColor: "#232323",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
