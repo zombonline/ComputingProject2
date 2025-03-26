@@ -15,6 +15,14 @@ export default function CommuteTestScreen() {
   const [refresh, setRefresh] = useState(false);
   const localSearchParams = useLocalSearchParams();
   const [loadedCommute, setLoadedCommute] = useState(() => LoadCommute(localSearchParams));
+  const [contentHeight, setContentHeight] = useState(0);
+  const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+     const NAV_BAR_HEIGHT = 600;
+    // Calculate available height for scrollable content:
+    const [panelHeight, setPanelHeight] = useState(SCREEN_HEIGHT * 0.5);
+    const availableHeight = panelHeight - NAV_BAR_HEIGHT;
+    // Determine if scrolling should be enabled:
+    const isScrollable = contentHeight > availableHeight;
   // #region input variables
   const [name, setName] = useState(loadedCommute.name || "");
   const [origin, setOrigin] = useDebouncedState(loadedCommute.origin || "", 500, async (text) => {
@@ -96,10 +104,23 @@ export default function CommuteTestScreen() {
   }
 
   return (
-    <View style={commuteTestStyles.container}>
+    <>
       <BottomSheet
         halfHeight={SCREEN_HEIGHT * 0.5}
         onDismiss={() => router.replace("/home")}
+        onHeightChange={(h) => {
+          setPanelHeight(h);
+        }}
+      >
+      <ScrollView
+        scrollEnabled={isScrollable}
+        contentContainerStyle={{
+          paddingBottom: NAV_BAR_HEIGHT, // ensures extra space for nav bar
+        }}
+        onLayout={(event) => {
+          const { height } = event.nativeEvent.layout;
+          setContentHeight(height);
+        }}
       >
       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
       <CustomInput name="Nickname:" placeholder="Give your commute a name" value={name} onChangeText={setName} inputValid={validateCommuteName(name)} />
@@ -214,10 +235,10 @@ export default function CommuteTestScreen() {
           ) : null}
 
         </View>
-
+      </ScrollView>
 
       </BottomSheet>
-    </View>
+    </>
   );
 }
 

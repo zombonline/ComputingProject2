@@ -36,7 +36,7 @@ export default function Commutes() {
               Object.values(commutes).map((commute, index) => (
                   <TouchableOpacity key={index} style={commutesStyles.journeyButton}
                   onPress={() => router.push({
-                  pathname: "/commuteTestScreen",
+                  pathname: "/commuteEdit",
                   params: {
                     name: commute.name,
                     origin: commute.origin,
@@ -60,7 +60,7 @@ export default function Commutes() {
 
           <TouchableOpacity
           style={commutesStyles.addButton}
-          onPress={() => router.push("/commuteTestScreen")}
+          onPress={() => router.push("/commuteEdit")}
         >
           <Ionicons name="add-outline" size={24} color="black" />
           <Text style={commutesStyles.journeyText}>Add</Text>
