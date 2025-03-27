@@ -17,6 +17,7 @@ import BottomSheet from "../components/BottomSheet";
 import { subSettingStyles } from "./style";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/app/utils/firebaseConfig";
+import Slider from '@react-native-community/slider';
 
 
 
@@ -64,19 +65,19 @@ export default function SettingDetail() {
       title: "Notifications Settings",
       switchLabel: "Enable/disable Notifications",
       dropdownLabel: "Notification Occurrence",
-      dropdownOptions: ["Daily", "Weekdays", "Weekends"],
+      // dropdownOptions are no longer needed for checkboxes, so you might remove them or repurpose as needed
     },
     accessibility: {
       title: "Accessibility Settings",
       switchLabel: null,
       dropdownLabel: "Theme",
-      dropdownOptions: ["Light Theme", "Dark Theme", "Colour Blind"],
+      dropdownOptions: ["No escalators", "Use stairs, no escalator", "Step to platform only", "Full step-free access"],
     },
     commute: {
       title: "Commute Settings",
       switchLabel: null,
       dropdownLabel: "Mode of Transport",
-      dropdownOptions: ["ASAP", "Stop Freq", "Lowest Fare"],
+      dropdownOptions: ["Bike", "Bus", "DLR", "Underground", "Elisabeth Line", "Overground", "National rail"],
     },
     account: {
       title: "Account Settings",
@@ -146,8 +147,8 @@ export default function SettingDetail() {
                 />
               </View>
             </View>
-
-            <View style={{ marginBottom: 15 }}>
+            <View style={subSettingStyles.inputGroup}>
+            <View style={{ flex:1 }}>
               <Text style={subSettingStyles.inputLabel}>Email</Text>
               <TextInput
                 style={subSettingStyles.inputField}
@@ -157,8 +158,9 @@ export default function SettingDetail() {
                 placeholderTextColor="#ccc"
               />
             </View>
-
-            <View style={{ marginBottom: 15 }}>
+            </View>
+            <View style={subSettingStyles.inputGroup}>
+            <View style={{ flex:1}}>
               <Text style={subSettingStyles.inputLabel}>Password</Text>
               <TextInput
                 style={subSettingStyles.inputField}
@@ -169,8 +171,9 @@ export default function SettingDetail() {
                 placeholderTextColor="#ccc"
               />
             </View>
-
-            <View style={{ marginBottom: 15 }}>
+            </View>
+            <View style={subSettingStyles.inputGroup}>
+            <View style={{ flex:1 }}>
               <Text style={subSettingStyles.inputLabel}>Confirm Password</Text>
               <TextInput
                 style={subSettingStyles.inputField}
@@ -181,7 +184,7 @@ export default function SettingDetail() {
                 placeholderTextColor="#ccc"
               />
             </View>
-
+            </View>
             <TouchableOpacity
              onPressIn={() => setsavePressed(true)}
              onPressOut={() => setsavePressed(false)}
@@ -204,18 +207,139 @@ export default function SettingDetail() {
     );}
 
 
-  // Other setting types
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((prev) => !prev);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
+   // Shared state for switch and dropdown
+   const [isEnabled, setIsEnabled] = useState(false);
+   const toggleSwitch = () => setIsEnabled((prev) => !prev);
+   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
+ 
+   // State for notifications slider, only used if setting === 'notifications'
+   const [notificationTime, setNotificationTime] = useState(15);
+     // separate state for text input as a string
+  const [inputValue, setInputValue] = useState("15");
+
+  // When the slider changes, update both states.
+  const handleSliderChange = (value) => {
+    const roundedValue = Math.round(value);
+    setNotificationTime(roundedValue);
+    setInputValue(String(roundedValue));
+  };
+
+  // As the user types, update the inputValue state.
+  // If the value is valid (between 1 and 30), update notificationTime too.
+  const handleInputChange = (value) => {
+    // Allow user to input freely, even incomplete numbers
+    setInputValue(value);
+
+    const num = parseInt(value, 10);
+    if (!isNaN(num) && num >= 1 && num <= 30) {
+      setNotificationTime(num);
+    }
+  };
+
+  // On blur, if the entered value is invalid or below 1, reset it to the current valid value.
+  const handleInputBlur = () => {
+    const num = parseInt(inputValue, 10);
+    if (isNaN(num) || num < 1) {
+      setInputValue(String(notificationTime));
+    }
+  };
+
+   // State for checkbox options (commute) if needed
   const [checkedOptions, setCheckedOptions] = useState(
-    new Array(dropdownOptions.length).fill(false)
+    dropdownOptions && setting !== "accessibility"
+      ? new Array(dropdownOptions.length).fill(false)
+      : []
   );
-  const toggleCheckbox = (index) => {
-    setCheckedOptions((prev) =>
-      prev.map((val, i) => (i === index ? !val : val))
-    );
+  
+   const toggleCheckbox = (index) => {
+     setCheckedOptions((prev) =>
+       prev.map((val, i) => (i === index ? !val : val))
+     );
+   };
+
+   // State for accessibility radio selection (only one option can be selected)
+  const [selectedOption, setSelectedOption] = useState(null);
+  const handleRadioSelect = (index) => {
+    setSelectedOption(index);
+  };
+ 
+   // Render dropdown content depending on setting type
+  const renderDropdownContent = () => {
+    // For notifications, show slider with input field.
+    if (setting === "notifications") {
+      return (
+        <View style={subSettingStyles.sliderContainer}>
+          <TextInput
+            style={subSettingStyles.input}
+            value={inputValue}
+            keyboardType="numeric"
+            onChangeText={handleInputChange}
+            onBlur={handleInputBlur}
+            maxLength={2} // Allow numbers between 1 and 30
+          />
+          <Slider
+            style={subSettingStyles.slider}
+            minimumValue={1} // Minimum is now 1
+            maximumValue={30}
+            step={1}
+            value={notificationTime}
+            onValueChange={handleSliderChange}
+            minimumTrackTintColor="#DC9F55"
+            maximumTrackTintColor="#000"
+            thumbTintColor="#fff"
+          />
+        </View>
+      );
+    }
+
+    // For accessibility, render radio buttons
+    if (setting === "accessibility" && dropdownOptions) {
+      return (
+        <View style={subSettingStyles.dropdownList}>
+          {dropdownOptions.map((option, index) => (
+            <TouchableOpacity
+              key={option}
+              style={subSettingStyles.optionRow}
+              onPress={() => handleRadioSelect(index)}
+            >
+              <View style={subSettingStyles.radioCircle}>
+                {selectedOption === index && <View style={subSettingStyles.selectedRb} />}
+              </View>
+              <Text style={subSettingStyles.optionText}>{option}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      );
+    }
+
+    // For other settings with dropdownOptions (e.g., commute), render checkboxes.
+    if (dropdownOptions) {
+      return (
+        <View style={subSettingStyles.dropdownList}>
+          {dropdownOptions.map((option, index) => (
+            <TouchableOpacity
+              key={option}
+              style={subSettingStyles.optionRow}
+              onPress={() => toggleCheckbox(index)}
+              
+            >
+              <View style={subSettingStyles.checkboxContainer}>
+                <Checkbox
+                  value={checkedOptions[index]}
+                  onValueChange={() => toggleCheckbox(index)}
+                  style={subSettingStyles.checkbox}
+                  color="#DC9F55" 
+                />
+              </View>
+              <Text style={subSettingStyles.optionText}>{option}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      );
+    }
+    
+    return null;
   };
 
   return (
@@ -256,20 +380,7 @@ export default function SettingDetail() {
         </TouchableOpacity>
       )}
 
-      {isDropdownOpen && dropdownOptions && (
-        <View style={subSettingStyles.dropdownList}>
-          {dropdownOptions.map((option, index) => (
-            <View key={option} style={subSettingStyles.optionRow}>
-              <Checkbox
-                value={checkedOptions[index]}
-                onValueChange={() => toggleCheckbox(index)}
-                style={subSettingStyles.checkbox}
-              />
-              <Text style={subSettingStyles.optionText}>{option}</Text>
-            </View>
-          ))}
-        </View>
-      )}
+      {isDropdownOpen && renderDropdownContent()}
     </BottomSheet>
   );
 }

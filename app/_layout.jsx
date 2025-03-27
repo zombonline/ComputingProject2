@@ -25,7 +25,7 @@ function Layout() {
   console.log("Local mode:", localMode);
 
   // Define pages where the search bar should always be hidden.
-  const excludedSearch = ["/", "/commuteTestScreen", "/settings", "/subsettings", "/profile", "/commutes", "/login", "/signup"];
+  const excludedSearch = ["/", "/commuteEdit", "/settings", "/subsettings", "/profile", "/commutes", "/login", "/signup"];
 
   // For other routes: show the search bar (if not in excludedSearch)
   const showSearch =
@@ -45,7 +45,7 @@ function Layout() {
             color="black"
             style={commonStyles.searchIcon}
           />
-          <TextInput
+          <TextInput  onPress={() => router.push("/commuteEdit")}
             placeholder="Search location"
             style={commonStyles.searchInput}
           />

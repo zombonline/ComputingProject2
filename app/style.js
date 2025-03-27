@@ -247,7 +247,9 @@ export const subSettingStyles = StyleSheet.create({
   flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
+    flex:1,
     marginTop:0,
+    paddingHorizontal:20,
     marginBottom: 15,
 },
 // The label above the input field
@@ -283,6 +285,47 @@ saveButtonText: {
   fontWeight: "bold",
   fontSize: 16,
 },
+input:{
+  flex:1,
+  alignSelf: "center",
+  color: "white",
+},
+radioCircle: {
+  height: 20,
+  width: 20,
+  borderRadius: 10,
+  borderWidth: 2,
+  borderColor: '#DC9F55',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginRight: 10,
+},
+selectedRb: {
+  width: 10,
+  height: 10,
+  borderRadius: 5,
+  backgroundColor: '#DC9F55',
+},
+
+optionRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginVertical: 5,
+},
+checkboxContainer: {
+  position: 'relative',
+  marginRight: 10,
+},
+checkbox: {
+  width: 20,
+  height: 20,
+  borderWidth: 2,
+  borderColor: '#DC9F55', // Orange stroke for the checkbox border
+  borderRadius: 4,
+},
+
+
+
 });
 
 // Styles for commuteTestScreen.tsx
