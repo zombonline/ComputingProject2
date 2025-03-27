@@ -1,57 +1,55 @@
+// #region imports
 import { Text, View, Button, TextInput, ScrollView, Pressable, FlatList, Dimensions } from "react-native";
-import { useState } from "react";
-import { validateArrivalTime, validateCommuteName, validateAverageDuration } from "./utils/input_validation";
-import { getLatLong, getDateYYYYMMDD } from "./utils/helperFunctions";
+import { useEffect, useState } from "react";
+
 import { commuteTestStyles } from "./style";
-import Commute from "./utils/commute";
-import { useLocalSearchParams } from "expo-router";
-import { removeCommute, removeCommuteFromFirestore } from "./utils/accountStorage";
-import useDebouncedState from "./utils/useDebouncedState";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Notifications from "expo-notifications";
 import BottomSheet from "../components/BottomSheet";
-const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+import { clearMarkers, moveToLocation, setMarker, fitMarkers } from "./utils/googlemap";
+import { removeCommute, removeCommuteFromFirestore } from "./utils/accountStorage";
+import { validateArrivalTime, validateCommuteName, validateAverageDuration } from "./utils/input_validation";
+import { getLatLong, getDateYYYYMMDD } from "./utils/helperFunctions";
+import Commute from "./utils/commute";
+import useDebouncedState from "./utils/useDebouncedState";
+// #endregion
 
 export default function CommuteTestScreen() {
-  const [refresh, setRefresh] = useState(false);
-  const localSearchParams = useLocalSearchParams();
-  const [loadedCommute, setLoadedCommute] = useState(() => LoadCommute(localSearchParams));
-  const [contentHeight, setContentHeight] = useState(0);
-  const { height: SCREEN_HEIGHT } = Dimensions.get("window");
-     const NAV_BAR_HEIGHT = 600;
-    // Calculate available height for scrollable content:
-    const [panelHeight, setPanelHeight] = useState(SCREEN_HEIGHT * 0.5);
-    const availableHeight = panelHeight - NAV_BAR_HEIGHT;
-    // Determine if scrolling should be enabled:
-    const isScrollable = contentHeight > availableHeight;
-  // #region input variables
+  const localSearchParams = useLocalSearchParams(); //get data fed in when opening this screen
+  const [loadedCommute, setLoadedCommute] = useState(() => BuildCommuteObject(localSearchParams));
+  const router = useRouter();
+
+  // #region Input field data
   const [name, setName] = useState(loadedCommute.name || "");
   const [origin, setOrigin] = useDebouncedState(loadedCommute.origin || "", 500, async (text) => {
-    setOriginLoading(true); 
-    const latLong = await getLatLong(text);
-    setOriginLatLong(latLong);
-    setOriginLoading(false); 
-    await UpdateJourneys(latLong,destinationLatLong);
-    setTimeout(() => setRefresh(prev => !prev), 5000);
+    await handleOriginInput(text);
   });
-  const [originLatLong, setOriginLatLong] = useState(loadedCommute.originLatLong || "");
   const [destination, setDestination] = useDebouncedState(loadedCommute.destination || "", 500, async (text) => {
-    setDestinationLoading(true); 
-    const latLong = await getLatLong(text);
-    setDestinationLatLong(latLong);
-    setDestinationLoading(false); 
-    await UpdateJourneys(originLatLong,latLong);
-    setTimeout(() => setRefresh(prev => !prev), 50000);
+    await handleDestinationInput(text);
   });
+  const [arrivalTime, setArrivalTime] = useState(loadedCommute.arrivalTime || "");
+  const [selectedDays, setSelectedDays] = useState(loadedCommute.days || []);
+  const [duration, setDuration] = useState(loadedCommute.duration || 0);
+  const [journeyId, setJourneyId] = useState(loadedCommute.journeyId || "");
+  // #endregion
+
+  // #region Screen variables
+  const [contentHeight, setContentHeight] = useState(0);
+  const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+  const NAV_BAR_HEIGHT = 600;
+  const [panelHeight, setPanelHeight] = useState(SCREEN_HEIGHT * 0.5);
+  const availableHeight = panelHeight - NAV_BAR_HEIGHT;
+  const isScrollable = contentHeight > availableHeight;
+  // #endregion
+  
+  
+  const [originLatLong, setOriginLatLong] = useState(loadedCommute.originLatLong || "");
   const [destinationLatLong, setDestinationLatLong] = useState(loadedCommute.destinationLatLong || "");
   const [originLoading, setOriginLoading] = useState(false);
   const [destinationLoading, setDestinationLoading] = useState(false);
   const originInputValid = !originLoading && originLatLong != null;
   const destinationInputValid = !destinationLoading && destinationLatLong != null;
 
-  const [arrivalTime, setArrivalTime] = useState(loadedCommute.arrivalTime || "");
-  const [selectedDays, setSelectedDays] = useState(loadedCommute.days || []);
-  const [journeyId, setJourneyId] = useState(loadedCommute.journeyId || "");
-  const [duration, setDuration] = useState(loadedCommute.duration || 0);
   const [commuteIdToDelete, setCommuteIdToDelete] = useState(loadedCommute.commuteId || "");
   const [journeys, setJourneys] = useState([]);
   const days = [
@@ -63,14 +61,44 @@ export default function CommuteTestScreen() {
     { id: 6, name: "Sat" },
     { id: 0, name: "Sun" },
   ];
-  // #endregion
-
-  const toggleItem = (id) => {
+  useEffect(() => {
+    return () => {
+    console.log("COMPONENT CLOSING")
+    clearMarkers();
+    }
+  }, []);
+  async function handleDestinationInput(text) {
+    setDestinationLoading(true);
+    const latLong = await getLatLong(text);
+    setDestinationLatLong(latLong);
+    setDestinationLoading(false);
+    await UpdateJourneys(originLatLong, latLong);
+    setMarker(2, latLong);
+    if(originInputValid){
+      fitMarkers();
+    } else {
+      moveToLocation(latLong);
+    }
+  }
+  async function handleOriginInput(text) {
+    setOriginLoading(true);
+    const latLong = await getLatLong(text);
+    setOriginLatLong(latLong);
+    setOriginLoading(false);
+    await UpdateJourneys(latLong, destinationLatLong);
+    setMarker(1, latLong);
+    if(destinationInputValid){
+      console.log("Fitting markers");
+      fitMarkers();
+    } else {
+      moveToLocation(latLong);
+    }
+  }
+  function toggleItem(id) {
     setSelectedDays((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
-  };
-
+  }
   async function UpdateJourneys(origin, destination){
     console.log("Attempting to update journeys using origin:" + originLatLong + " and destination:" + destinationLatLong)
     if(origin == null) { 
@@ -99,15 +127,18 @@ export default function CommuteTestScreen() {
     console.log("current j found: " +currentJourneyFound)
     if(!currentJourneyFound){setJourneyId(null)}
     setJourneys(journeys);
-    setRefresh(prev => !prev); 
-    console.log("REFRESHING")
   }
 
   return (
+    
     <>
       <BottomSheet
         halfHeight={SCREEN_HEIGHT * 0.5}
-        onDismiss={() => router.replace("/home")}
+        onDismiss={() =>
+          {
+             router.replace("/home")
+             clearMarkers();
+          }}
         onHeightChange={(h) => {
           setPanelHeight(h);
         }}
@@ -185,7 +216,6 @@ export default function CommuteTestScreen() {
         <View style={{ maxHeight: 300, alignItems: "center" }} >
         <FlatList
           data={journeys}
-          extraData={refresh}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <JourneyButton journey={item} journeyId={journeyId} setJourneyId={setJourneyId} />
@@ -203,6 +233,7 @@ export default function CommuteTestScreen() {
             title="Submit"
             onPress={() => {
               removeCommute(commuteIdToDelete);
+              removeCommuteFromFirestore(commuteIdToDelete);
               const newCommute = new Commute(name, origin, originLatLong, destination, destinationLatLong, arrivalTime, selectedDays, journeyId, parseInt(duration, 10));
               newCommute.init();
               setLoadedCommute(newCommute);
@@ -236,13 +267,10 @@ export default function CommuteTestScreen() {
 
         </View>
       </ScrollView>
-
       </BottomSheet>
     </>
   );
 }
-
-
 
 function CustomInput({ name, placeholder, value, onChangeText, inputValid }) {
   return (
@@ -258,7 +286,6 @@ function CustomInput({ name, placeholder, value, onChangeText, inputValid }) {
     </View>
   );
 }
-
 function JourneyButton({ journey, journeyId, setJourneyId }) {
   const id = Commute.buildJourneyId(journey);
   return (
@@ -275,8 +302,7 @@ function JourneyButton({ journey, journeyId, setJourneyId }) {
     </View>
   );
 }
-
-function LoadCommute(params) {
+function BuildCommuteObject(params) {
   if (params.commuteId != undefined) {
     let loadedCommute = new Commute(params.name,
       params.origin, params.originLatLong,
