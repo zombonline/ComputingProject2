@@ -1,10 +1,8 @@
 // #region imports
 import { Text, View, Button, TextInput, ScrollView, Pressable, FlatList, Dimensions } from "react-native";
 import { useEffect, useState } from "react";
-
 import { commuteTestStyles } from "./style";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import * as Notifications from "expo-notifications";
 import BottomSheet from "../components/BottomSheet";
 import { clearMarkers, moveToLocation, setMarker, fitMarkers } from "./utils/googlemap";
 import { removeCommute, removeCommuteFromFirestore } from "./utils/accountStorage";
@@ -278,13 +276,13 @@ function CustomInput({ name, placeholder, value, onChangeText, inputValid }) {
     </View>
   );
 }
-function JourneyButton({ journey, journeyId, setJourneyId }) {
+function JourneyButton({ journey, journeyId, onPress }) {
   const id = Commute.buildJourneyId(journey);
   return (
     <View style={id === journeyId ? commuteTestStyles.journeyButtonSelected : commuteTestStyles.journeyButton}>
       <Pressable
         onPress={() => {
-          setJourneyId(id);
+          onPress(id);
         }}
       >
         <Text style={commuteTestStyles.journeyButtonText}>

@@ -78,8 +78,6 @@ export class Commute {
             
         if(todaysDuration == null)
         {
-            const altJourneys = await Commute.getUniqueJourneys(this.originLatLong, this.destinationLatLong, this.arrivalTime, getDateYYYYMMDD(new Date()));
-            console.log("Sending notification for " + altJourneys.length + " alternative journeys")
             await Notifications.presentNotificationAsync({
                 title: "Your commute might be disrupted!",
                 body: "Your usual commute might be disrupted. Please check the TFL website for updates.",
