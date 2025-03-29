@@ -1,90 +1,53 @@
-import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
+import { useEffect } from "react";
+import * as Notifications from "expo-notifications";
+import { useRouter } from "expo-router";
 
-// 🚀 Configure notification handling
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
+const NotifManager = () => {
+    const router = useRouter(); // ✅ Use expo-router's navigation system
 
-// ✅ Request permissions
-export async function requestPermissions() {
-  const { status } = await Notifications.getPermissionsAsync();
-  if (status !== 'granted') {
-    const { status: newStatus } = await Notifications.requestPermissionsAsync();
-    if (newStatus !== 'granted') {
-      console.warn("🚨 Notification permissions not granted!");
-    }
-    return newStatus;
-  }
-  return status;
-}
+    console.log("NotifManager mounted");
 
-// 🔔 Setup notification channel (for Android)
-export async function setupNotificationChannel() {
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'Default Channel',
-      importance: Notifications.AndroidImportance.HIGH,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
-    });
-  }
-}
+    useEffect(() => {
+        console.log("Setting up notification listener");
 
-// 📅 Schedule notifications
-export async function scheduleNotification() {
-  console.log("⏳ Scheduling notification...");
+        // Listener for when a notification is interacted with while the app is running
+        const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log("🔔 Notification clicked! Response:", response);
+            const screen = response.notification.request.content.data?.screen;
+            const params = response.notification.request.content.data?.params || {}; 
+            if (screen) {
+              console.log("Navigating to:", screen, "with params:", params);
+              router.push({
+                  pathname: screen,
+                  params, // Pass additional data as query parameters
+              });
+          }
+        });
 
-  try {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Test",
-        body: "This should appear in 10 seconds!",
-      },
-      trigger: { seconds: 10 },
-    });
-    console.log("✅ First notification scheduled");
+        // Handle notifications when the app is opened from a killed state
+        (async () => {
+            const response = await Notifications.getLastNotificationResponseAsync();
+            if (response) {
+                console.log("🔔 App opened via notification! Response:", response);
+                const screen = response.notification.request.content.data?.screen;
+                const params = response.notification.request.content.data?.params || {}; 
+                if (screen) {
+                  console.log("Navigating to:", screen, "with params:", params);
+                  router.push({
+                      pathname: screen,
+                      params: params
+                  });
+              }
+            }
+        })();
 
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Reminder!",
-        body: "This is your recurring notification.",
-      },
-      trigger: {
-        hour: 23,
-        minute: 25,
-        repeats: true,
-      },
-    });
-    console.log("✅ Recurring notification scheduled");
-  } catch (error) {
-    console.error("❌ Error scheduling notification:", error);
-  }
-}
+        return () => {
+            console.log("Removing notification listener");
+            subscription.remove();
+        };
+    }, []);
 
-// 🔍 Check scheduled notifications
-export async function checkScheduledNotifications() {
-  const scheduled = await Notifications.getAllScheduledNotificationsAsync();
-  console.log('📋 Scheduled Notifications:', scheduled);
-}
+    return null; // ✅ This component doesn't render anything
+};
 
-// 📩 Listen for incoming notifications
-export function setupNotificationListeners() {
-  const receivedListener = Notifications.addNotificationReceivedListener(notification => {
-    console.log("📥 Notification received:", notification);
-  });
-
-  const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
-    console.log("📲 User interacted with notification:", response);
-  });
-
-  // ✅ Return unsubscribe functions to be used in cleanup
-  return () => {
-    receivedListener.remove();
-    responseListener.remove();
-  };
-}
+export default NotifManager;

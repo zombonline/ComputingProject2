@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";          
+import { useRouter } from "expo-router";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { auth, signInWithEmailAndPassword, signOut } from "@/app/utils/firebaseConfig";
 import { getLocalUserData } from "@/app/utils/accountStorage";

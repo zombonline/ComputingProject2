@@ -43,7 +43,7 @@ export default function CommuteTestScreen() {
   // #endregion
   
   
-  const [originLatLong, setOriginLatLong] = useState(loadedCommute.originLatLong || "");
+  const [originLatLong, setOriginLatLong] = useState(loadedCommute.originLatLong || "",);
   const [destinationLatLong, setDestinationLatLong] = useState(loadedCommute.destinationLatLong || "");
   const [originLoading, setOriginLoading] = useState(false);
   const [destinationLoading, setDestinationLoading] = useState(false);
@@ -252,15 +252,7 @@ export default function CommuteTestScreen() {
             <Button
               title="Check for delays today"
               onPress={async () => {
-                console.log("Checking for delays today...");
-                const todaysDuration = await Commute.getJourneyDuration(originLatLong, destinationLatLong, arrivalTime, getDateYYYYMMDD(new Date()), journeyId);
-                const delay = todaysDuration - duration
-                console.log("Delay:", delay);
-                Notifications.presentNotificationAsync({
-                  title: "Your commute is delayed!",
-                  body: "Your usual commute is delayed by " + delay + " minutes.",
-                  data: { delay },
-                });
+                await loadedCommute.checkForDelay(new Date());
               }}
             />
           ) : null}

@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import { getDateYYYYMMDD } from './helperFunctions';
 import CryptoJS from "crypto-js";
 import { saveCommute, saveCommuteToFirestore } from "./accountStorage";
-
+import * as Notifications from "expo-notifications";
 base_url = "https://api.tfl.gov.uk/Journey/JourneyResults"
 export class Commute {
     constructor(name, origin, originLatLong, destination, destinationLatLong, arrivalTime, days, journeyId, duration, commuteId) {
@@ -75,8 +75,39 @@ export class Commute {
     async checkForDelay(date){
         const todaysDuration = await Commute.getJourneyDuration(this.originLatLong, this.destinationLatLong,
             this.arrivalTime, getDateYYYYMMDD(new Date()), this.journeyId);
-        const delay = todaysDuration - this.duration
-        console.log("Delay:", delay);
+            
+        if(todaysDuration == null)
+        {
+            const altJourneys = await Commute.getUniqueJourneys(this.originLatLong, this.destinationLatLong, this.arrivalTime, getDateYYYYMMDD(new Date()));
+            console.log("Sending notification for " + altJourneys.length + " alternative journeys")
+            await Notifications.presentNotificationAsync({
+                title: "Your commute might be disrupted!",
+                body: "Your usual commute might be disrupted. Please check the TFL website for updates.",
+                data: { screen: "altJourneys", params: 
+                    {
+                        origin: this.origin,
+                        originLatLong: this.originLatLong,
+                        destination: this.destination,
+                        destinationLatLong: this.destinationLatLong,
+                        arrivalTime: this.arrivalTime,
+                        days: JSON.stringify(this.days),
+                        journeyId: this.journeyId,
+                        commuteId: this.commuteId,
+                        duration: this.duration,
+                    }
+                 },
+            });
+            return;
+        }
+        const delay = todaysDuration - this.duration;
+        if(delay > 0)
+        {
+            await Notifications.presentNotificationAsync({
+                title: "Your commute is delayed!",
+                body: "Your usual commute is delayed by " + delay + " minutes.",
+                data: { delay },
+            });
+        }
     }
 
     /**
@@ -188,6 +219,7 @@ export class Commute {
     }
 
     static async getUniqueJourneys(origin, destination, arrivalTime, date){
+        console.log("Getting unique journeys for " + origin + " to " + destination + " at " + arrivalTime + " on " + date);
         origin = encodeURIComponent(origin);
         destination = encodeURIComponent(destination);
         const params = new URLSearchParams({
@@ -196,10 +228,9 @@ export class Commute {
             date: date,
         });
         const response = await fetch(`https://api.tfl.gov.uk/Journey/JourneyResults/${origin}/to/${destination}?${params}`);
-        data = await response.json();
+        const data = await response.json();
         return data["journeys"];
     }
-
 
     /**
      * Returns the commute duration between two locations at a given arrival time and date.
@@ -225,11 +256,10 @@ export class Commute {
             let id = Commute.buildJourneyId(data["journeys"][i])
             if(id == journeyId)
             {
-                console.log("Found journey " + journeyId + " in results.")
                 return data["journeys"][i]["duration"];
             }
         }
-        console.log("Can't find journey  " + journeyID + " in results.")
+        console.log("Can't find journey  " + journeyId + " in results.")
         return null;
     }
 }
