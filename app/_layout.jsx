@@ -25,7 +25,7 @@ function Layout() {
   console.log("Local mode:", localMode);
 
   // Define pages where the search bar should always be hidden.
-  const excludedSearch = ["/", "/commuteEdit", "/settings", "/subsettings", "/profile", "/commutes", "/login", "/signup"];
+  const excludedSearch = ["/", "/altJourneys", "/commuteEdit", "/settings", "/subsettings", "/profile", "/commutes", "/login", "/signup"];
 
   // For other routes: show the search bar (if not in excludedSearch)
   const showSearch =

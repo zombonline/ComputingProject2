@@ -12,7 +12,14 @@ const App = () => {
 
   
   useEffect(() => {
+    const requestNotificationPermission = async () => {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== "granted") {
+        console.warn("Notification permissions not granted!");
+      }
+    };
 
+    requestNotificationPermission();
 
     const timeout = setTimeout(() => {
       router.replace("/home");

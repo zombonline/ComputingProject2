@@ -8,31 +8,25 @@ const NotifManager = () => {
     console.log("NotifManager mounted");
 
     useEffect(() => {
-        console.log("Setting up notification listener");
-
         // Listener for when a notification is interacted with while the app is running
         const subscription = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log("🔔 Notification clicked! Response:", response);
             const screen = response.notification.request.content.data?.screen;
-            const params = response.notification.request.content.data?.params || {}; 
-            if (screen) {
-              console.log("Navigating to:", screen, "with params:", params);
-              router.push({
-                  pathname: screen,
-                  params, // Pass additional data as query parameters
-              });
-          }
+                const params = response.notification.request.content.data?.params || {}; 
+                if (screen) {
+                  router.push({
+                      pathname: screen,
+                      params: params
+                  });
+              }
         });
 
         // Handle notifications when the app is opened from a killed state
         (async () => {
             const response = await Notifications.getLastNotificationResponseAsync();
             if (response) {
-                console.log("🔔 App opened via notification! Response:", response);
                 const screen = response.notification.request.content.data?.screen;
                 const params = response.notification.request.content.data?.params || {}; 
                 if (screen) {
-                  console.log("Navigating to:", screen, "with params:", params);
                   router.push({
                       pathname: screen,
                       params: params
@@ -47,7 +41,7 @@ const NotifManager = () => {
         };
     }, []);
 
-    return null; // ✅ This component doesn't render anything
+    return null; 
 };
 
 export default NotifManager;
