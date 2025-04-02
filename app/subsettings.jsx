@@ -6,7 +6,6 @@ import {
   Switch,
   TouchableOpacity,
   TextInput,
-  ActivityIndicator,
   ScrollView,
   Dimensions,
 } from "react-native";
@@ -15,7 +14,6 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import BottomSheet from "../components/BottomSheet";
 import { subSettingStyles } from "./style";
-import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/app/utils/firebaseConfig";
 import Slider from '@react-native-community/slider';
 
@@ -26,7 +24,6 @@ export default function SettingDetail() {
   const { setting } = useLocalSearchParams();
   const { height: SCREEN_HEIGHT } = Dimensions.get("window");
   const [contentHeight, setContentHeight] = useState(0);
-  const [loading, setLoading] = useState(true);
   const [displayName, setDisplayName] = useState("Anonymous");
   const [email, setEmail] = useState("No email available");
   const [password, setPassword] = useState("");
@@ -52,8 +49,6 @@ export default function SettingDetail() {
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
-      } finally {
-        setLoading(false);
       }
     };
 

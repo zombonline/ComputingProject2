@@ -54,8 +54,8 @@ export const commonStyles = StyleSheet.create({
     marginRight: 10,
   },
   searchInput: {
-    flex: 1, 
-    fontSize: 16 
+    flex: 1,
+    fontSize: 16,
   },
   searchText: {
     fontSize: 16,
@@ -72,7 +72,7 @@ export const commonStyles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
   },
-   chevronUp: {
+  chevronUp: {
     alignItems: "center",
     padding: 10,
   },
@@ -172,13 +172,13 @@ export const subSettingStyles = StyleSheet.create({
   },
 
   chevronUp: commonStyles.chevronUp,
-  panelTitle:commonStyles.panelTitle,
+  panelTitle: commonStyles.panelTitle,
   settingsPanel: commonStyles.Panel,
   searchContainer: commonStyles.searchContainer,
   searchIcon: commonStyles.searchIcon,
   searchInput: commonStyles.searchInput,
   // Arrow icon at the top center
-  
+
   // Sub-header for this specific setting
   subHeader: {
     fontSize: 16,
@@ -239,118 +239,98 @@ export const subSettingStyles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
   },
- // Container for each input + label
- inputGroup: {
-  flexDirection: "row",
+  // Container for each input + label
+  inputGroup: {
+    flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    flex:1,
-    marginTop:0,
-    paddingHorizontal:20,
+    flex: 1,
+    marginTop: 0,
+    paddingHorizontal: 20,
     marginBottom: 15,
-},
-// The label above the input field
-inputLabel: {
-  color: "white",
-  marginBottom: 5,
-  fontSize: 16,
-},
-// The text input field itself
-inputField: {
-  backgroundColor: "#0000",
-  borderRadius: 8,
-  borderWidth: 1,
-  borderColor: "white",
-  paddingHorizontal: 20,
-  paddingVertical: 8,
-  color: "white",
-},
-saveButton: {
-  backgroundColor: "rgba(220, 159, 85, 0.3)",
-  flexDirection: "row",
-  alignItems: "center",
-  borderRadius: 10,
-  borderWidth: 1,
-  borderColor: "white",
-  paddingHorizontal: 20,
-  paddingVertical: 8,
-  marginBottom: 20,
-  alignSelf: "center", 
-},
-saveButtonText: {
-  color: "white",
-  fontWeight: "bold",
-  fontSize: 16,
-},
-input:{
-  flex:1,
-  alignSelf: "center",
-  color: "white",
-},
-radioCircle: {
-  height: 20,
-  width: 20,
-  borderRadius: 10,
-  borderWidth: 2,
-  borderColor: '#DC9F55',
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginRight: 10,
-},
-selectedRb: {
-  width: 10,
-  height: 10,
-  borderRadius: 5,
-  backgroundColor: '#DC9F55',
-},
+  },
+  // The label above the input field
+  inputLabel: {
+    color: "white",
+    marginBottom: 5,
+    fontSize: 16,
+  },
+  // The text input field itself
+  inputField: {
+    backgroundColor: "#0000",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "white",
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    color: "white",
+  },
+  saveButton: {
+    backgroundColor: "rgba(220, 159, 85, 0.3)",
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "white",
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    marginBottom: 20,
+    alignSelf: "center",
+  },
+  saveButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  input: {
+    flex: 1,
+    alignSelf: "center",
+    color: "white",
+  },
+  radioCircle: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#DC9F55",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  selectedRb: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "#DC9F55",
+  },
 
-optionRow: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  marginVertical: 5,
-},
-checkboxContainer: {
-  position: 'relative',
-  marginRight: 10,
-},
-checkbox: {
-  width: 20,
-  height: 20,
-  borderWidth: 2,
-  borderColor: '#DC9F55', // Orange stroke for the checkbox border
-  borderRadius: 4,
-},
-
-
-
+  optionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 5,
+  },
+  checkboxContainer: {
+    position: "relative",
+    marginRight: 10,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderColor: "#DC9F55", // Orange stroke for the checkbox border
+    borderRadius: 4,
+  },
 });
 
 // Styles for commuteTestScreen.tsx
 export const commuteTestStyles = StyleSheet.create({
   container: commonStyles.container,
-  Panel:  commonStyles.Panel,
+  Panel: commonStyles.Panel,
   imageBackground: commonStyles.imageBackground,
   searchBarContainer: commonStyles.searchContainer,
   searchIcon: commonStyles.searchIcon,
   searchInput: commonStyles.searchInput,
   searchText: commonStyles.searchText,
-  input: {
-    borderWidth: 1,
-    borderRadius: 10,
-    width: "90%",
-    marginBottom: 10,
-    borderColor: "grey",
-    color: "white",
-  },
-  input_invalid: {
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    width: "90%",
-    marginTop: 18,
-    borderColor: "red",
-    color: "white",
-  },
   scrollView: {
     width: "90%",
     margin: 20,
@@ -363,18 +343,18 @@ export const commuteTestStyles = StyleSheet.create({
   daysButton: {
     width: 40,
     height: 40,
-    backgroundColor: '#444',
+    backgroundColor: "#444",
     borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginHorizontal: 5,
   },
   dayText: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: 12,
   },
   selectedDay: {
-    backgroundColor: '#DC9F85',
+    backgroundColor: "#DC9F85",
   },
 });
 
@@ -399,6 +379,31 @@ export const journeyButtonStyles = StyleSheet.create({
   },
 });
 
+export const errorTextStyle = StyleSheet.create({
+  color: "red",
+  fontSize: 14,
+});
+
+export const customInputStyle = StyleSheet.create({
+  input: {
+    borderWidth: 1,
+    borderRadius: 10,
+    width: "90%",
+    marginTop: 10,
+    borderColor: "grey",
+    color: "white",
+  },
+  input_invalid: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    width: "90%",
+    marginTop: 10,
+    borderColor: "red",
+    color: "white",
+  },
+});
+
 // Styles for profile.jsx
 export const accountStyles = StyleSheet.create({
   container: commonStyles.container,
@@ -407,9 +412,9 @@ export const accountStyles = StyleSheet.create({
   searchIcon: commonStyles.searchIcon,
   searchInput: commonStyles.searchInput,
   Panel: commonStyles.Panel,
-  panelTitle:commonStyles.panelTitle,
+  panelTitle: commonStyles.panelTitle,
   chevronUp: commonStyles.chevronUp,
-  
+
   userIconContainer: {
     width: 90,
     height: 90,
@@ -434,9 +439,9 @@ export const accountStyles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 8,
     marginBottom: 20,
-    alignSelf: "center", 
+    alignSelf: "center",
   },
-  
+
   settingsIcon: {
     marginRight: 8,
     alignItems: "center",
@@ -451,7 +456,6 @@ export const accountStyles = StyleSheet.create({
     width: "80%",
     justifyContent: "space-between",
     alignSelf: "center",
-    
   },
   loginButton: {
     backgroundColor: "rgba(0, 255, 0, 0.1)",
@@ -460,8 +464,7 @@ export const accountStyles = StyleSheet.create({
     borderColor: "white",
     paddingHorizontal: 20,
     paddingVertical: 10,
-    marginHorizontal:30,
-   
+    marginHorizontal: 30,
   },
   loginButtonText: {
     fontSize: 16,
@@ -469,14 +472,13 @@ export const accountStyles = StyleSheet.create({
     fontWeight: "bold",
   },
   logoutButton: {
-    backgroundColor: "rgba(255, 0, 0, 0.1)", 
+    backgroundColor: "rgba(255, 0, 0, 0.1)",
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "white",
     paddingHorizontal: 14,
     paddingVertical: 10,
-    marginHorizontal:30,
-
+    marginHorizontal: 30,
   },
   logoutButtonText: {
     fontSize: 16,
@@ -487,56 +489,56 @@ export const accountStyles = StyleSheet.create({
   navItem: commonStyles.navItem,
 });
 export const commutesStyles = StyleSheet.create({
-    container: commonStyles.container,
+  container: commonStyles.container,
 
-    searchBarContainer: commonStyles.searchContainer,
-    searchIcon: commonStyles.searchIcon,
-    searchInput: commonStyles.searchInput,
-    searchText: commonStyles.searchText,
-    chevronUp: commonStyles.chevronUp,
-    panelTitle: commonStyles.panelTitle,
-    Panel: commonStyles.Panel,
-    container: {
-      flex: 1,
-      backgroundColor: "#333",
-      padding: 20,
-      borderTopLeftRadius: 15,
-      borderTopRightRadius: 15,
-      marginTop: 600,
-    },
-    title: {
-      color: "white",
-      fontSize: 18,
-      textAlign: "center",
-      marginBottom: 15,
-    },
-    journeyContainer: {
-      backgroundColor: "#444",
-      borderRadius: 10,
-      padding: 10,
-    },
-    journeyButton: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: "white",
-      padding: 10,
-      borderRadius: 10,
-      marginBottom: 10,
-      justifyContent: "space-between",
-    },
-    addButton: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: "white",
-      padding: 10,
-      borderRadius: 10,
-      justifyContent: "center",
-    },
-    journeyText: {
-      fontSize: 16,
-      flex: 1,
-      textAlign: "center",
-    },
-    bottomNav: commonStyles.bottomNav,
-    navItem: commonStyles.navItem,
-  });
+  searchBarContainer: commonStyles.searchContainer,
+  searchIcon: commonStyles.searchIcon,
+  searchInput: commonStyles.searchInput,
+  searchText: commonStyles.searchText,
+  chevronUp: commonStyles.chevronUp,
+  panelTitle: commonStyles.panelTitle,
+  Panel: commonStyles.Panel,
+  container: {
+    flex: 1,
+    backgroundColor: "#333",
+    padding: 20,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    marginTop: 600,
+  },
+  title: {
+    color: "white",
+    fontSize: 18,
+    textAlign: "center",
+    marginBottom: 15,
+  },
+  journeyContainer: {
+    backgroundColor: "#444",
+    borderRadius: 10,
+    padding: 10,
+  },
+  journeyButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+    justifyContent: "space-between",
+  },
+  addButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 10,
+    justifyContent: "center",
+  },
+  journeyText: {
+    fontSize: 16,
+    flex: 1,
+    textAlign: "center",
+  },
+  bottomNav: commonStyles.bottomNav,
+  navItem: commonStyles.navItem,
+});

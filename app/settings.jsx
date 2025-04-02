@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import BottomSheet from "../components/BottomSheet";
-import { settingsStyles, commonStyles } from "./style";
+import { settingsStyles } from "./style";
 import { SettingsPanelModeContext } from "./utils/SettingsPanelModeContext";
 
 

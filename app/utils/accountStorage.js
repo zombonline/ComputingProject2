@@ -1,5 +1,3 @@
-// accountStorage.js (Merged Commute and User Data Storage)
-import { Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { db, auth } from "./firebaseConfig";
 import { doc, setDoc, getDoc, collection, getDocs, deleteDoc } from "firebase/firestore";

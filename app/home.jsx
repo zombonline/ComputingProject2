@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
+import { Text, ActivityIndicator } from "react-native";
 import { signInAnonymouslyIfNeeded, db, doc, setDoc, getDoc } from "@/app/utils/firebaseConfig";
-import { saveUserDataLocally, getLocalUserData } from "@/app/utils/accountStorage";
-import  GoogleMap from "./utils/googlemap";
+import { saveUserDataLocally } from "@/app/utils/accountStorage";
 
 const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
-  const [username, setUsername] = useState(null);
 
   useEffect(() => {
     const initializeUser = async () => {
@@ -15,22 +13,18 @@ const HomeScreen = () => {
         const user = await signInAnonymouslyIfNeeded();
         setUserId(user.uid);
 
-        // 🗃 Verificar si el usuario ya existe en Firestore
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
 
         let userData;
 
         if (!userSnap.exists()) {
-          // 🔥 Crear perfil por defecto si no existe
           userData = { uid: user.uid, preferences: {} };
           await setDoc(userRef, userData);
         } else {
           userData = userSnap.data();
-          setUsername(userData.username || "Anonymous");
         }
 
-        // 💾 Guardar datos del usuario localmente (sin contraseña)
         await saveUserDataLocally(userData);
 
         setLoading(false);
@@ -54,17 +48,10 @@ const HomeScreen = () => {
 
   return (
     <>
-   
-
-
-      <Text>Welcome, {username}!</Text>
+      <Text>Welcome, anonymous user!</Text>
       <Text>Your ID: {userId}</Text>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#fff" },
-});
 
 export default HomeScreen;

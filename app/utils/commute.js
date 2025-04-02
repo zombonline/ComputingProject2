@@ -3,7 +3,6 @@ import { getDateYYYYMMDD } from './helperFunctions';
 import CryptoJS from "crypto-js";
 import { saveCommute, saveCommuteToFirestore } from "./accountStorage";
 import * as Notifications from "expo-notifications";
-base_url = "https://api.tfl.gov.uk/Journey/JourneyResults"
 export class Commute {
     constructor(name, origin, originLatLong, destination, destinationLatLong, arrivalTime, days, journeyId, duration, commuteId) {
         this.name = name;
@@ -74,7 +73,7 @@ export class Commute {
 
     async checkForDelay(date){
         const todaysDuration = await Commute.getJourneyDuration(this.originLatLong, this.destinationLatLong,
-            this.arrivalTime, getDateYYYYMMDD(new Date()), this.journeyId);
+            this.arrivalTime, getDateYYYYMMDD(date), this.journeyId);
         console.log("Today's duration: " + todaysDuration + " Commute duration: " + this.duration)
         if(todaysDuration == null)
         {

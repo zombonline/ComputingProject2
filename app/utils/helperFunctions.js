@@ -1,4 +1,4 @@
-export function getDateYYYYMMDD(inputDate){
+function getDateYYYYMMDD(inputDate){
     const yyyy = inputDate.getFullYear();
     const mm = String(inputDate.getMonth() + 1).padStart(2, "0");
     const dd = String(inputDate.getDate()).padStart(2, "0");
@@ -6,8 +6,7 @@ export function getDateYYYYMMDD(inputDate){
     return `${yyyy}${mm}${dd}`;
 }
 
-lastLatLongCall = 0;
-export async function getLatLong(location){
+async function getLatLong(location){
     location = encodeURIComponent(location);
     try{
         const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${location}&format=json`,
@@ -16,7 +15,11 @@ export async function getLatLong(location){
                 'User-Agent': 'Commuty/0.1 bradleyj9834@hotmail.com'
             }
         });
-        data = await response.json();
+        const data = await response.json();
+        if (!data || data.length === 0) {
+            console.log("No results found for " + location);
+            return null;
+        }
         return data[0]["lat"] + "," + data[0]["lon"];
     } catch (error) {
         console.log(error)
@@ -24,3 +27,4 @@ export async function getLatLong(location){
         return null;
     }
 }
+module.exports = {getDateYYYYMMDD, getLatLong};

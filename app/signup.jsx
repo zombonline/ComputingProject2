@@ -29,14 +29,12 @@ export default function SignUp() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [anonymousUser, setAnonymousUser] = useState(null);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const fetchAnonymousUser = async () => {
       const localUser = await getLocalUserData();
       if (localUser && localUser.uid) {
-        setAnonymousUser(localUser);
       }
     };
     fetchAnonymousUser();
