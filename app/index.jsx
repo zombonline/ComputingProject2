@@ -4,12 +4,11 @@ import { useRouter } from "expo-router"; // ✅ Make sure this is at the top lev
 import { indexStyles } from "./style";
 import NotificationHandler from "./utils/notifManager";
 import * as Notifications from "expo-notifications";
-import { messaging } from "./utils/firebaseConfig";
-import { getToken, onMessage } from "firebase/messaging";
+import { LogBox } from "react-native";
 
 const App = () => {
   const router = useRouter(); // ✅ Ensure this is at the top level
-
+  LogBox.ignoreAllLogs();
   
   useEffect(() => {
     const requestNotificationPermission = async () => {
@@ -31,7 +30,7 @@ const App = () => {
     <View style={indexStyles.container}>
       <NotificationHandler />
       <Image source={require("@/assets/images/logo.png")} style={indexStyles.logoImage} />
-      <ActivityIndicator size={50} color="#DC9F85" style={indexStyles.activityIndicator} />
+      <ActivityIndicator size={50} color="#DC9F85" style={{marginTop:300}} />
     </View>
   );
 };

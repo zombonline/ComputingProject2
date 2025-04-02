@@ -6,49 +6,26 @@ import { useEffect } from "react";
 import Commute from "./utils/commute";
 import { getDateYYYYMMDD } from "./utils/helperFunctions";
 import { useState } from "react";
-import { commuteTestStyles } from "./style";
-
+import JourneyButton  from "../components/journeyButton";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
-
-const modeImages = {
-    bus: require('../assets/images/mode_bus.png'),
-    overground: require('../assets/images/mode_overground.png'),
-    tube: require('../assets/images/mode_tube.png'),
-  };
-  
 
 export default function AltJourneys() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  let loading = false;
   const [journeys, setJourneys] = useState([]);
     useEffect(() => {
     const fetchAltJourneys = async () => {
+      loading = true;
       const altJourneys = await Commute.getUniqueJourneys(params.originLatLong, params.destinationLatLong, params.arrivalTime, getDateYYYYMMDD(new Date()));
+      loading = false;
       setJourneys(altJourneys);
     };
     fetchAltJourneys();
   }, []);
 
-  function JourneyButton({journey}) {
-    return (
-      <View style={{...commuteTestStyles.journeyButton, alignItems: 'center'}}>
-        <View style={{width:"90%", justifyContent: 'center', alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap'}}>
-        {journey.legs.map((leg) => {
-            if(leg.mode.id == "walking"){ return null; }
-            const imageSource = modeImages[leg.mode.id]; // Get the image source from the mapping
-            return (
-                <View style={{width:"30%", justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row'}}>
-                <Text style={{fontSize: 8, textAlign: 'center', color: 'white', paddingHorizontal:10}}>{leg.departurePoint.commonName}</Text>
-                <Image source={imageSource} style={{width: "10", aspectRatio: 1}} resizeMode="contain"  />
-                </View>
-            );
-        })}
-        <Text style={{fontSize: 8, textAlign: 'center', color: 'white', paddingHorizontal:10}}>{params.destination}</Text>
-        </View>
-      </View>
-    );
-  }
+
   return (
     <View style={commonStyles.container}>
       <BottomSheet
@@ -63,7 +40,11 @@ export default function AltJourneys() {
                         <JourneyButton key={index} journey={journey} />
                     ))
                 ) : (
+                    loading ? (
+                      <ActivityIndicator size={50} color="#DC9F85" />
+                    ) : (
                     <Text style={{ textAlign: 'center', color: 'white' }}>No alternate journeys found.</Text>
+                    )
                 )}
             </ScrollView>
       </BottomSheet>

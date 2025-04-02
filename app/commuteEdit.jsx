@@ -1,5 +1,5 @@
 // #region imports
-import { Text, View, Button, TextInput, ScrollView, Pressable, FlatList, Dimensions } from "react-native";
+import { Text, View, Button, TextInput, ScrollView, Pressable, FlatList, Dimensions, ActivityIndicator } from "react-native";
 import { useEffect, useState } from "react";
 import { commuteTestStyles } from "./style";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -10,6 +10,7 @@ import { validateArrivalTime, validateCommuteName, validateAverageDuration } fro
 import { getLatLong, getDateYYYYMMDD } from "./utils/helperFunctions";
 import Commute from "./utils/commute";
 import useDebouncedState from "./utils/useDebouncedState";
+import JourneyButton from "../components/journeyButton";
 // #endregion
 
 export default function CommuteTestScreen() {
@@ -40,16 +41,15 @@ export default function CommuteTestScreen() {
   const isScrollable = contentHeight > availableHeight;
   // #endregion
   
-  
   const [originLatLong, setOriginLatLong] = useState(loadedCommute.originLatLong || "",);
   const [destinationLatLong, setDestinationLatLong] = useState(loadedCommute.destinationLatLong || "");
   const [originLoading, setOriginLoading] = useState(false);
   const [destinationLoading, setDestinationLoading] = useState(false);
   const originInputValid = !originLoading && originLatLong != null;
   const destinationInputValid = !destinationLoading && destinationLatLong != null;
-
   const [commuteIdToDelete, setCommuteIdToDelete] = useState(loadedCommute.commuteId || "");
   const [journeys, setJourneys] = useState([]);
+  const [journeysLoading, setJourneysLoading] = useState(false);
   const days = [
     { id: 1, name: "Mon" },
     { id: 2, name: "Tues" },
@@ -114,6 +114,7 @@ export default function CommuteTestScreen() {
       console.log("Can't update journey due to arrival time")
       return; }
     console.log("Updating Journeys")
+    setJourneysLoading(true);
     const journeys = await Commute.getAllUniqueJourneys(origin, destination, arrivalTime, selectedDays);
     let currentJourneyFound = false;
     for (const journey of journeys) {
@@ -125,6 +126,7 @@ export default function CommuteTestScreen() {
     console.log("current j found: " +currentJourneyFound)
     if(!currentJourneyFound){setJourneyId(null)}
     setJourneys(journeys);
+    setJourneysLoading(false);
   }
 
   return (
@@ -152,56 +154,82 @@ export default function CommuteTestScreen() {
         }}
       >
       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-      <CustomInput name="Nickname:" placeholder="Give your commute a name" value={name} onChangeText={setName} inputValid={validateCommuteName(name)} />
-      <CustomInput
-        name="Origin:"
-        placeholder="Where do you start?"
-        value={origin}
-        onChangeText={ async (text) => {
-          setOrigin(text);
-        }}
-        inputValid={originInputValid}
-      />
-      <CustomInput
-        name="Destination:"
-        placeholder="Where are you headed?"
-        value={destination}
-        onChangeText={ async (text) => {
-          await setDestination(text);
-        }}
-        inputValid={destinationInputValid}
-      />
-      <CustomInput
-        name="Time:"
-        placeholder="What time do you arrive?"
-        value={arrivalTime}
-        onChangeText={ async (text) => {
-          setArrivalTime(text);
-          await UpdateJourneys(originLatLong,destinationLatLong);
-        }}
-        inputValid={validateArrivalTime(arrivalTime)}
-      />
+        <CustomInput 
+        name="Nickname:" 
+        placeholder="Give your commute a name" 
+        value={name} onChangeText={setName} 
+        inputValid={validateCommuteName(name)} 
+        width={"100%"} 
+        />
+      <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 1 }}>
+        <CustomInput
+          name="Origin:"
+          placeholder="Where do you start?"
+          value={origin}
+          onChangeText={ async (text) => {
+            setOrigin(text);
+          }}
+          inputValid={originInputValid}
+          width={"50%"}
+        />
 
-        {commuteIdToDelete ? (
+        <CustomInput
+          name="Destination:"
+          placeholder="Where are you headed?"
+          value={destination}
+          onChangeText={ async (text) => {
+            await setDestination(text);
+          }}
+          inputValid={destinationInputValid}
+          width={"50%"}
+        />
+      </View>
 
+      {commuteIdToDelete ? (
+        <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 1 }}>
           <CustomInput
-            name="Duration:"
-            placeholder="How long does this usually take?"
-            value={duration}
-            onChangeText={
-              (text) => {
-                setDuration(parseInt(text));
+            name="Time:"
+            placeholder="What time do you arrive?"
+            value={arrivalTime}
+            onChangeText={ async (text) => {
+              setArrivalTime(text);
+              await UpdateJourneys(originLatLong,destinationLatLong);
+            }}
+            inputValid={validateArrivalTime(arrivalTime)}
+            width={"50%"}
+          />
+        <CustomInput
+          name="Duration:"
+          placeholder="How long does this usually take?"
+          value={duration}
+          onChangeText={
+            (text) => {
+              setDuration(parseInt(text));
               }}
             inputValid={validateAverageDuration(duration)}
+            width={"50%"}
+            />
+          </View>
+          ) : 
+          <CustomInput
+            name="Time:"
+            placeholder="What time do you arrive?"
+            value={arrivalTime}
+            onChangeText={ async (text) => {
+              setArrivalTime(text);
+              await UpdateJourneys(originLatLong,destinationLatLong);
+            }}
+            inputValid={validateArrivalTime(arrivalTime)}
+            width={"100%"}
           />
-
-        ) : null}
-        </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'center', padding:"10" }}>
-        {days.map((item) => (
-          <Pressable
-            key={item.id}
-            onPress={async () => {
+          }
+            </View>
+            <Text style={{ color: "white", textAlign: "center" }}>Days:</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 5 }}>
+            {days.map((item) => (
+              <Pressable
+              key={item.id}
+              onPress={async () => {
               toggleItem(item.id);
               await UpdateJourneys(originLatLong,destinationLatLong);
             }}
@@ -211,87 +239,90 @@ export default function CommuteTestScreen() {
           </Pressable>
         ))}
       </View>
-        <View style={{ maxHeight: 300, alignItems: "center" }} >
-        <FlatList
+      {
+        !journeysLoading ? (
+          <FlatList style={{ flexGrow: 0, width: "80%", alignContent: "center", alignSelf: "center" }}
           data={journeys}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <JourneyButton journey={item} journeyId={journeyId} setJourneyId={setJourneyId} />
+            < JourneyButton journey={item} journeyId={journeyId} setJourneyId={setJourneyId} />
           )}
         />
-        </View>
-        <View style={{ alignItems: "center", padding: 10 }}>
+        ) : (
+          <ActivityIndicator size={50} color="#DC9F85" />
+        )
+      }
+      {commuteIdToDelete ? (
+        <View style={{ alignItems: "center", marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
           <Button
-            title="View Possible Journeys"
-            onPress={async () => {
-              setJourneys(await Commute.getAllUniqueJourneys(originLatLong, destinationLatLong, arrivalTime, selectedDays));
-            }}
-          />
-          <Button
-            title="Submit"
-            onPress={() => {
-              removeCommute(commuteIdToDelete);
-              removeCommuteFromFirestore(commuteIdToDelete);
-              const newCommute = new Commute(name, origin, originLatLong, destination, destinationLatLong, arrivalTime, selectedDays, journeyId, parseInt(duration, 10));
-              newCommute.init();
-              setLoadedCommute(newCommute);
-            }}
-          />
-          {commuteIdToDelete ? (
-            <Button
               title="Delete"
               onPress={() => {
                 removeCommute(commuteIdToDelete);
                 removeCommuteFromFirestore(commuteIdToDelete);
+                router.replace("/home");
               }}
             />
-          ) : null}
-          {commuteIdToDelete ? (
-            <Button
-              title="Check for delays today"
+          <Button
+          title="Save Changes"
+          onPress={() => {
+            removeCommute(commuteIdToDelete);
+            removeCommuteFromFirestore(commuteIdToDelete);
+            const newCommute = new Commute(name, origin, originLatLong, destination, destinationLatLong, arrivalTime, selectedDays, journeyId, parseInt(duration, 10));
+            newCommute.init();
+            setLoadedCommute(newCommute);
+          }}
+        />
+        <Button
+              title="Delay Check"
               onPress={async () => {
                 await loadedCommute.checkForDelay(new Date());
               }}
             />
-          ) : null}
-
         </View>
+      ) : 
+      <View style={{ alignItems: "center", marginTop:10 }}>
+        <Button
+              title="Cancel"
+              onPress={() => {
+                removeCommute(commuteIdToDelete);
+                removeCommuteFromFirestore(commuteIdToDelete);
+                router.replace("/home");
+              }}
+            />
+      <Button
+          title="Submit"
+          onPress={() => {
+            removeCommute(commuteIdToDelete);
+            removeCommuteFromFirestore(commuteIdToDelete);
+            const newCommute = new Commute(name, origin, originLatLong, destination, destinationLatLong, arrivalTime, selectedDays, journeyId, parseInt(duration, 10));
+            newCommute.init();
+            setLoadedCommute(newCommute);
+          }}
+        />
+        </View>
+        }
       </ScrollView>
       </BottomSheet>
     </>
   );
 }
 
-function CustomInput({ name, placeholder, value, onChangeText, inputValid }) {
+function CustomInput({ name, placeholder, value, onChangeText, inputValid, width }) {
   return (
-    <View style={{ width: "100%", alignItems: "center" }}>
-    <Text style={commuteTestStyles.journeyButtonText}>{name}</Text>
+    <View style={{ width: width, alignItems: "center" }}>
+    <Text style={{ color: "white" }}>{name}</Text>
     <TextInput
       style={inputValid ? commuteTestStyles.input : commuteTestStyles.input_invalid}
       placeholder={placeholder}
       placeholderTextColor="grey"
       value={value}
       onChangeText={onChangeText}
+      height= {"40"}
     />
     </View>
   );
 }
-function JourneyButton({ journey, journeyId, onPress }) {
-  const id = Commute.buildJourneyId(journey);
-  return (
-    <View style={id === journeyId ? commuteTestStyles.journeyButtonSelected : commuteTestStyles.journeyButton}>
-      <Pressable
-        onPress={() => {
-          onPress(id);
-        }}
-      >
-        <Text style={commuteTestStyles.journeyButtonText}>
-          {journey.legs.map((leg) => leg.instruction.summary).join("\n")}
-        </Text>
-      </Pressable>
-    </View>
-  );
-}
+
 function BuildCommuteObject(params) {
   if (params.commuteId != undefined) {
     let loadedCommute = new Commute(params.name,

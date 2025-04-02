@@ -75,12 +75,12 @@ export class Commute {
     async checkForDelay(date){
         const todaysDuration = await Commute.getJourneyDuration(this.originLatLong, this.destinationLatLong,
             this.arrivalTime, getDateYYYYMMDD(new Date()), this.journeyId);
-            
+        console.log("Today's duration: " + todaysDuration + " Commute duration: " + this.duration)
         if(todaysDuration == null)
         {
             await Notifications.presentNotificationAsync({
                 title: "Your commute might be disrupted!",
-                body: "Your usual commute might be disrupted. Please check the TFL website for updates.",
+                body: "Your usual commute might be disrupted. Press for alternate journeys.",
                 data: { screen: "altJourneys", params: 
                     {
                         origin: this.origin,
@@ -93,17 +93,30 @@ export class Commute {
                         commuteId: this.commuteId,
                         duration: this.duration,
                     }
-                 },
+                 }
             });
             return;
         }
         const delay = todaysDuration - this.duration;
+        console.log("Delay: " + delay)
         if(delay > 0)
         {
             await Notifications.presentNotificationAsync({
                 title: "Your commute is delayed!",
-                body: "Your usual commute is delayed by " + delay + " minutes.",
-                data: { delay },
+                body: "Your usual commute is delayed by " + delay + " minutes. Press for alternate journeys.",
+                data: { screen: "altJourneys", params: 
+                    {
+                        origin: this.origin,
+                        originLatLong: this.originLatLong,
+                        destination: this.destination,
+                        destinationLatLong: this.destinationLatLong,
+                        arrivalTime: this.arrivalTime,
+                        days: JSON.stringify(this.days),
+                        journeyId: this.journeyId,
+                        commuteId: this.commuteId,
+                        duration: this.duration,
+                    }
+                 }
             });
         }
     }
@@ -254,6 +267,7 @@ export class Commute {
             let id = Commute.buildJourneyId(data["journeys"][i])
             if(id == journeyId)
             {
+                console.log("Found journey " + id + " with duration " + data["journeys"][i]["duration"])
                 return data["journeys"][i]["duration"];
             }
         }

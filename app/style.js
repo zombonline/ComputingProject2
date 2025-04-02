@@ -38,7 +38,7 @@ export const commonStyles = StyleSheet.create({
   },
   searchContainer: {
     position: "absolute",
-    top: Platform.OS === "ios" ? 50 : 30,
+    top: 50,
     left: 20,
     right: 20,
     flexDirection: "row",
@@ -126,9 +126,6 @@ export const indexStyles = StyleSheet.create({
     height: 150,
     alignSelf: "center",
     resizeMode: "contain",
-  },
-  activityIndicator: {
-    marginTop: 300,
   },
 });
 
@@ -354,27 +351,6 @@ export const commuteTestStyles = StyleSheet.create({
     borderColor: "red",
     color: "white",
   },
-  journeyButton: {
-    borderRadius: 10,
-    backgroundColor: "red",
-    padding: 10,
-    width: "90%",
-    marginTop: 10,
-    borderColor: "grey",
-  },
-  journeyButtonSelected: {
-    borderRadius: 10,
-    backgroundColor: "blue",
-    padding: 10,
-    width: "90%",
-    marginTop: 10,
-    borderColor: "grey",
-  },
-  journeyButtonText: {
-    color: "white",
-    textAlign: "center",
-    fontSize: 16,
-  },
   scrollView: {
     width: "90%",
     margin: 20,
@@ -399,6 +375,27 @@ export const commuteTestStyles = StyleSheet.create({
   },
   selectedDay: {
     backgroundColor: '#DC9F85',
+  },
+});
+
+export const journeyButtonStyles = StyleSheet.create({
+  unselected: {
+    borderRadius: 10,
+    backgroundColor: "white",
+    color: "black",
+    padding: 10,
+    width: "100%",
+    marginTop: 10,
+  },
+  selected: {
+    borderRadius: 10,
+    backgroundColor: "white",
+    color: "white",
+    padding: 10,
+    width: "100%",
+    marginTop: 10,
+    borderColor: "blue",
+    borderWidth: 3,
   },
 });
 
