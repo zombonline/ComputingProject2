@@ -108,7 +108,7 @@ export default function SettingDetail() {
       >
         <View style={{ flex: 1 }}>
           {/* Fixed header */}
-          <Text style={subSettingStyles.panelTitle}>{title}</Text>
+          <Text style={subSettingStyles.subHeader}>{title}</Text>
 
           {/* Scrollable content */}
           <ScrollView
@@ -345,7 +345,7 @@ export default function SettingDetail() {
         console.log("Subsettings mode updated to:", newMode);
       }}
     >
-      <Text style={subSettingStyles.panelTitle}>Settings</Text>
+      
       <Text style={subSettingStyles.subHeader}>{title}</Text>
 
       {switchLabel && (

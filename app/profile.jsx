@@ -83,7 +83,9 @@ export default function Account() {
                 ...standardButtonStyle,
                 width: "50%",
                 alignSelf: "center",
-                marginBottom: 20,
+                marginBottom: 30,
+                paddingVertical:13,
+
               }}
               onPress={() => router.push("/subsettings?setting=account")}
             >

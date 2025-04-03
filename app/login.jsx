@@ -6,11 +6,20 @@ import {
   TouchableOpacity,
   Alert,
   StyleSheet,
+  Image,
+  Dimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { auth, signInWithEmailAndPassword } from "@/app/utils/firebaseConfig";
 import { getLocalUserData } from "@/app/utils/accountStorage";
+import CommutyIcon from "@/assets/images/logo.png";
+import { Loginsignup } from "./style";
+
+const { width: screenWidth } = Dimensions.get("window");
+const computedInputWidth = screenWidth < 500 ? screenWidth * 0.7 : screenWidth * 0.25;
+const logoSize = screenWidth * 0.25;
+const buttonWidth = 140;
 
 export default function Login() {
   const router = useRouter();
@@ -40,13 +49,8 @@ export default function Login() {
     console.log("🔄 Intentando iniciar sesión con:", email, password);
 
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log("✅ Inicio de sesión exitoso:", userCredential.user);
-
       Alert.alert("Success", "Login successful!");
       router.replace("/home");
     } catch (error) {
@@ -56,40 +60,59 @@ export default function Login() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.loginText}>Login</Text>
-
-      <TextInput
-        placeholder="Email"
-        style={styles.input}
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        placeholder="Password"
-        secureTextEntry
-        style={styles.input}
-        value={password}
-        onChangeText={setPassword}
-      />
-
-      <TouchableOpacity style={styles.signInButton} onPress={handleSignIn}>
-        <Icon name="login" size={20} color="#fff" />
-        <Text style={styles.signInText}>Sign in</Text>
+    <View style={{...Loginsignup.container,paddingTop: 150,}}>
+      <TouchableOpacity onPress={() => router.back()} style={Loginsignup.backArrow}>
+              <Icon name="arrow-back" size={24} color="#fff" />
       </TouchableOpacity>
+      {/* Logo Section */}
+      <View style={Loginsignup.logoContainer}>
+        <Image source={CommutyIcon} style={Loginsignup.logo} resizeMode="contain" />
+      </View>
 
-      {/* Agregar la pregunta "Don't you have an account?" */}
-      <TouchableOpacity onPress={() => router.push("/signup")}>
-        <Text style={styles.signupText}>
-          Don't you have an account?{" "}
-          <Text style={styles.linkText}>Sign up</Text>
-        </Text>
-      </TouchableOpacity>
+      {/* Login Header */}
+      <View style={Loginsignup.loginContainer}>
+        <Text style={Loginsignup.loginText}>Login</Text>
+      </View>
+
+      {/* Input Fields */}
+      <View style={{...Loginsignup.inputGroup, paddingTop: 50}}>
+        <TextInput
+          placeholder="Email"
+          style={[Loginsignup.input, { width: computedInputWidth }]}
+          placeholderTextColor="#777"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <TextInput
+          placeholder="Password"
+          secureTextEntry
+          style={[Loginsignup.input, { width: computedInputWidth }]}
+          placeholderTextColor="#777"
+          value={password}
+          onChangeText={setPassword}
+        />
+      </View>
+
+      {/* Sign In Button */}
+      <View style={Loginsignup.buttonContainer}>
+        <TouchableOpacity style={[Loginsignup.button, { width: buttonWidth }]} onPress={handleSignIn}>
+          <Icon name="login" size={20} color="#fff" />
+          <Text style={Loginsignup.buttonText}>Sign in</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Navigation Link to Sign Up */}
+      <View style={Loginsignup.linkContainer}>
+        <Text style={Loginsignup.signUpText}>Don't you have an account? </Text>
+        <TouchableOpacity onPress={() => router.push("/signup")}>
+          <Text style={Loginsignup.linkText}>Sign up</Text>
+        </TouchableOpacity>
+      </View>
 
       {userData && (
-        <Text style={styles.localDataText}>
+        <Text style={Loginsignup.localDataText}>
           Using anonymous account: {userData.uid}
         </Text>
       )}
@@ -97,33 +120,4 @@ export default function Login() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 50,
-    backgroundColor: "#fff",
-    alignItems: "center",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 16,
-    marginBottom: 15,
-  },
-  signInButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#007AFF",
-    paddingVertical: 12,
-    borderRadius: 5,
-  },
-  signInText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-    marginLeft: 8,
-  },
-  localDataText: { marginTop: 20, color: "#777", fontSize: 14 },
-});
+

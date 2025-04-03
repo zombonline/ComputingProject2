@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useRouter } from "expo-router";
@@ -24,6 +25,11 @@ import {
   saveUserDataLocally,
   getLocalUserData,
 } from "@/app/utils/accountStorage";
+import { Loginsignup } from "./style";
+
+const { width: screenWidth } = Dimensions.get("window");
+const computedInputWidth = screenWidth < 500 ? screenWidth * 0.9 : screenWidth * 0.25;
+const buttonWidth = 150;
 
 export default function SignUp() {
   const router = useRouter();
@@ -33,11 +39,13 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
+  
 
   useEffect(() => {
     const fetchAnonymousUser = async () => {
       const localUser = await getLocalUserData();
       if (localUser && localUser.uid) {
+        // Handle local anonymous user if needed.
       }
     };
     fetchAnonymousUser();
@@ -81,6 +89,7 @@ export default function SignUp() {
     if (text !== password) return "Passwords do not match.";
     return null;
   };
+
   const isFormValid = () => {
     return (
       username.length >= 3 &&
@@ -91,6 +100,7 @@ export default function SignUp() {
       !validateConfirmPassword(confirmPassword)
     );
   };
+
   const handleSignUp = async () => {
     let newErrors = {};
     newErrors.username = validateUsername(username);
@@ -158,16 +168,17 @@ export default function SignUp() {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()} style={styles.backArrow}>
-        <Icon name="arrow-back" size={24} color="#000" />
+    <View style={Loginsignup.container}>
+      <TouchableOpacity onPress={() => router.back()} style={Loginsignup.backArrow}>
+        <Icon name="arrow-back" size={24} color="#fff" />
       </TouchableOpacity>
 
-      <Text style={styles.headerText}>Sign Up</Text>
+      <Text style={{...Loginsignup.headerText, paddingTop:150, paddingBottom:30}}>Sign Up</Text>
 
       <TextInput
         placeholder="Username"
-        style={styles.input}
+        placeholderTextColor="#777"
+        style={[Loginsignup.input, { width: computedInputWidth }]}
         value={username}
         onChangeText={(text) => {
           setUsername(formatUsername(text));
@@ -176,12 +187,13 @@ export default function SignUp() {
         autoCapitalize="none"
       />
       {errors.username && (
-        <Text style={styles.errorText}>{errors.username}</Text>
+        <Text style={Loginsignup.errorText}>{errors.username}</Text>
       )}
 
       <TextInput
         placeholder="Email"
-        style={styles.input}
+        placeholderTextColor="#777"
+        style={[Loginsignup.input, { width: computedInputWidth }]}
         value={email}
         onChangeText={(text) => {
           setEmail(text);
@@ -190,11 +202,12 @@ export default function SignUp() {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+      {errors.email && <Text style={Loginsignup.errorText}>{errors.email}</Text>}
 
       <TextInput
         placeholder="Phone Number"
-        style={styles.input}
+        placeholderTextColor="#777"
+        style={[Loginsignup.input, { width: computedInputWidth }]}
         value={phoneNumber}
         onChangeText={(text) => {
           setPhoneNumber(text);
@@ -206,13 +219,14 @@ export default function SignUp() {
         keyboardType="phone-pad"
       />
       {errors.phoneNumber && (
-        <Text style={styles.errorText}>{errors.phoneNumber}</Text>
+        <Text style={Loginsignup.errorText}>{errors.phoneNumber}</Text>
       )}
 
       <TextInput
         placeholder="Password"
+        placeholderTextColor="#777"
         secureTextEntry
-        style={styles.input}
+        style={[Loginsignup.input, { width: computedInputWidth }]}
         value={password}
         onChangeText={(text) => {
           setPassword(text);
@@ -220,13 +234,14 @@ export default function SignUp() {
         }}
       />
       {errors.password && (
-        <Text style={styles.errorText}>{errors.password}</Text>
+        <Text style={Loginsignup.errorText}>{errors.password}</Text>
       )}
 
       <TextInput
         placeholder="Confirm Password"
+        placeholderTextColor="#777"
         secureTextEntry
-        style={styles.input}
+        style={[Loginsignup.input, { width: computedInputWidth }]}
         value={confirmPassword}
         onChangeText={(text) => {
           setConfirmPassword(text);
@@ -237,48 +252,19 @@ export default function SignUp() {
         }}
       />
       {errors.confirmPassword && (
-        <Text style={styles.errorText}>{errors.confirmPassword}</Text>
+        <Text style={Loginsignup.errorText}>{errors.confirmPassword}</Text>
       )}
 
-      {errors.general && <Text style={styles.errorText}>{errors.general}</Text>}
+      {errors.general && <Text style={Loginsignup.errorText}>{errors.general}</Text>}
 
       <TouchableOpacity
-        style={[styles.button, !isFormValid() && styles.disabledButton]}
+        style={[Loginsignup.button, !isFormValid() && Loginsignup.disabledButton]}
         onPress={handleSignUp}
         disabled={!isFormValid()}
       >
         <Icon name="person-add" size={20} color="#fff" />
-        <Text style={styles.buttonText}>Sign Up</Text>
+        <Text style={Loginsignup.buttonText}>Sign Up</Text>
       </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 50,
-    backgroundColor: "#fff",
-    alignItems: "center",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 16,
-    marginBottom: 5,
-    width: "90%",
-  },
-  errorText: { color: "red", fontSize: 14, marginBottom: 10 },
-  button: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#007AFF",
-    paddingVertical: 12,
-    borderRadius: 5,
-    width: 150,
-    justifyContent: "center",
-  },
-  disabledButton: { backgroundColor: "#ccc" },
-});

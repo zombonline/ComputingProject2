@@ -1,4 +1,110 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet,Dimensions  } from "react-native";
+const { width: screenWidth } = Dimensions.get("window");
+const computedInputWidth = screenWidth < 500 ? screenWidth * 0.7 : screenWidth * 0.25;
+const logoSize = screenWidth * 0.25;
+const buttonWidth = 140;
+
+export const Loginsignup = StyleSheet.create({
+  // Shared container (backgroundColor and padding can be overridden)
+  container: {
+    flex: 1,
+    alignItems: "center",
+    paddingHorizontal: 20,
+    backgroundColor: "#232323"
+  },
+  backArrow: {
+    position: "absolute",
+    top: 50,
+    left: 20,
+  },
+  logoContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  logo: {
+    width: logoSize,
+    height: logoSize,
+  },
+  loginContainer: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+  loginText: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  headerContainer: {
+    alignItems: "center",
+    marginTop: 0,
+  },
+  headerText: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  inputGroup: {
+    alignItems: "center",
+    marginBottom: 30,
+    marginTop:10,
+  },
+
+  // Input that is shared between screens. The width is computed based on screen size.
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 10,
+    fontSize: 16,
+    marginBottom: 15,
+    width: computedInputWidth,
+  },
+  buttonContainer: {
+    alignItems: "center",
+  },
+  button: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#007AFF",
+    paddingVertical: 12,
+    borderRadius: 5,
+    width: buttonWidth,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: 8,
+  },
+  linkContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 20,
+  },
+  linkText: {
+    color: "#007AFF",
+    textDecorationLine: "underline",
+  },
+  localDataText: {
+    marginTop: 20,
+    color: "#777",
+    fontSize: 14,
+  },
+  signUpText: {
+    fontSize: 16,
+    color: "#fff",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 14,
+    marginBottom: 10,
+    width: computedInputWidth,
+  },
+  disabledButton: {
+    backgroundColor: "rgb(12, 82, 115)",
+  },
+});
 
 export const bottomNavStyle = StyleSheet.create({
   flexDirection: "row",
@@ -55,6 +161,8 @@ export const subSettingStyles = StyleSheet.create({
     color: "#FFF",
     marginVertical: 10,
     textAlign: "center",
+    fontWeight: "bold",
+
   },
 
   // Switch row
@@ -191,6 +299,9 @@ export const subSettingStyles = StyleSheet.create({
     borderRadius: 4,
   },
 });
+
+
+
 export const dayButtonStyle = StyleSheet.create({
   selected: {
     width: 40,
