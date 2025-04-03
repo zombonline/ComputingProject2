@@ -37,10 +37,6 @@ export const searchBarStyle = StyleSheet.create({
     flex: 1,
     fontSize: 16,
   },
-  text: {
-    fontSize: 16,
-    color: "gray",
-  },
 });
 
 export const backgroundColor = StyleSheet.create({
@@ -262,6 +258,10 @@ export const textStyles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
   },
+  searchStyle: {
+    fontSize: 16,
+    color: "gray",
+  }
 });
 export const customInputStyle = StyleSheet.create({
   input: {

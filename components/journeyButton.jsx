@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Image, Pressable } from "react-native";
 import Commute from "../app/utils/commute";
-import { journeyButtonStyles } from "../app/style";
+import { journeyButtonStyles, textStyles} from "../app/style";
 const modeImages = {
   bus: require("../assets/images/mode_bus.png"),
   overground: require("../assets/images/mode_overground.png"),
@@ -34,8 +34,7 @@ export default function JourneyButton({ journey, journeyId, setJourneyId }) {
             width: "90%",
             justifyContent: "center",
             alignItems: "center",
-            flexDirection: "row",
-            flexWrap: "wrap",
+            flexDirection: "column",
           }}
         >
           {filteredLegs.map((leg) => {
@@ -43,36 +42,43 @@ export default function JourneyButton({ journey, journeyId, setJourneyId }) {
             return (
               <View
                 style={{
-                  width: "30%",
-                  justifyContent: "center",
+                  width: "90%",
+                  justifyContent: "space-between",
                   alignItems: "center",
                   flexDirection: "row",
-                  paddingVertical: 5,
                   paddingHorizontal: 3,
+                  marginTop: 5,
                 }}
               >
                 <Text
                   style={{
-                    fontSize: 8,
+                    ...textStyles.blackStandardStyle,
+                    width:"45%",
+                    fontSize: 12,
                     textAlign: "center",
-                    paddingHorizontal: 1,
                   }}
                 >
                   {leg.departurePoint.commonName}
                 </Text>
                 <Image
                   source={imageSource}
-                  style={{ width: "15%", aspectRatio: 1, paddingHorizontal: 3 }}
-                  resizeMode="contain"
+                  style={{ width: "10%", aspectRatio: 1, resizeMode: "contain" }}
                 />
+                <Text
+                  style={{
+                    ...textStyles.blackStandardStyle,
+                    width:"45%",
+                    fontSize: 12,
+                    textAlign: "center",
+                  }}
+                >
+                  {leg.arrivalPoint.commonName}
+                </Text>
               </View>
+              
             );
           })}
-          <Text
-            style={{ fontSize: 8, textAlign: "center", paddingHorizontal: 10 }}
-          >
-            {filteredLegs[filteredLegs.length - 1].arrivalPoint.commonName}
-          </Text>
+          
         </View>
       </Pressable>
     </View>
