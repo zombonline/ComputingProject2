@@ -1,5 +1,5 @@
 import { View, Text, Dimensions, ScrollView, Image } from "react-native";
-import { commonStyles, commutesStyles } from "./style";
+import { textStyles } from "./style";
 import BottomSheet from "../components/BottomSheet";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect } from "react";
@@ -31,12 +31,12 @@ export default function AltJourneys() {
   }, []);
 
   return (
-    <View style={commonStyles.container}>
+    <View>
       <BottomSheet
         halfHeight={SCREEN_HEIGHT * 0.5}
         onDismiss={() => router.replace("/home")}
       >
-        <Text style={commutesStyles.panelTitle}>Alternate Journeys</Text>
+        <Text style={textStyles.panelTitle}>Alternate Journeys</Text>
         <Text style={{ fontSize: 10, textAlign: "center", color: "white" }}>
           {" "}
           Here are some alternate methods for your commute from {

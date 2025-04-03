@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, TextInput, View } from "react-native";
 import { customInputStyle } from "@/app/style";
-import { errorTextStyle } from "@/app/style";
+import { textStyles } from "@/app/style";
 
 export default function CustomInput({
   name,
@@ -26,7 +26,7 @@ export default function CustomInput({
         onChangeText={onChangeText}
         height={"40"}
       />
-      <Text style={errorTextStyle}>{errorCheck.errorMessage}</Text>
+      <Text style={textStyles.errorTextStyle}>{errorCheck.errorMessage}</Text>
     </View>
   );
 }

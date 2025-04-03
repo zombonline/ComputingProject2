@@ -1,7 +1,7 @@
 import { View, ActivityIndicator, Image } from "react-native";
 import React, { useEffect } from "react";
 import { useRouter } from "expo-router"; // ✅ Make sure this is at the top level
-import { indexStyles } from "./style";
+import { backgroundColor, indexStyles } from "./style";
 import NotificationHandler from "./utils/notifManager";
 import * as Notifications from "expo-notifications";
 import { LogBox } from "react-native";
@@ -9,7 +9,7 @@ import { LogBox } from "react-native";
 const App = () => {
   const router = useRouter(); // ✅ Ensure this is at the top level
   LogBox.ignoreAllLogs();
-  
+
   useEffect(() => {
     const requestNotificationPermission = async () => {
       const { status } = await Notifications.requestPermissionsAsync();
@@ -27,10 +27,25 @@ const App = () => {
   }, [router]);
 
   return (
-    <View style={indexStyles.container}>
+    <View
+      style={{
+        ...backgroundColor,
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <NotificationHandler />
-      <Image source={require("@/assets/images/logo.png")} style={indexStyles.logoImage} />
-      <ActivityIndicator size={50} color="#DC9F85" style={{marginTop:300}} />
+      <Image
+        source={require("@/assets/images/logo.png")}
+        style={{
+          width: 150,
+          height: 150,
+          alignSelf: "center",
+          resizeMode: "contain",
+        }}
+      />
+      <ActivityIndicator size={50} color="#DC9F85" style={{ marginTop: 20 }} />
     </View>
   );
 };

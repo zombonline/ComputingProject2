@@ -1,6 +1,13 @@
 import * as SecureStore from "expo-secure-store";
 import { db, auth } from "./firebaseConfig";
-import { doc, setDoc, getDoc, collection, getDocs, deleteDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  getDocs,
+  deleteDoc,
+} from "firebase/firestore";
 
 const DATA_KEY = "userData";
 const COMMUTE_STORAGE_KEY = "commutes";
@@ -104,17 +111,25 @@ export const removeCommute = async (commuteId) => {
 export const saveCommuteToFirestore = async (commute) => {
   try {
     if (!auth.currentUser) throw new Error("No authenticated user");
-    if (typeof commute !== "object" || commute === null) throw new Error("Invalid commute data");
+    if (typeof commute !== "object" || commute === null)
+      throw new Error("Invalid commute data");
     if (!commute.commuteId) throw new Error("Missing commuteId");
 
-    const userDocRef = doc(db, "users", auth.currentUser.uid, "commutes", commute.commuteId);
+    const userDocRef = doc(
+      db,
+      "users",
+      auth.currentUser.uid,
+      "commutes",
+      commute.commuteId
+    );
 
     // Remove undefined values from the object
     const cleanCommute = Object.fromEntries(
       Object.entries(commute).filter(([_, value]) => value !== undefined)
     );
 
-    if (Object.keys(cleanCommute).length === 0) throw new Error("No valid data to save");
+    if (Object.keys(cleanCommute).length === 0)
+      throw new Error("No valid data to save");
 
     await setDoc(userDocRef, cleanCommute);
 
@@ -131,7 +146,12 @@ export const saveCommuteToFirestore = async (commute) => {
 export const getCommutesFromFirestore = async () => {
   try {
     if (!auth.currentUser) throw new Error("No authenticated user");
-    const commutesCollectionRef = collection(db, "users", auth.currentUser.uid, "commutes");
+    const commutesCollectionRef = collection(
+      db,
+      "users",
+      auth.currentUser.uid,
+      "commutes"
+    );
     const querySnapshot = await getDocs(commutesCollectionRef);
 
     const commutes = {};
@@ -153,7 +173,13 @@ export const getCommutesFromFirestore = async () => {
 export const getCommuteFromFirestore = async (commuteId) => {
   try {
     if (!auth.currentUser) throw new Error("No authenticated user");
-    const userDocRef = doc(db, "users", auth.currentUser.uid, "commutes", commuteId);
+    const userDocRef = doc(
+      db,
+      "users",
+      auth.currentUser.uid,
+      "commutes",
+      commuteId
+    );
     const docSnap = await getDoc(userDocRef);
     return docSnap.exists() ? docSnap.data() : null;
   } catch (error) {
@@ -165,7 +191,12 @@ export const getCommuteFromFirestore = async (commuteId) => {
 export const removeCommuteFromFirestore = async (commuteId) => {
   try {
     if (!auth.currentUser) throw new Error("No authenticated user");
-    const userCollection = collection(db, "users", auth.currentUser.uid, "commutes");
+    const userCollection = collection(
+      db,
+      "users",
+      auth.currentUser.uid,
+      "commutes"
+    );
     //remove doc from commutes collection
     const userDocRef = doc(userCollection, commuteId);
     await deleteDoc(userDocRef);
@@ -173,4 +204,4 @@ export const removeCommuteFromFirestore = async (commuteId) => {
   } catch (error) {
     console.error("Error removing commute from Firestore:", error);
   }
-}
+};

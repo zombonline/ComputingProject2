@@ -8,10 +8,14 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import Icon from "react-native-vector-icons/Feather";
-import { Ionicons } from "@expo/vector-icons";
-import { commonStyles, accountStyles } from "./style";
+import {
+  textStyles,
+  userIconContainerStyle,
+  standardButtonStyle,
+  logButtonStyle,
+} from "./style";
 import BottomSheet from "../components/BottomSheet";
-import { auth } from "@/app/utils/firebaseConfig"; 
+import { auth } from "@/app/utils/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -39,7 +43,7 @@ export default function Account() {
 
   if (loading) {
     return (
-      <View style={commonStyles.container}>
+      <View>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
@@ -59,45 +63,72 @@ export default function Account() {
       >
         <View style={{ height: panelHeight, flex: 1 }}>
           <View>
-            <Text style={accountStyles.panelTitle}>Profile</Text>
-            <View style={accountStyles.userIconContainer}>
+            <Text style={textStyles.panelTitle}>Profile</Text>
+            <View style={userIconContainerStyle}>
               <Icon name="user" size={60} color="#000" />
             </View>
-            <Text style={accountStyles.userName}>{displayName}</Text>
+            <Text
+              style={{
+                ...textStyles.whiteStandardStyle,
+                alignSelf: "center",
+                marginBottom: 20,
+              }}
+            >
+              {displayName}
+            </Text>
 
             {/* Account Settings Navigation */}
             <TouchableOpacity
-              style={accountStyles.accountSettingsButton}
+              style={{
+                ...standardButtonStyle,
+                width: "50%",
+                alignSelf: "center",
+                marginBottom: 20,
+              }}
               onPress={() => router.push("/subsettings?setting=account")}
             >
               <Icon
                 name="settings"
                 size={24}
                 color="#000"
-                style={accountStyles.settingsIcon}
+                style={standardButtonStyle.icon}
               />
-              <Text style={accountStyles.accountSettingsText}>
+              <Text style={textStyles.blackStandardStyle}>
                 Account Settings
               </Text>
             </TouchableOpacity>
           </View>
 
           <View style={{ marginTop: "auto", marginBottom: 240 }}>
-            <View style={accountStyles.loginRow}>
+            <View
+              style={{
+                flexDirection: "row",
+                width: "80%",
+                justifyContent: "center",
+                alignSelf: "center",
+              }}
+            >
               {/* Log In Button */}
               <TouchableOpacity
                 onPressIn={() => setLoginPressed(true)}
                 onPressOut={() => setLoginPressed(false)}
                 onPress={() => {
-                  console.log("Navigating to /login");
                   router.push("/login");
                 }}
                 style={[
-                  accountStyles.loginButton,
+                  logButtonStyle,
+                  logButtonStyle.logInColor,
                   isLoginPressed && { borderColor: "#00ff00" },
                 ]}
               >
-                <Text style={accountStyles.loginButtonText}>Log In</Text>
+                <Text
+                  style={{
+                    ...textStyles.whiteStandardStyle,
+                    fontWeight: "bold",
+                  }}
+                >
+                  Log In
+                </Text>
               </TouchableOpacity>
 
               {/* Log Out Button */}
@@ -111,23 +142,24 @@ export default function Account() {
                   });
                 }}
                 style={[
-                  accountStyles.logoutButton,
+                  logButtonStyle,
+                  logButtonStyle.logOutColor,
                   isLogoutPressed && { borderColor: "#ff6666" },
                 ]}
               >
-                <Text style={accountStyles.logoutButtonText}>Log Out</Text>
+                <Text
+                  style={{
+                    ...textStyles.whiteStandardStyle,
+                    fontWeight: "bold",
+                  }}
+                >
+                  Log Out
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </BottomSheet>
-
-      {/* Bottom Navigation */}
-      <View style={accountStyles.bottomNav}>
-        <TouchableOpacity onPress={() => router.push("/settings")}>
-          <Ionicons name="settings-outline" size={28} color="#DC9F85" />
-        </TouchableOpacity>
-      </View>
     </>
   );
 }

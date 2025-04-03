@@ -3,7 +3,6 @@ import {
   Text,
   View,
   Button,
-  TextInput,
   ScrollView,
   Pressable,
   FlatList,
@@ -11,7 +10,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useEffect, useState } from "react";
-import { commuteTestStyles } from "./style";
+import { dayButtonStyle } from "./style";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import BottomSheet from "../components/BottomSheet";
 import {
@@ -306,12 +305,13 @@ export default function CommuteTestScreen() {
                 toggleItem(item.id);
                 await UpdateJourneys(originLatLong, destinationLatLong);
               }}
-              style={[
-                commuteTestStyles.daysButton,
-                selectedDays.includes(item.id) && commuteTestStyles.selectedDay,
-              ]}
+              style={
+                selectedDays.includes(item.id)
+                  ? dayButtonStyle.selected
+                  : dayButtonStyle.unselected
+              }
             >
-              <Text style={commuteTestStyles.dayText}>{item.name}</Text>
+              <Text style={dayButtonStyle.text}>{item.name}</Text>
             </Pressable>
           ))}
         </View>

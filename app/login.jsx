@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  StyleSheet,
+} from "react-native";
 import { useRouter } from "expo-router";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { auth, signInWithEmailAndPassword } from "@/app/utils/firebaseConfig";
@@ -33,7 +40,11 @@ export default function Login() {
     console.log("🔄 Intentando iniciar sesión con:", email, password);
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       console.log("✅ Inicio de sesión exitoso:", userCredential.user);
 
       Alert.alert("Success", "Login successful!");
@@ -72,7 +83,8 @@ export default function Login() {
       {/* Agregar la pregunta "Don't you have an account?" */}
       <TouchableOpacity onPress={() => router.push("/signup")}>
         <Text style={styles.signupText}>
-          Don't you have an account? <Text style={styles.linkText}>Sign up</Text>
+          Don't you have an account?{" "}
+          <Text style={styles.linkText}>Sign up</Text>
         </Text>
       </TouchableOpacity>
 
@@ -86,9 +98,32 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: 50, backgroundColor: "#fff", alignItems: "center" },
-  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 5, padding: 10, fontSize: 16, marginBottom: 15 },
-  signInButton: { flexDirection: "row", alignItems: "center", backgroundColor: "#007AFF", paddingVertical: 12, borderRadius: 5 },
-  signInText: { color: "#fff", fontSize: 18, fontWeight: "bold", marginLeft: 8 },
+  container: {
+    flex: 1,
+    paddingTop: 50,
+    backgroundColor: "#fff",
+    alignItems: "center",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 10,
+    fontSize: 16,
+    marginBottom: 15,
+  },
+  signInButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#007AFF",
+    paddingVertical: 12,
+    borderRadius: 5,
+  },
+  signInText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: 8,
+  },
   localDataText: { marginTop: 20, color: "#777", fontSize: 14 },
 });

@@ -13,7 +13,12 @@ import { Ionicons } from "@expo/vector-icons";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-export default function BottomSheet({ halfHeight = SCREEN_HEIGHT * 0.5, onDismiss, onModeChange, children }) {
+export default function BottomSheet({
+  halfHeight = SCREEN_HEIGHT * 0.5,
+  onDismiss,
+  onModeChange,
+  children,
+}) {
   const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
 
   const FULL_OPEN_Y = 0;
@@ -23,7 +28,8 @@ export default function BottomSheet({ halfHeight = SCREEN_HEIGHT * 0.5, onDismis
 
   const panResponder = useRef(
     PanResponder.create({
-      onMoveShouldSetPanResponder: (_, gestureState) => Math.abs(gestureState.dy) > Math.abs(gestureState.dx),
+      onMoveShouldSetPanResponder: (_, gestureState) =>
+        Math.abs(gestureState.dy) > Math.abs(gestureState.dx),
       onPanResponderGrant: () => {
         translateY.stopAnimation((value) => {
           lastOffset = value;
@@ -35,7 +41,7 @@ export default function BottomSheet({ halfHeight = SCREEN_HEIGHT * 0.5, onDismis
         newY = Math.max(newY, FULL_OPEN_Y);
         translateY.setValue(newY);
       },
-      
+
       onPanResponderRelease: (_, gestureState) => {
         const { moveY } = gestureState;
         if (moveY > SCREEN_HEIGHT * 0.85) {
@@ -85,18 +91,16 @@ export default function BottomSheet({ halfHeight = SCREEN_HEIGHT * 0.5, onDismis
 
   return (
     <Animated.View
-    style={[styles.sheetContainer, { transform: [{ translateY }] }]}
-    {...panResponder.panHandlers}
-  >
-    <TouchableOpacity style={styles.arrowContainer} onPress={toggleSheet}>
-      <Ionicons name="chevron-up" size={24} color="#fff" />
-    </TouchableOpacity>
-    <View style={styles.contentContainer}>
-      <ScrollView>
-        {children}
-      </ScrollView>
-    </View>
-  </Animated.View>
+      style={[styles.sheetContainer, { transform: [{ translateY }] }]}
+      {...panResponder.panHandlers}
+    >
+      <TouchableOpacity style={styles.arrowContainer} onPress={toggleSheet}>
+        <Ionicons name="chevron-up" size={24} color="#fff" />
+      </TouchableOpacity>
+      <View style={styles.contentContainer}>
+        <ScrollView>{children}</ScrollView>
+      </View>
+    </Animated.View>
   );
 }
 
@@ -109,8 +113,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#232323",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    zIndex:1
-
+    zIndex: 1,
   },
   arrowContainer: {
     alignItems: "center",
@@ -118,8 +121,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     paddingTop: 5,
   },
 });
-

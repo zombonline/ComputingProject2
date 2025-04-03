@@ -1,12 +1,11 @@
 // app/settings.jsx
 import React, { useContext } from "react";
-import { View, Text, TouchableOpacity, Dimensions } from "react-native";
+import { Text, TouchableOpacity, Dimensions } from "react-native";
 import { useRouter } from "expo-router";
-import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 import BottomSheet from "../components/BottomSheet";
-import { settingsStyles } from "./style";
+import { standardButtonStyle, textStyles } from "./style";
 import { SettingsPanelModeContext } from "./utils/SettingsPanelModeContext";
-
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -16,7 +15,6 @@ export default function Settings() {
 
   return (
     <>
- 
       <BottomSheet
         halfHeight={SCREEN_HEIGHT * 0.5}
         onDismiss={() => router.replace("/home")}
@@ -25,39 +23,51 @@ export default function Settings() {
           console.log("Mode updated to:", newMode);
         }}
       >
-        <Text style={settingsStyles.panelTitle}>Settings</Text>
+        <Text style={textStyles.panelTitle}>Settings</Text>
 
-        {/* Each button navigates to /subsettings, passing the setting in a query param */}
         <TouchableOpacity
-          style={settingsStyles.settingButton}
+          style={standardButtonStyle}
           onPress={() => router.push("/subsettings?setting=notifications")}
         >
-          <FontAwesome5 name="phone" size={18} color="black" style={settingsStyles.icon} />
-          <Text style={settingsStyles.optionText}>Notifications Settings</Text>
+          <FontAwesome5
+            name="phone"
+            size={18}
+            color="black"
+            style={standardButtonStyle.icon}
+          />
+          <Text style={textStyles.blackStandardStyle}>
+            Notifications Settings
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={settingsStyles.settingButton}
+          style={standardButtonStyle}
           onPress={() => router.push("/subsettings?setting=accessibility")}
         >
-          <FontAwesome5 name="universal-access" size={18} color="black" style={settingsStyles.icon} />
-          <Text style={settingsStyles.optionText}>Accessibility Settings</Text>
+          <FontAwesome5
+            name="universal-access"
+            size={18}
+            color="black"
+            style={standardButtonStyle.icon}
+          />
+          <Text style={textStyles.blackStandardStyle}>
+            Accessibility Settings
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={settingsStyles.settingButton}
+          style={standardButtonStyle}
           onPress={() => router.push("/subsettings?setting=commute")}
         >
-          <FontAwesome5 name="bus" size={18} color="black" style={settingsStyles.icon} />
-          <Text style={settingsStyles.optionText}>Commute Settings</Text>
+          <FontAwesome5
+            name="bus"
+            size={18}
+            color="black"
+            style={standardButtonStyle.icon}
+          />
+          <Text style={textStyles.blackStandardStyle}>Commute Settings</Text>
         </TouchableOpacity>
       </BottomSheet>
-
-      <View style={settingsStyles.bottomNav}>
-        <TouchableOpacity onPress={() => router.push("/settings")}>
-          <Ionicons name="settings-outline" size={28} color="#DC9F85" />
-        </TouchableOpacity>
-      </View>
     </>
   );
 }

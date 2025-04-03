@@ -1,16 +1,13 @@
-import Commute from '../Commute';
-import { getDateYYYYMMDD } from '../helperFunctions';
-const exampleApiCall = require('./exampleApiCall.json');
-const exampleCommuteFields = require('./exampleCommute.json')
+import Commute from "../Commute";
+const exampleApiCall = require("./exampleApiCall.json");
 jest.setTimeout(30000);
-
 
 //
 //it('getCommuteDuration works', async () => {
 //  expect(Commute.getJourneyDuration("e162aj", "w1d1au", "0900", getDateYYYYMMDD(new Date()))).resolves.toBeGreaterThanOrEqual(0);}
 //);
 
-it('buildJourneyID works', async () => {
+it("buildJourneyID works", async () => {
   const result = Commute.buildJourneyID(exampleApiCall["journeys"][0]);
   expect(result).toBe("fa82b09ba4db3f8478fff46cee5ffbdd");
 });
@@ -20,7 +17,3 @@ it('buildJourneyID works', async () => {
 //  expect(result).toBeGreaterThan(35);
 //  expect(result).toBeLessThan(50);
 //});
-
-
-
-

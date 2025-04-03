@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Text, ActivityIndicator } from "react-native";
-import { signInAnonymouslyIfNeeded, db, doc, setDoc, getDoc } from "@/app/utils/firebaseConfig";
+import {
+  signInAnonymouslyIfNeeded,
+  db,
+  doc,
+  setDoc,
+  getDoc,
+} from "@/app/utils/firebaseConfig";
 import { saveUserDataLocally } from "@/app/utils/accountStorage";
 
 const HomeScreen = () => {

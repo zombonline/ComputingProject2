@@ -1,42 +1,22 @@
-import BottomSheet from "@/components/BottomSheet";
-import { StyleSheet, Platform } from "react-native";
+import { StyleSheet } from "react-native";
 
-export const LayoutStyles = StyleSheet.create({
-  container: { flex: 1 },
-  // The map fills the container and be at the bottom layer.
-  map: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 0,
-  },
-  // Ensure the content is transparent so the map shows through.
-  pageContent: {
-    flex: 1,
-    backgroundColor: "transparent",
-    zIndex: 1,
-  },
-  // Bottom navigation with a higher zIndex.
-  bottomNav: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    backgroundColor: "#000",
-    paddingVertical: 10,
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    zIndex: 2,
-  },
+export const bottomNavStyle = StyleSheet.create({
+  flexDirection: "row",
+  justifyContent: "space-around",
+  alignItems: "center",
+  backgroundColor: "#232323",
+  paddingVertical: 10,
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  right: 0,
+  borderTopLeftRadius: 15,
+  borderTopRightRadius: 15,
+  zIndex: 2,
 });
 
-export const commonStyles = StyleSheet.create({
+export const searchBarStyle = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "transparent",
-  },
-  searchContainer: {
     position: "absolute",
     top: 50,
     left: 20,
@@ -50,134 +30,28 @@ export const commonStyles = StyleSheet.create({
     elevation: 3,
     zIndex: 2,
   },
-  searchIcon: {
-    marginRight: 10,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-  },
-  searchText: {
-    fontSize: 16,
-    color: "gray",
-  },
-  Panel: {
-    position: "absolute",
-    bottom: 0, // raise above bottom nav if needed
-    left: 0,
-    right: 0,
-    backgroundColor: "#33333e",
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    padding: 20,
-    alignItems: "center",
-  },
-  chevronUp: {
-    alignItems: "center",
-    padding: 10,
-  },
-  panelTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-    marginBottom: 10,
-    textAlign: "center",
-  },
-
-  settingButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    width: "90%",
-    marginTop: 18,
-    borderColor: "grey",
-  },
-  bottomNav: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    backgroundColor: "#333",
-    paddingVertical: 10,
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-});
-
-// Styles for index.jsx (Splash Screen)
-export const indexStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#33333E",
-  },
-  logoImage: {
-    width: 150,
-    height: 150,
-    alignSelf: "center",
-    resizeMode: "contain",
-  },
-});
-
-// Styles for settings.jsx
-export const settingsStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F0F0F0",
-  },
-  container: commonStyles.container,
-
-  searchBarContainer: commonStyles.searchContainer,
-  searchIcon: commonStyles.searchIcon,
-  searchInput: commonStyles.searchInput,
-  searchText: commonStyles.searchText,
-  chevronUp: commonStyles.chevronUp,
-  panelTitle: commonStyles.panelTitle,
-  settingsPanel: commonStyles.Panel,
-
-  // Each white button in the panel
-  settingButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 10,
-  },
   icon: {
     marginRight: 10,
   },
-  optionText: {
+  input: {
+    flex: 1,
     fontSize: 16,
   },
-  bottomNav: commonStyles.bottomNav,
-  navItem: commonStyles.navItem,
+  text: {
+    fontSize: 16,
+    color: "gray",
+  },
 });
 
-// Styles for `subsettings.jsx`
+export const backgroundColor = StyleSheet.create({
+  backgroundColor: "#232323",
+});
+
 export const subSettingStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F0F0F0", // Light grey behind the dark panel
   },
-
-  chevronUp: commonStyles.chevronUp,
-  panelTitle: commonStyles.panelTitle,
-  settingsPanel: commonStyles.Panel,
-  searchContainer: commonStyles.searchContainer,
-  searchIcon: commonStyles.searchIcon,
-  searchInput: commonStyles.searchInput,
-  // Arrow icon at the top center
 
   // Sub-header for this specific setting
   subHeader: {
@@ -321,26 +195,17 @@ export const subSettingStyles = StyleSheet.create({
     borderRadius: 4,
   },
 });
-
-// Styles for commuteTestScreen.tsx
-export const commuteTestStyles = StyleSheet.create({
-  container: commonStyles.container,
-  Panel: commonStyles.Panel,
-  imageBackground: commonStyles.imageBackground,
-  searchBarContainer: commonStyles.searchContainer,
-  searchIcon: commonStyles.searchIcon,
-  searchInput: commonStyles.searchInput,
-  searchText: commonStyles.searchText,
-  scrollView: {
-    width: "90%",
-    margin: 20,
-    borderWidth: 1,
+export const dayButtonStyle = StyleSheet.create({
+  selected: {
+    width: 40,
+    height: 40,
+    backgroundColor: "#DC9F85",
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 5,
   },
-  listItem: {
-    color: "white",
-    fontSize: 16,
-  },
-  daysButton: {
+  unselected: {
     width: 40,
     height: 40,
     backgroundColor: "#444",
@@ -349,15 +214,11 @@ export const commuteTestStyles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 5,
   },
-  dayText: {
-    color: "#FFF",
+  text: {
+    color: "white",
     fontSize: 12,
   },
-  selectedDay: {
-    backgroundColor: "#DC9F85",
-  },
 });
-
 export const journeyButtonStyles = StyleSheet.create({
   unselected: {
     borderRadius: 10,
@@ -378,12 +239,30 @@ export const journeyButtonStyles = StyleSheet.create({
     borderWidth: 3,
   },
 });
-
-export const errorTextStyle = StyleSheet.create({
-  color: "red",
-  fontSize: 14,
+export const textStyles = StyleSheet.create({
+  panelTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  errorTextStyle: {
+    color: "red",
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  whiteStandardStyle: {
+    color: "white",
+    fontSize: 16,
+    textAlign: "center",
+  },
+  blackStandardStyle: {
+    color: "black",
+    fontSize: 16,
+    textAlign: "center",
+  },
 });
-
 export const customInputStyle = StyleSheet.create({
   input: {
     borderWidth: 1,
@@ -403,142 +282,42 @@ export const customInputStyle = StyleSheet.create({
     color: "white",
   },
 });
-
-// Styles for profile.jsx
-export const accountStyles = StyleSheet.create({
-  container: commonStyles.container,
-  imageBackground: commonStyles.imageBackground,
-  searchBarContainer: commonStyles.searchContainer,
-  searchIcon: commonStyles.searchIcon,
-  searchInput: commonStyles.searchInput,
-  Panel: commonStyles.Panel,
-  panelTitle: commonStyles.panelTitle,
-  chevronUp: commonStyles.chevronUp,
-
-  userIconContainer: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: "#ddd",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 8,
-    alignSelf: "center",
+export const standardButtonStyle = StyleSheet.create({
+  flexDirection: "row",
+  alignItems: "center",
+  backgroundColor: "white",
+  borderRadius: 10,
+  padding: 15,
+  marginBottom: 10,
+  icon: {
+    paddingRight: 10,
   },
-  userName: {
-    fontSize: 16,
-    color: "#fff",
-    marginBottom: 20,
-    alignSelf: "center",
-  },
-  accountSettingsButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-    borderRadius: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    marginBottom: 20,
-    alignSelf: "center",
-  },
-
-  settingsIcon: {
-    marginRight: 8,
-    alignItems: "center",
-  },
-  accountSettingsText: {
-    fontSize: 16,
-    color: "black",
-    alignItems: "center",
-  },
-  loginRow: {
-    flexDirection: "row",
-    width: "80%",
-    justifyContent: "space-between",
-    alignSelf: "center",
-  },
-  loginButton: {
-    backgroundColor: "rgba(0, 255, 0, 0.1)",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "white",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginHorizontal: 30,
-  },
-  loginButtonText: {
-    fontSize: 16,
-    color: "white",
-    fontWeight: "bold",
-  },
-  logoutButton: {
-    backgroundColor: "rgba(255, 0, 0, 0.1)",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "white",
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    marginHorizontal: 30,
-  },
-  logoutButtonText: {
-    fontSize: 16,
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  bottomNav: commonStyles.bottomNav,
-  navItem: commonStyles.navItem,
 });
-export const commutesStyles = StyleSheet.create({
-  container: commonStyles.container,
-
-  searchBarContainer: commonStyles.searchContainer,
-  searchIcon: commonStyles.searchIcon,
-  searchInput: commonStyles.searchInput,
-  searchText: commonStyles.searchText,
-  chevronUp: commonStyles.chevronUp,
-  panelTitle: commonStyles.panelTitle,
-  Panel: commonStyles.Panel,
-  container: {
-    flex: 1,
-    backgroundColor: "#333",
-    padding: 20,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    marginTop: 600,
+export const userIconContainerStyle = StyleSheet.create({
+  width: 90,
+  height: 90,
+  borderRadius: 45,
+  backgroundColor: "#ddd",
+  alignItems: "center",
+  justifyContent: "center",
+  marginBottom: 8,
+  alignSelf: "center",
+});
+export const logButtonStyle = StyleSheet.create({
+  borderRadius: 8,
+  borderWidth: 1,
+  borderColor: "white",
+  paddingHorizontal: 20,
+  paddingVertical: 10,
+  marginHorizontal: 30,
+  minWidth: 100,
+  pressed: {
+    borderColor: "#ff6666",
   },
-  title: {
-    color: "white",
-    fontSize: 18,
-    textAlign: "center",
-    marginBottom: 15,
+  logInColor: {
+    backgroundColor: "rgba(0, 255, 0, 0.1)",
   },
-  journeyContainer: {
-    backgroundColor: "#444",
-    borderRadius: 10,
-    padding: 10,
+  logOutColor: {
+    backgroundColor: "rgba(255, 0, 0, 0.1)",
   },
-  journeyButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: 10,
-    justifyContent: "space-between",
-  },
-  addButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-    padding: 10,
-    borderRadius: 10,
-    justifyContent: "center",
-  },
-  journeyText: {
-    fontSize: 16,
-    flex: 1,
-    textAlign: "center",
-  },
-  bottomNav: commonStyles.bottomNav,
-  navItem: commonStyles.navItem,
 });

@@ -20,7 +20,10 @@ import {
   linkWithCredential,
   EmailAuthProvider,
 } from "firebase/auth";
-import { saveUserDataLocally, getLocalUserData } from "@/app/utils/accountStorage";
+import {
+  saveUserDataLocally,
+  getLocalUserData,
+} from "@/app/utils/accountStorage";
 
 export default function SignUp() {
   const router = useRouter();
@@ -40,7 +43,6 @@ export default function SignUp() {
     fetchAnonymousUser();
   }, []);
 
-  // Validaciones
   const validateUsername = (text) => {
     if (text.length < 3) return "Username must be at least 3 characters long.";
     return null;
@@ -51,7 +53,8 @@ export default function SignUp() {
   };
 
   const validatePhoneNumber = (text) => {
-    if (!/^[0-9]{11}$/.test(text)) return "Phone number must have exactly 11 digits.";
+    if (!/^[0-9]{11}$/.test(text))
+      return "Phone number must have exactly 11 digits.";
     if (!text.startsWith("0")) return "Phone number must start with 0.";
     return null;
   };
@@ -63,10 +66,14 @@ export default function SignUp() {
 
   const validatePassword = (text) => {
     if (text.length < 8) return "Password must be at least 8 characters.";
-    if (!/[A-Z]/.test(text)) return "Password must contain at least one uppercase letter.";
-    if (!/[a-z]/.test(text)) return "Password must contain at least one lowercase letter.";
-    if (!/[0-9]/.test(text)) return "Password must contain at least one number.";
-    if (!/[^A-Za-z0-9]/.test(text)) return "Password must contain at least one special character.";
+    if (!/[A-Z]/.test(text))
+      return "Password must contain at least one uppercase letter.";
+    if (!/[a-z]/.test(text))
+      return "Password must contain at least one lowercase letter.";
+    if (!/[0-9]/.test(text))
+      return "Password must contain at least one number.";
+    if (!/[^A-Za-z0-9]/.test(text))
+      return "Password must contain at least one special character.";
     return null;
   };
 
@@ -74,8 +81,6 @@ export default function SignUp() {
     if (text !== password) return "Passwords do not match.";
     return null;
   };
-
-  // 🔹 Verifica si hay errores activos
   const isFormValid = () => {
     return (
       username.length >= 3 &&
@@ -86,17 +91,14 @@ export default function SignUp() {
       !validateConfirmPassword(confirmPassword)
     );
   };
-
   const handleSignUp = async () => {
     let newErrors = {};
-
     newErrors.username = validateUsername(username);
     newErrors.phoneNumber = validatePhoneNumber(phoneNumber);
     newErrors.email = validateEmail(email);
     newErrors.password = validatePassword(password);
     newErrors.confirmPassword = validateConfirmPassword(confirmPassword);
 
-    // Filtrar errores (eliminar claves sin errores)
     Object.keys(newErrors).forEach((key) => {
       if (!newErrors[key]) delete newErrors[key];
     });
@@ -108,9 +110,14 @@ export default function SignUp() {
     try {
       if (auth.currentUser && auth.currentUser.isAnonymous) {
         const credential = EmailAuthProvider.credential(email, password);
-        const linkedUser = await linkWithCredential(auth.currentUser, credential);
+        const linkedUser = await linkWithCredential(
+          auth.currentUser,
+          credential
+        );
 
-        await updateProfile(linkedUser.user, { displayName: formatUsername(username) });
+        await updateProfile(linkedUser.user, {
+          displayName: formatUsername(username),
+        });
 
         const userData = {
           uid: linkedUser.user.uid,
@@ -119,12 +126,18 @@ export default function SignUp() {
           phoneNumber,
           createdAt: new Date(),
         };
-        await setDoc(doc(db, "users", linkedUser.user.uid), userData, { merge: true });
+        await setDoc(doc(db, "users", linkedUser.user.uid), userData, {
+          merge: true,
+        });
 
         await saveUserDataLocally(userData);
         router.replace("/login");
       } else {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
         const user = userCredential.user;
 
         const userData = {
@@ -162,7 +175,9 @@ export default function SignUp() {
         }}
         autoCapitalize="none"
       />
-      {errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
+      {errors.username && (
+        <Text style={styles.errorText}>{errors.username}</Text>
+      )}
 
       <TextInput
         placeholder="Email"
@@ -183,11 +198,16 @@ export default function SignUp() {
         value={phoneNumber}
         onChangeText={(text) => {
           setPhoneNumber(text);
-          setErrors((prev) => ({ ...prev, phoneNumber: validatePhoneNumber(text) }));
+          setErrors((prev) => ({
+            ...prev,
+            phoneNumber: validatePhoneNumber(text),
+          }));
         }}
         keyboardType="phone-pad"
       />
-      {errors.phoneNumber && <Text style={styles.errorText}>{errors.phoneNumber}</Text>}
+      {errors.phoneNumber && (
+        <Text style={styles.errorText}>{errors.phoneNumber}</Text>
+      )}
 
       <TextInput
         placeholder="Password"
@@ -199,7 +219,9 @@ export default function SignUp() {
           setErrors((prev) => ({ ...prev, password: validatePassword(text) }));
         }}
       />
-      {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+      {errors.password && (
+        <Text style={styles.errorText}>{errors.password}</Text>
+      )}
 
       <TextInput
         placeholder="Confirm Password"
@@ -208,10 +230,15 @@ export default function SignUp() {
         value={confirmPassword}
         onChangeText={(text) => {
           setConfirmPassword(text);
-          setErrors((prev) => ({ ...prev, confirmPassword: validateConfirmPassword(text) }));
+          setErrors((prev) => ({
+            ...prev,
+            confirmPassword: validateConfirmPassword(text),
+          }));
         }}
       />
-      {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
+      {errors.confirmPassword && (
+        <Text style={styles.errorText}>{errors.confirmPassword}</Text>
+      )}
 
       {errors.general && <Text style={styles.errorText}>{errors.general}</Text>}
 
@@ -228,9 +255,30 @@ export default function SignUp() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: 50, backgroundColor: "#fff", alignItems: "center" },
-  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 5, padding: 10, fontSize: 16, marginBottom: 5, width: "90%" },
+  container: {
+    flex: 1,
+    paddingTop: 50,
+    backgroundColor: "#fff",
+    alignItems: "center",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 10,
+    fontSize: 16,
+    marginBottom: 5,
+    width: "90%",
+  },
   errorText: { color: "red", fontSize: 14, marginBottom: 10 },
-  button: { flexDirection: "row", alignItems: "center", backgroundColor: "#007AFF", paddingVertical: 12, borderRadius: 5, width: 150, justifyContent: "center" },
+  button: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#007AFF",
+    paddingVertical: 12,
+    borderRadius: 5,
+    width: 150,
+    justifyContent: "center",
+  },
   disabledButton: { backgroundColor: "#ccc" },
 });
