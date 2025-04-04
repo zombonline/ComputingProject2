@@ -71,6 +71,7 @@ export const Loginsignup = StyleSheet.create({
     marginBottom: 15,
     width: computedInputWidth,
     height: 40, // Fixed height so the box doesn't resize with text
+    color: "#fff"
   },
   // Container for the sign in/up button area
   buttonContainer: {
