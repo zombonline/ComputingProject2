@@ -1,13 +1,13 @@
 import { View, ActivityIndicator, Image } from "react-native";
 import React, { useEffect } from "react";
-import { useRouter } from "expo-router"; // ✅ Make sure this is at the top level
+import { useRouter } from "expo-router"; 
 import { backgroundColor, indexStyles } from "./style";
 import NotificationHandler from "./utils/notifManager";
 import * as Notifications from "expo-notifications";
 import { LogBox } from "react-native";
 
 const App = () => {
-  const router = useRouter(); // ✅ Ensure this is at the top level
+  const router = useRouter(); 
   LogBox.ignoreAllLogs();
 
   useEffect(() => {

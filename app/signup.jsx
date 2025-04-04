@@ -28,7 +28,7 @@ import {
 import { Loginsignup } from "./style";
 
 const { width: screenWidth } = Dimensions.get("window");
-const computedInputWidth = screenWidth < 500 ? screenWidth * 0.9 : screenWidth * 0.25;
+const computedInputWidth = screenWidth < 500 ? screenWidth * 0.7 : screenWidth * 0.25;
 const buttonWidth = 150;
 
 export default function SignUp() {
@@ -178,7 +178,7 @@ export default function SignUp() {
       <TextInput
         placeholder="Username"
         placeholderTextColor="#777"
-        style={[Loginsignup.input, { width: computedInputWidth }]}
+        style={[Loginsignup.input, { color: "#fff" }]}
         value={username}
         onChangeText={(text) => {
           setUsername(formatUsername(text));
@@ -193,7 +193,7 @@ export default function SignUp() {
       <TextInput
         placeholder="Email"
         placeholderTextColor="#777"
-        style={[Loginsignup.input, { width: computedInputWidth }]}
+        style={[Loginsignup.input, { color: "#fff" }]}
         value={email}
         onChangeText={(text) => {
           setEmail(text);
@@ -207,7 +207,7 @@ export default function SignUp() {
       <TextInput
         placeholder="Phone Number"
         placeholderTextColor="#777"
-        style={[Loginsignup.input, { width: computedInputWidth }]}
+        style={[Loginsignup.input, { width: computedInputWidth,color: "#fff" }]}
         value={phoneNumber}
         onChangeText={(text) => {
           setPhoneNumber(text);
@@ -226,7 +226,7 @@ export default function SignUp() {
         placeholder="Password"
         placeholderTextColor="#777"
         secureTextEntry
-        style={[Loginsignup.input, { width: computedInputWidth }]}
+        style={[Loginsignup.input, { width: computedInputWidth , color: "#fff"}]}
         value={password}
         onChangeText={(text) => {
           setPassword(text);
@@ -241,7 +241,7 @@ export default function SignUp() {
         placeholder="Confirm Password"
         placeholderTextColor="#777"
         secureTextEntry
-        style={[Loginsignup.input, { width: computedInputWidth }]}
+        style={[Loginsignup.input, { width: computedInputWidth, color: "#fff" }]}
         value={confirmPassword}
         onChangeText={(text) => {
           setConfirmPassword(text);

@@ -8,6 +8,7 @@ import {
   FlatList,
   Dimensions,
   ActivityIndicator,
+  TouchableOpacity 
 } from "react-native";
 import { useEffect, useState } from "react";
 import { dayButtonStyle } from "./style";
@@ -35,6 +36,7 @@ import useDebouncedState from "./utils/useDebouncedState";
 import JourneyButton from "../components/journeyButton";
 import CustomInput from "../components/customInput";
 // #endregion
+import { logButtonStyle, textStyles } from "./style";
 
 export default function CommuteTestScreen() {
   const localSearchParams = useLocalSearchParams(); //get data fed in when opening this screen
@@ -206,6 +208,7 @@ export default function CommuteTestScreen() {
           setContentHeight(height);
         }}
       >
+        <Text style={textStyles.panelTitle}>Commute</Text>
         <View style={{ justifyContent: "center", alignItems: "center" }}>
           <CustomInput
             name="Nickname:"
@@ -339,22 +342,26 @@ export default function CommuteTestScreen() {
         {commuteIdToDelete ? (
           <View
             style={{
-              alignItems: "center",
-              marginTop: 20,
+              marginTop: 40,
               flexDirection: "row",
-              justifyContent: "space-between",
+              padding: 20,
+              justifyContent: "center",  // Centers the row of buttons horizontally
+              alignItems: "center",  
             }}
           >
-            <Button
-              title="Delete"
+            <TouchableOpacity
+            style={[logButtonStyle, {backgroundColor: "rgba(255, 0, 0, 0.1)"}]}
               onPress={() => {
                 removeCommute(commuteIdToDelete);
                 removeCommuteFromFirestore(commuteIdToDelete);
                 router.replace("/home");
               }}
-            />
-            <Button
-              title="Save Changes"
+            >
+              <Text style={{ color: "#fff", fontSize: 16 }}>Delete</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+            style={[logButtonStyle, {backgroundColor:"rgba(0, 255, 0, 0.1)"}]}
               onPress={() => {
                 removeCommute(commuteIdToDelete);
                 removeCommuteFromFirestore(commuteIdToDelete);
@@ -372,45 +379,69 @@ export default function CommuteTestScreen() {
                 newCommute.init();
                 setLoadedCommute(newCommute);
               }}
-            />
-            <Button
+            >
+              <Text style={{ color: "#fff", fontSize: 16 }}>Save</Text>
+              </TouchableOpacity>
+
+            <TouchableOpacity
+            style={[logButtonStyle, {backgroundColor: "rgba(39, 92, 240, 0.1)"}]}
               title="Delay Check"
               onPress={async () => {
                 await loadedCommute.checkForDelay(new Date());
               }}
-            />
+            >
+              <Text style={{ color: "#fff", fontSize: 16 }}>Delays</Text>
+              </TouchableOpacity>
           </View>
         ) : (
-          <View style={{ alignItems: "center", marginTop: 10 }}>
-            <Button
-              title="Cancel"
-              onPress={() => {
-                removeCommute(commuteIdToDelete);
-                removeCommuteFromFirestore(commuteIdToDelete);
-                router.replace("/home");
-              }}
-            />
-            <Button
-              title="Submit"
-              onPress={() => {
-                removeCommute(commuteIdToDelete);
-                removeCommuteFromFirestore(commuteIdToDelete);
-                const newCommute = new Commute(
-                  name,
-                  origin,
-                  originLatLong,
-                  destination,
-                  destinationLatLong,
-                  arrivalTime,
-                  selectedDays,
-                  journeyId,
-                  parseInt(duration, 10)
-                );
-                newCommute.init();
-                setLoadedCommute(newCommute);
-              }}
-            />
-          </View>
+          
+          <View
+          style={{
+            alignItems: "center",
+            marginTop: 20,
+            flexDirection: "row",
+            padding: 20,
+            justifyContent: "center",
+            alignSelf: "center",
+          }}
+        >
+          {/* Cancel Button */}
+          <TouchableOpacity
+            style={[logButtonStyle, {backgroundColor: "rgba(255, 0, 0, 0.1)"}]}
+            onPress={() => {
+              removeCommute(commuteIdToDelete);
+              removeCommuteFromFirestore(commuteIdToDelete);
+              router.replace("/home");
+            }}
+          >
+            <Text style={{ color: "#fff", fontSize: 16 }}>Cancel</Text>
+          </TouchableOpacity>
+    
+          {/* Submit Button */}
+          <TouchableOpacity
+            style={[logButtonStyle, { backgroundColor:"rgba(0, 255, 0, 0.1)"}]}
+            onPress={() => {
+              removeCommute(commuteIdToDelete);
+              removeCommuteFromFirestore(commuteIdToDelete);
+              const newCommute = new Commute(
+                name,
+                origin,
+                originLatLong,
+                destination,
+                destinationLatLong,
+                arrivalTime,
+                selectedDays,
+                journeyId,
+                parseInt(duration, 10)
+              );
+              newCommute.init();
+              setLoadedCommute(newCommute);
+            }}
+          >
+            <Text style={{ color: "#fff", fontSize: 16,}}>Submit</Text>
+          </TouchableOpacity>
+        </View>
+      
         )}
       </ScrollView>
     </BottomSheet>

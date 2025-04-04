@@ -5,7 +5,6 @@ const logoSize = screenWidth * 0.25;
 const buttonWidth = 140;
 
 export const Loginsignup = StyleSheet.create({
-  // Shared container (backgroundColor and padding can be overridden)
   container: {
     flex: 1,
     alignItems: "center",
@@ -48,8 +47,7 @@ export const Loginsignup = StyleSheet.create({
     marginBottom: 30,
     marginTop:10,
   },
-
-  // Input that is shared between screens. The width is computed based on screen size.
+  
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
@@ -155,7 +153,7 @@ export const subSettingStyles = StyleSheet.create({
     backgroundColor: "#F0F0F0", // Light grey behind the dark panel
   },
 
-  // Sub-header for this specific setting
+ 
   subHeader: {
     fontSize: 16,
     color: "#FFF",
@@ -235,7 +233,7 @@ export const subSettingStyles = StyleSheet.create({
   },
   // The text input field itself
   inputField: {
-    backgroundColor: "#0000",
+    backgroundColor: "#transparent",
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "white",
@@ -415,12 +413,15 @@ export const userIconContainerStyle = StyleSheet.create({
   alignSelf: "center",
 });
 export const logButtonStyle = StyleSheet.create({
+  flexDirection: "row",       // Keep text + icon side by side (if you add icons later)
+  alignItems: "center",       // Center items vertically within the button
+  justifyContent: "center",   // Center items horizontally within the button
   borderRadius: 8,
   borderWidth: 1,
   borderColor: "white",
   paddingHorizontal: 20,
   paddingVertical: 10,
-  marginHorizontal: 30,
+  marginHorizontal: 10,       // Horizontal spacing between buttons
   minWidth: 100,
   pressed: {
     borderColor: "#ff6666",
@@ -431,4 +432,11 @@ export const logButtonStyle = StyleSheet.create({
   logOutColor: {
     backgroundColor: "rgba(255, 0, 0, 0.1)",
   },
+
+  cancel:{
+    backgroundColor: "rgba(255, 0, 0, 0.1)",
+  },
+  submit:{
+    backgroundColor: "rgba(0, 255, 0, 0.1)",
+  }
 });
