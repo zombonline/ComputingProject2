@@ -12,7 +12,6 @@ import {
 const DATA_KEY = "userData";
 const COMMUTE_STORAGE_KEY = "commutes";
 
-// Helper functions for storing data
 /**
  * Retrieves an item from SecureStore.
  * @param {string} key - The key of the item to retrieve.
@@ -187,7 +186,10 @@ export const getCommuteFromFirestore = async (commuteId) => {
     return null;
   }
 };
-//removes the commute object from commutes collection in firestore
+/**
+ * Removes a specific commute from Firestore.
+ * @param {string} commuteId - The unique ID of the commute to remove.
+ */
 export const removeCommuteFromFirestore = async (commuteId) => {
   try {
     if (!auth.currentUser) throw new Error("No authenticated user");

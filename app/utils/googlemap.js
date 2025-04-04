@@ -13,6 +13,11 @@ export default function GoogleMap({ style }) {
   const [marker1, setMarker1] = useState(null);
   const [marker2, setMarker2] = useState(null);
 
+  {/**
+  * Function to move the map to a specific location.
+  * @param {string} latlong - A string containing latitude and longitude separated by a comma.
+  * Example: "51.58825,-0.1"
+  */}
   moveToLocation = (latlong) => {
     const [latitude, longitude] = latlong.split(",").map(Number);
     mapRef.current.animateToRegion(
@@ -25,6 +30,12 @@ export default function GoogleMap({ style }) {
       1000
     );
   };
+  {/**
+  * Function to set a marker on the map.
+  * @param {number} markerNumber - The marker number (1 or 2).
+  * @param {string} latlong - A string containing latitude and longitude separated by a comma.
+  * Example: "51.58825,-0.1"
+  */}
   setMarker = (markerNumber, latlong) => {
     const [latitude, longitude] = latlong.split(",").map(Number);
 
@@ -34,12 +45,18 @@ export default function GoogleMap({ style }) {
       setMarker2({ latitude, longitude });
     }
   };
+  {/**
+  * Function to clear all markers from the map.
+  */}
   clearMarkers = () => {
     setMarker1(null);
     setMarker2(null);
   };
+  {/**
+  * Function to fit the map to show both markers.
+  * If both markers are set, the map will adjust its region to fit both markers.
+  */}
   fitMarkers = () => {
-    console.log("Fitting to:", marker1, marker2);
     mapRef.current?.fitToCoordinates([marker1, marker2], {
       edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
       animated: true,

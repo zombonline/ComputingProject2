@@ -2,6 +2,12 @@ import { useEffect } from "react";
 import * as Notifications from "expo-notifications";
 import { useRouter } from "expo-router";
 
+/** 
+ * Notification manager component.
+ * This component handles incoming notifications and navigates to the appropriate screen.
+ * It listens for notification responses and checks for the last notification response on mount.
+ * @returns {null} as it does not render anything.
+ */
 const NotifManager = () => {
   const router = useRouter();
 
