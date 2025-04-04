@@ -1,4 +1,6 @@
-// #region imports
+/**
+ * Import necessary libraries and components.
+ */
 import {
   Text,
   View,
@@ -35,14 +37,34 @@ import Commute from "./utils/commute";
 import useDebouncedState from "./utils/useDebouncedState";
 import JourneyButton from "../components/journeyButton";
 import CustomInput from "../components/customInput";
-// #endregion
+
+/* 
+* endregion
+*/
+
+/**
+ * Importing additional styles for buttons and text used in the component.
+ * - logButtonStyle: Style for log buttons (e.g., Delete, Save, Cancel, Submit).
+ * - textStyles: Style for text elements in the component.
+ */
 import { logButtonStyle, textStyles } from "./style";
 
+/**
+ * CommuteTestScreen Component
+ * This component is responsible for rendering the commute editing screen.
+ * It initializes the commute data from the search parameters and provides
+ * functionality to edit and manage commute details.
+ */
 export default function CommuteTestScreen() {
-  const localSearchParams = useLocalSearchParams(); //get data fed in when opening this screen
+  // Retrieve search parameters passed to this screen
+  const localSearchParams = useLocalSearchParams(); 
+
+  // State to hold the loaded commute object, initialized using the search parameters
   const [loadedCommute, setLoadedCommute] = useState(() =>
     BuildCommuteObject(localSearchParams)
   );
+
+  // Router object to handle navigation between screens
   const router = useRouter();
 
   // #region Input field data
@@ -54,6 +76,13 @@ export default function CommuteTestScreen() {
       await handleOriginInput(text);
     }
   );
+
+  /**
+   * State to manage the destination input field.
+   * - `destination`: Holds the value of the destination input field.
+   * - `setDestination`: Updates the destination value and triggers a debounced callback.
+   * The debounced callback is executed after 500ms of inactivity and calls `handleDestinationInput` to process the input.
+   */
   const [destination, setDestination] = useDebouncedState(
     loadedCommute.destination || "",
     500,
@@ -61,6 +90,13 @@ export default function CommuteTestScreen() {
       await handleDestinationInput(text);
     }
   );
+
+  /**
+   * State to manage the arrival time input field.
+   * - `arrivalTime`: Holds the value of the arrival time input field.
+   * - `setArrivalTime`: Updates the arrival time value.
+   * This value is used to determine the time of arrival for the commute.
+   */
   const [arrivalTime, setArrivalTime] = useState(
     loadedCommute.arrivalTime || ""
   );
@@ -68,6 +104,13 @@ export default function CommuteTestScreen() {
   const [duration, setDuration] = useState(loadedCommute.duration || 0);
   const [journeyId, setJourneyId] = useState(loadedCommute.journeyId || "");
   // #endregion
+
+  /**
+   * State to manage the loading state of the origin and destination inputs.
+   * - `originLoading`: Indicates if the origin input is currently loading.
+   * - `destinationLoading`: Indicates if the destination input is currently loading.
+   * These states are used to show loading indicators while fetching latitude and longitude data.
+   */
 
   // #region Screen variables
   const [contentHeight, setContentHeight] = useState(0);
@@ -78,12 +121,24 @@ export default function CommuteTestScreen() {
   const isScrollable = contentHeight > availableHeight;
   // #endregion
 
+  /**
+   * State to manage the latitude and longitude of the origin and destination.
+   * - `originLatLong`: Holds the latitude and longitude of the origin location.
+   * - `destinationLatLong`: Holds the latitude and longitude of the destination location.
+   * These values are used to set markers on the map and update the journeys.
+   */
   const [originLatLong, setOriginLatLong] = useState(
     loadedCommute.originLatLong || ""
   );
   const [destinationLatLong, setDestinationLatLong] = useState(
     loadedCommute.destinationLatLong || ""
   );
+  /**
+   * State to manage the loading state of the origin and destination inputs.
+   * - `originLoading`: Indicates if the origin input is currently loading.
+   * - `destinationLoading`: Indicates if the destination input is currently loading.
+   * These states are used to show loading indicators while fetching latitude and longitude data.
+   */
   const [originLoading, setOriginLoading] = useState(false);
   const [destinationLoading, setDestinationLoading] = useState(false);
   const originInputValid = !originLoading && originLatLong != null;
@@ -92,6 +147,13 @@ export default function CommuteTestScreen() {
   const [commuteIdToDelete, setCommuteIdToDelete] = useState(
     loadedCommute.commuteId || ""
   );
+  /**
+   * State to manage the loading state of the journeys.
+   * - `journeys`: Holds the list of journeys fetched from the Commute utility.
+   * - `setJourneys`: Updates the list of journeys.
+   * - `journeysLoading`: Indicates if the journeys are currently loading.
+   * This state is used to show a loading indicator while fetching journeys.
+   */
   const [journeys, setJourneys] = useState([]);
   const [journeysLoading, setJourneysLoading] = useState(false);
   const days = [
@@ -103,12 +165,22 @@ export default function CommuteTestScreen() {
     { id: 6, name: "Sat" },
     { id: 0, name: "Sun" },
   ];
+
+  /**
+   * Effect to set the initial markers on the map when the component mounts.
+   * - Sets the origin marker if the origin input is valid.
+   */
   useEffect(() => {
     return () => {
       console.log("COMPONENT CLOSING");
       clearMarkers();
     };
   }, []);
+
+  /**
+   * Effect to update the journeys when the component mounts or when the origin or destination changes.
+   * - Calls the `UpdateJourneys` function to fetch the journeys based on the current origin and destination.
+   */
   async function handleDestinationInput(text) {
     setDestinationLoading(true);
     const latLong = await getLatLong(text);
@@ -122,6 +194,15 @@ export default function CommuteTestScreen() {
       moveToLocation(latLong);
     }
   }
+
+  /**
+   * Function to handle the origin input field.
+   * - Sets the loading state to true while fetching the latitude and longitude.
+   * - Calls the `getLatLong` function to fetch the latitude and longitude based on the input text.
+   * - Updates the `originLatLong` state with the fetched latitude and longitude.
+   * - Calls the `UpdateJourneys` function to fetch the journeys based on the current origin and destination.
+   * - Sets the marker on the map for the origin location.
+   */
   async function handleOriginInput(text) {
     setOriginLoading(true);
     const latLong = await getLatLong(text);
@@ -136,11 +217,24 @@ export default function CommuteTestScreen() {
       moveToLocation(latLong);
     }
   }
+
+  /**
+   * Function to toggle the selection of a day in the days array.
+   * - If the day is already selected, it removes it from the selectedDays array.
+   * - If the day is not selected, it adds it to the selectedDays array.
+   */
   function toggleItem(id) {
     setSelectedDays((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   }
+  /**
+   * Function to update the journeys based on the current origin and destination.
+   * - It checks if the origin, destination, and selected days are valid before proceeding.
+   * - Calls the `Commute.getAllUniqueJourneys` function to fetch the journeys based on the current parameters.
+   * - Updates the `journeys` state with the fetched journeys.
+   * - Sets the loading state to false after fetching the journeys.
+   */
   async function UpdateJourneys(origin, destination) {
     console.log(
       "Attempting to update journeys using origin:" +
@@ -172,6 +266,9 @@ export default function CommuteTestScreen() {
       arrivalTime,
       selectedDays
     );
+    /**
+     * Check if the current journeyId is still valid.
+     */
     let currentJourneyFound = false;
     for (const journey of journeys) {
       if (Commute.buildJourneyId(journey) == journeyId) {
@@ -179,6 +276,10 @@ export default function CommuteTestScreen() {
         break;
       }
     }
+    /**
+     * If the current journeyId is not found in the new journeys, set it to null.
+     * This is to ensure that the user can select a new journey if needed.
+     */
     console.log("current j found: " + currentJourneyFound);
     if (!currentJourneyFound) {
       setJourneyId(null);
@@ -186,8 +287,17 @@ export default function CommuteTestScreen() {
     setJourneys(journeys);
     setJourneysLoading(false);
   }
-
+  /**
+   * Function to remove a commute from the list of journeys.
+   * - It checks if the commuteId is valid before proceeding.
+   * - Calls the `removeCommute` function to remove the commute from the list.
+   */
   return (
+    /**
+     * Render the CommuteTestScreen component.
+     * It displays a bottom sheet with input fields for the commute details,
+     * including origin, destination, arrival time, and selected days.
+     */
     <BottomSheet
       halfHeight={SCREEN_HEIGHT * 0.5}
       onDismiss={() => {
@@ -198,6 +308,7 @@ export default function CommuteTestScreen() {
         setPanelHeight(h);
       }}
     >
+
       <ScrollView
         scrollEnabled={isScrollable}
         contentContainerStyle={{

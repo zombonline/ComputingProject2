@@ -1,3 +1,6 @@
+/**
+ * Import necessary libraries and components.
+ */
 import { View, Text, Dimensions, ScrollView, Image } from "react-native";
 import { textStyles } from "./style";
 import BottomSheet from "../components/BottomSheet";
@@ -7,9 +10,17 @@ import Commute from "./utils/commute";
 import { getDateYYYYMMDD } from "./utils/helperFunctions";
 import { useState } from "react";
 import JourneyButton from "../components/journeyButton";
-
+/**
+ * AltJourneys component to display alternate journeys.
+ * It fetches alternate journeys based on origin, destination, and arrival time.
+ */
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
+/**
+ * Fetches alternate journeys based on the provided parameters.
+ * It uses the Commute utility to get unique journeys.
+ * The fetched journeys are displayed in a scrollable view.
+ */
 export default function AltJourneys() {
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -30,6 +41,11 @@ export default function AltJourneys() {
     fetchAltJourneys();
   }, []);
 
+
+  /**
+   * Render the AltJourneys component.
+   * It displays a bottom sheet with alternate journeys.
+   */
   return (
     <View>
       <BottomSheet
