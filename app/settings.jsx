@@ -1,4 +1,6 @@
-// app/settings.jsx
+/**
+ * Import necessary libraries and components.
+*/
 import React, { useContext } from "react";
 import { Text, TouchableOpacity, Dimensions } from "react-native";
 import { useRouter } from "expo-router";
@@ -12,7 +14,9 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 export default function Settings() {
   const router = useRouter();
   const { setMode } = useContext(SettingsPanelModeContext);
-
+  /**
+  * Render the Settings component.
+  */
   return (
     <>
       <BottomSheet

@@ -5,22 +5,26 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  StyleSheet,
   Image,
   Dimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { auth, signInWithEmailAndPassword } from "@/app/utils/firebaseConfig";
 import { getLocalUserData } from "@/app/utils/accountStorage";
 import CommutyIcon from "@/assets/images/logo.png";
 import { Loginsignup } from "./style";
 
 const { width: screenWidth } = Dimensions.get("window");
 const computedInputWidth = screenWidth < 500 ? screenWidth * 0.7 : screenWidth * 0.25;
-const logoSize = screenWidth * 0.25;
 const buttonWidth = 140;
 
+/** 
+ * Login component for user authentication.
+ * It allows users to enter their email and password to log in.
+ * If the user is already logged in, it retrieves their data from local storage.
+ * It also provides a link to the signup page for new users. 
+ * @returns {JSX.Element} The rendered Login component.
+ */
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -31,30 +35,28 @@ export default function Login() {
     const loadUserData = async () => {
       const localData = await getLocalUserData();
       if (localData) {
-        console.log("📂 Datos locales encontrados:", localData);
         setUserData(localData);
-      } else {
-        console.log("⚠️ No se encontraron datos locales.");
-      }
+      } 
     };
     loadUserData();
   }, []);
 
+  /**
+   * Handles the sign-in process.
+   * Validates the input fields and simulates a login process.
+   * If successful, navigates to the home page.
+   * If there's an error, it displays an alert with the error message.
+   * @returns {Promise<void>}
+   */
   const handleSignIn = async () => {
     if (!email || !password) {
       Alert.alert("Error", "Please fill in both fields.");
       return;
     }
-
-    console.log("🔄 Intentando iniciar sesión con:", email, password);
-
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log("✅ Inicio de sesión exitoso:", userCredential.user);
       Alert.alert("Success", "Login successful!");
       router.replace("/home");
     } catch (error) {
-      console.error("❌ Error en el login:", error);
       Alert.alert("Error", error.message);
     }
   };
@@ -78,7 +80,7 @@ export default function Login() {
       <View style={{...Loginsignup.inputGroup, paddingTop: 50}}>
         <TextInput
           placeholder="Email"
-          style={[Loginsignup.input, { width: computedInputWidth, color: "#fff" }]}
+          style={[Loginsignup.input, { width: computedInputWidth }]}
           placeholderTextColor="#777"
           value={email}
           onChangeText={setEmail}
@@ -88,7 +90,7 @@ export default function Login() {
         <TextInput
           placeholder="Password"
           secureTextEntry
-          style={[Loginsignup.input, { width: computedInputWidth, color: "#fff" }]}
+          style={[Loginsignup.input, { width: computedInputWidth }]}
           placeholderTextColor="#777"
           value={password}
           onChangeText={setPassword}
@@ -105,7 +107,7 @@ export default function Login() {
 
       {/* Navigation Link to Sign Up */}
       <View style={Loginsignup.linkContainer}>
-        <Text style={Loginsignup.signUpText}>Don't you have an account? </Text>
+        <Text style={Loginsignup.signUpText}>Already have an account?</Text>
         <TouchableOpacity onPress={() => router.push("/signup")}>
           <Text style={Loginsignup.linkText}>Sign up</Text>
         </TouchableOpacity>

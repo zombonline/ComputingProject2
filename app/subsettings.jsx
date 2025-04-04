@@ -1,4 +1,6 @@
-// app/subsettings.jsx
+/**
+ * Import necessary libraries and components.
+ */
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -17,8 +19,10 @@ import { subSettingStyles } from "./style";
 import { auth } from "@/app/utils/firebaseConfig";
 import Slider from '@react-native-community/slider';
 
-
-
+/**
+ * SettingDetail component to manage user settings.
+ * It includes options for notifications, accessibility, commute settings, and account management.
+ */
 export default function SettingDetail() {
   const router = useRouter();
   const { setting } = useLocalSearchParams();
@@ -54,7 +58,9 @@ export default function SettingDetail() {
 
     fetchUserData();
   }, []);
-
+  /**
+   * Setting configuration object.
+   */
   const settingConfig = {
     notifications: {
       title: "Notifications Settings",
@@ -79,7 +85,9 @@ export default function SettingDetail() {
       isAccountScreen: true,
     },
   };
-
+  /**
+   * Render the component based on the selected setting.
+   */
   if (!setting || !settingConfig[setting]) {
     return (
       <View style={subSettingStyles.container}>
@@ -87,7 +95,9 @@ export default function SettingDetail() {
       </View>
     );
   }
-
+  /**
+   * Destructure the setting configuration for easier access.
+   */
   const {
     title,
     switchLabel,
@@ -95,7 +105,9 @@ export default function SettingDetail() {
     dropdownOptions,
     isAccountScreen,
   } = settingConfig[setting];
-
+  /**
+   * Render the account settings screen if isAccountScreen is true.
+   */
   if (isAccountScreen) {
     return (
       <BottomSheet

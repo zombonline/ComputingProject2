@@ -1,3 +1,9 @@
+
+/** 
+ * Converts a date object to a string in the format YYYYMMDD.
+ * @param {Date} inputDate - The date object to convert.
+ * @returns {string} - The date in YYYYMMDD format.
+ */
 function getDateYYYYMMDD(inputDate) {
   const yyyy = inputDate.getFullYear();
   const mm = String(inputDate.getMonth() + 1).padStart(2, "0");
@@ -6,6 +12,11 @@ function getDateYYYYMMDD(inputDate) {
   return `${yyyy}${mm}${dd}`;
 }
 
+/**
+ * Fetches the latitude and longitude of a given location using the Nominatim API.
+ * @param {string} location - The location to search for.
+ * @returns {Promise<string|null>} - A promise that resolves to a string containing the latitude and longitude, or null if not found.
+ */
 async function getLatLong(location) {
   location = encodeURIComponent(location);
   try {

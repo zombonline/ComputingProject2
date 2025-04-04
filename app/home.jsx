@@ -1,3 +1,6 @@
+/**
+ * Import necessary libraries and components.
+ */
 import React, { useEffect, useState } from "react";
 import { Text, ActivityIndicator, View } from "react-native";
 import {

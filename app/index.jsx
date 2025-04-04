@@ -1,3 +1,6 @@
+/**
+ * Import necessary libraries and components.
+ */
 import { View, ActivityIndicator, Image } from "react-native";
 import React, { useEffect } from "react";
 import { useRouter } from "expo-router"; 
@@ -9,7 +12,10 @@ import { LogBox } from "react-native";
 const App = () => {
   const router = useRouter(); 
   LogBox.ignoreAllLogs();
-
+ /**
+  * Request notification permissions and navigate to the home screen after a delay. 
+  * This effect runs once when the component mounts.
+ */
   useEffect(() => {
     const requestNotificationPermission = async () => {
       const { status } = await Notifications.requestPermissionsAsync();
@@ -17,9 +23,13 @@ const App = () => {
         console.warn("Notification permissions not granted!");
       }
     };
-
+    /**
+     * Request notification permissions when the app starts.
+     */
     requestNotificationPermission();
-
+    /**
+     * Set a timeout to navigate to the home screen after 1 second.
+     */
     const timeout = setTimeout(() => {
       router.replace("/home");
     }, 1000);

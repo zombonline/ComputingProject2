@@ -1,10 +1,16 @@
+/**
+ * Import necessary libraries and components.
+ */
 import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, StyleSheet, Pressable } from "react-native";
 import { getCommutes } from "./utils/accountStorage";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 const router = useRouter();
-
+/**
+ * SavedCommutesTestScreen component displays a list of saved commutes.
+ * It fetches the saved commutes from local storage and displays them in a scrollable view.
+ */
 const SavedCommutesTestScreen = () => {
   const [commutes, setCommutes] = useState({});
   const navigation = useNavigation();
@@ -17,7 +23,10 @@ const SavedCommutesTestScreen = () => {
     };
     loadCommutes();
   }, []);
-
+  /**
+   * Render the SavedCommutesTestScreen component.
+   * It displays a list of saved commutes with their details.
+   */
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Saved Commutes</Text>
@@ -64,7 +73,9 @@ const SavedCommutesTestScreen = () => {
     </ScrollView>
   );
 };
-
+/**
+ * Styles for the SavedCommutesTestScreen component.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

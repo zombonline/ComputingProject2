@@ -26,25 +26,6 @@ export class Commute {
     this.journeyId = journeyId;
     this.duration = duration;
     this.commuteId = commuteId;
-    console.log(
-      "Commute " +
-        name +
-        " (" +
-        commuteId +
-        ") created. (" +
-        origin +
-        " to " +
-        destination +
-        " at " +
-        arrivalTime +
-        " on " +
-        days +
-        " with ID " +
-        journeyId +
-        " taking " +
-        this.duration +
-        " minutes)"
-    );
   }
   async init() {
     if (isNaN(this.duration) || this.duration < 1) {
@@ -55,7 +36,6 @@ export class Commute {
         20,
         this.journeyId
       );
-      console.log("Commute duration: " + this.duration);
     }
     this.commuteId = this.generateCommuteId();
     this.save();
@@ -104,18 +84,15 @@ export class Commute {
       return null;
     }
     for (let i = 0; i < journeys.length; i++) {
-      if (Commute.buildJourneyId(journeys[i]) == this.journeyId) {
-        console.log(
-          "Average duration: " +
-            this.duration +
-            " Today's Duration: " +
-            journeys[i]["duration"]
-        );
-        return journeys[i]["duration"];
-      }
+      if (Commute.buildJourneyId(journeys[i]) != this.journeyId) { continue; }
+      return journeys[i]["duration"];
     }
   }
-
+  /**
+   * Checks if the commute is delayed by comparing the average duration with today's duration.
+   * If the delay is greater than 0, it sends a notification. If the duration is not found, it sends a notification.
+   * @param {Date} date - The date to check.
+   */
   async checkForDelay(date) {
     const todaysDuration = await Commute.getJourneyDuration(
       this.originLatLong,
@@ -124,35 +101,27 @@ export class Commute {
       getDateYYYYMMDD(date),
       this.journeyId
     );
-    console.log(
-      "Today's duration: " +
-        todaysDuration +
-        " Commute duration: " +
-        this.duration
-    );
+    journeyParams = {
+      origin: this.origin,
+      originLatLong: this.originLatLong,
+      destination: this.destination,
+      destinationLatLong: this.destinationLatLong,
+      arrivalTime: this.arrivalTime,
+      days: JSON.stringify(this.days),
+      journeyId: this.journeyId,
+      commuteId: this.commuteId,
+      duration: this.duration
+    }
     if (todaysDuration == null) {
       await Notifications.presentNotificationAsync({
         title: "Your commute might be disrupted!",
         body: "Your usual commute might be disrupted. Press for alternate journeys.",
         data: {
           screen: "altJourneys",
-          params: {
-            origin: this.origin,
-            originLatLong: this.originLatLong,
-            destination: this.destination,
-            destinationLatLong: this.destinationLatLong,
-            arrivalTime: this.arrivalTime,
-            days: JSON.stringify(this.days),
-            journeyId: this.journeyId,
-            commuteId: this.commuteId,
-            duration: this.duration,
-          },
+          params: journeyParams
         },
       });
-      return;
     }
-    const delay = todaysDuration - this.duration;
-    console.log("Delay: " + delay);
     if (delay > 0) {
       await Notifications.presentNotificationAsync({
         title: "Your commute is delayed!",
@@ -162,17 +131,7 @@ export class Commute {
           " minutes. Press for alternate journeys.",
         data: {
           screen: "altJourneys",
-          params: {
-            origin: this.origin,
-            originLatLong: this.originLatLong,
-            destination: this.destination,
-            destinationLatLong: this.destinationLatLong,
-            arrivalTime: this.arrivalTime,
-            days: JSON.stringify(this.days),
-            journeyId: this.journeyId,
-            commuteId: this.commuteId,
-            duration: this.duration,
-          },
+          params: journeyParams
         },
       });
     }
@@ -238,25 +197,16 @@ export class Commute {
       );
       dateToCheck.setDate(dateToCheck.getDate() + 1);
     }
-    try {
-      console.log("Resolving " + promises.length + " promises");
-      const results = await Promise.allSettled(promises);
-      const successfulDurations = results
-        .filter((r) => r.status === "fulfilled")
-        .filter((r) => r.value !== null)
-        .map((r) => r.value);
-      console.log(
-        "returning median duration of " +
-          successfulDurations.length +
-          " successful results"
-      );
-      return successfulDurations.sort()[
-        Math.floor(successfulDurations.length / 2)
-      ];
-    } catch (error) {
-      throw new Error(error);
+    const results = await Promise.allSettled(promises);
+    const successfulDurations = results
+      .filter((r) => r.status === "fulfilled")
+      .filter((r) => r.value !== null)
+      .map((r) => r.value);
+
+    return successfulDurations.sort()[
+      Math.floor(successfulDurations.length / 2)
+    ];
     }
-  }
   /**
    * Returns all unique commutes between two locations at a given arrival time that occur on days listed in daysList.
    * @param {string} origin - The origin
@@ -272,7 +222,6 @@ export class Commute {
     arrivalTime,
     daysList
   ) {
-    console.log("Getting all unique journeys");
     daysList.sort();
     let promises = [];
     let dateToCheck = new Date();
@@ -281,54 +230,32 @@ export class Commute {
     let uniqueJourneyIds = [];
     let allJourneys = [];
     for (let i = 0; i < 7; i++) {
-      if (daysList.includes(i)) {
-        promises.push(
-          Commute.getUniqueJourneys(
-            origin,
-            destination,
-            arrivalTime,
-            getDateYYYYMMDD(dateToCheck)
-          )
-        );
-      }
+      if (!daysList.includes(i)) { continue; }
+      promises.push(
+        Commute.getUniqueJourneys(
+          origin,
+          destination,
+          arrivalTime,
+          getDateYYYYMMDD(dateToCheck)
+        )
+      );
       dateToCheck.setDate(dateToCheck.getDate() + 1);
     }
-    try {
-      console.log("attempting to resolve promises");
-      const results = await Promise.allSettled(promises);
-      console.log("finished resolving promises");
-
-      for (let i = 0; i < results.length; i++) {
-        if (results[i].status === "fulfilled") {
-          allJourneys = allJourneys.concat(results[i].value);
-        }
-      }
-    } catch (error) {
-      console.log("Error: " + error);
-      throw new Error(error);
+    const results = await Promise.allSettled(promises);
+    for (let i = 0; i < results.length; i++) {
+      if (results[i].status != "fulfilled") { continue; }
+      allJourneys = allJourneys.concat(results[i].value);
     }
     for (let i = 0; i < allJourneys.length; i++) {
       const id = Commute.buildJourneyId(allJourneys[i]);
-      if (!uniqueJourneyIds.includes(id)) {
-        uniqueJourneyIds.push(id);
-        uniqueJourneys.push(allJourneys[i]);
-      }
+      if (uniqueJourneyIds.includes(id)) { continue; }
+      uniqueJourneyIds.push(id);
+      uniqueJourneys.push(allJourneys[i]);
     }
-    console.log("finished with " + uniqueJourneys.length + " results");
     return uniqueJourneys;
   }
 
   static async getUniqueJourneys(origin, destination, arrivalTime, date) {
-    console.log(
-      "Getting unique journeys for " +
-        origin +
-        " to " +
-        destination +
-        " at " +
-        arrivalTime +
-        " on " +
-        date
-    );
     origin = encodeURIComponent(origin);
     destination = encodeURIComponent(destination);
     const params = new URLSearchParams({
@@ -359,45 +286,21 @@ export class Commute {
     arrivalDate,
     journeyId
   ) {
-    console.log(
-      "Getting journey duration for " +
-        origin +
-        " to " +
-        destination +
-        " at " +
-        arrivalTime +
-        " on " +
-        arrivalDate
-    );
     const params = new URLSearchParams({
       time: arrivalTime,
       timeIs: "Arriving",
       date: arrivalDate,
     });
-    console.log(
-      "Fetching from: " +
-        `https://api.tfl.gov.uk/Journey/JourneyResults/${origin}/to/${destination}?${params}`
-    );
     const response = await fetch(
       `https://api.tfl.gov.uk/Journey/JourneyResults/${origin}/to/${destination}?${params}`
     );
     data = await response.json();
     for (let i = 0; i < data["journeys"].length; i++) {
-      console.log(
-        "Checking journey " + (i + 1) + " of " + data["journeys"].length
-      );
       let id = Commute.buildJourneyId(data["journeys"][i]);
       if (id == journeyId) {
-        console.log(
-          "Found journey " +
-            id +
-            " with duration " +
-            data["journeys"][i]["duration"]
-        );
         return data["journeys"][i]["duration"];
       }
     }
-    console.log("Can't find journey  " + journeyId + " in results.");
     return null;
   }
 }

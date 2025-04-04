@@ -1,3 +1,6 @@
+/**
+ * Import necessary libraries and components.
+ */
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -11,11 +14,16 @@ import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { standardButtonStyle, textStyles } from "./style";
 import BottomSheet from "../components/BottomSheet";
 import { getCommutes, getCommutesFromFirestore } from "./utils/accountStorage";
+
+// Get the screen height for dynamic layout adjustments
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 export default function Commutes() {
   const router = useRouter();
   const [commutes, setCommutes] = useState({});
-
+ /**
+ * Fetch the user's saved commutes from local storage and Firestore.
+ * This function is called when the component mounts.
+ */
   useEffect(() => {
     const loadCommutes = async () => {
       const storedCommutes = await getCommutes();
@@ -25,7 +33,10 @@ export default function Commutes() {
     };
     loadCommutes();
   }, []);
-
+ /**
+ * Render the Commutes component.
+ * It displays a bottom sheet with the user's saved commutes.
+ */
   return (
     <View>
       <BottomSheet

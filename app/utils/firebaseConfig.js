@@ -28,6 +28,10 @@ const auth = initializeAuth(app, {
 
 const db = getFirestore(app);
 
+/**
+ * Signs in a user anonymously if they are not already signed in.
+ * @returns {Promise<User>} - A promise that resolves to the user object.
+ */
 const signInAnonymouslyIfNeeded = async () => {
   return new Promise((resolve, reject) => {
     onAuthStateChanged(auth, async (user) => {
