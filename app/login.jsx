@@ -80,7 +80,7 @@ export default function Login() {
       <View style={{...Loginsignup.inputGroup, paddingTop: 50}}>
         <TextInput
           placeholder="Email"
-          style={[Loginsignup.input, { width: computedInputWidth}]}
+          style={[Loginsignup.input, { width: computedInputWidth }]}
           placeholderTextColor="#777"
           value={email}
           onChangeText={setEmail}
@@ -90,7 +90,7 @@ export default function Login() {
         <TextInput
           placeholder="Password"
           secureTextEntry
-          style={[Loginsignup.input, { width: computedInputWidth}]}
+          style={[Loginsignup.input, { width: computedInputWidth }]}
           placeholderTextColor="#777"
           value={password}
           onChangeText={setPassword}

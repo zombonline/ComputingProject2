@@ -1,4 +1,6 @@
-// app/_layout.jsx
+/**
+ * Import necessary libraries and components.
+ */
 import { View, TextInput, TouchableOpacity } from "react-native";
 import { Slot, useRouter, usePathname } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,12 +9,12 @@ import { bottomNavStyle, searchBarStyle } from "./style";
 import { SettingsPanelModeProvider } from "./utils/SettingsPanelModeContext";
 import GoogleMap from "./utils/googlemap";
 import { StyleSheet } from "react-native";
-// Inner Layout component that uses the context.
+/* Inner Layout component that uses the context. */
 function Layout() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Define pages where the search bar should always be hidden.
+  /* Define pages where the search bar should always be hidden. */
   const excludedSearch = [
     "/",
     "/altJourneys",
@@ -25,10 +27,10 @@ function Layout() {
     "/signup",
   ];
 
-  // For other routes: show the search bar (if not in excludedSearch)
+  /* For other routes: show the search bar (if not in excludedSearch) */
   const showSearch = !excludedSearch.includes(pathname);
 
-  // Define pages where bottom navigation is hidden.
+  /* Define pages where bottom navigation is hidden. */
   const excludedBottomNav = ["/"];
 
   return (
@@ -108,7 +110,7 @@ function Layout() {
   );
 }
 
-// Single default export that wraps Layout in the global provider.
+/* Single default export that wraps Layout in the global provider. */
 export default function LayoutWrapper() {
   return (
     <SettingsPanelModeProvider>
